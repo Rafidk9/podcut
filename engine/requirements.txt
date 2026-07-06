@@ -1,0 +1,8 @@
+numpy>=1.24
+requests>=2.31        # used by the ElevenLabs Scribe transcription provider
+# Optional providers (pipeline runs without them via local fallbacks):
+#   anthropic>=0.39      # AI annotation layer
+#   openai>=1.0          # Whisper API transcription
+#   faster-whisper>=1.0  # local Whisper transcription
+# Dev:
+pytest>=7.0

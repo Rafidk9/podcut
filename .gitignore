@@ -1,0 +1,36 @@
+# Python
+engine/.venv/
+__pycache__/
+*.pyc
+engine/.env
+# .podcut_work is scratch working audio/video for a run and can carry a
+# per-source suffix (e.g. .podcut_work_P1 for input clip "P1") -- match all
+# variants, not just the bare name, or per-clip runs leak real client audio.
+.podcut_work*/
+engine/.podcut_work*/
+engine/.podcut_jobs/
+
+# Node / Next
+node_modules/
+web/.next/
+web/out/
+
+# Secrets -- any .env anywhere, not just engine/.env (e.g. nested tool checkouts
+# under sample/work dirs can carry their own)
+**/.env
+!**/.env.example
+
+# Media artifacts
+sample/
+real_sample/
+*.mp4
+*.mov
+*.MOV
+!**/README*
+
+# Raw client footage / per-reel working data: only the shared pipeline
+# scripts + README (which live directly in reels/, not a subfolder) are
+# source-controlled here. Every reel folder -- dated (<YYYY-MM-DD>_<slug>/)
+# or not -- holds real client input/intermediates/deliverables and must
+# never be committed.
+reels/*/

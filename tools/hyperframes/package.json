@@ -1,0 +1,8 @@
+{
+  "name": "podcut-hyperframes",
+  "private": true,
+  "description": "Local HyperFrames install so PodCut can render caption/graphic overlays.",
+  "dependencies": {
+    "hyperframes": "0.7.26"
+  }
+}

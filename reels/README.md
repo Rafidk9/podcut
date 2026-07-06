@@ -1,0 +1,131 @@
+# PFEC reels
+
+One folder per reel, named `<YYYY-MM-DD>_<slug>` (event/publication date first so
+folders sort chronologically):
+
+```
+reels/
+  README.md            this file
+  reel_paths.py        picks the active reel (env var or newest folder)
+  new_reel.py          scaffolds a new reel folder
+  build_*.py …         shared pipeline scripts (operate on ONE reel at a time)
+  2026-07-13_lakemba-seminar/
+    input/             raw clips (phone footage fine — pipeline tone-maps HDR)
+    work/              intermediates (base, B-roll, cap_proj, captioned…)
+    output/            reel_final.mp4 + caption.txt   ← the deliverables
+```
+
+Shared brand assets (logo chip, end cards, music) are NOT per-reel — they live
+in `podcut/assets/`.
+
+## Starting a new reel
+
+```
+python new_reel.py 2026-08-02_parramatta-expo
+# drop raw clips into 2026-08-02_parramatta-expo/input/
+```
+
+## Which reel do the scripts act on?
+
+- Default: the **newest** reel folder (lexicographically last, i.e. latest date).
+- Override: `set PODCUT_REEL=2026-07-13_lakemba-seminar` (or an absolute path).
+
+Every script prints `[reel] <name>` when auto-picking, so you always know.
+
+## Pipeline (run from `reels/`, in order)
+
+```
+python build_base.py        # trim/normalize/tone-map + assembled transcript
+python build_broll.py       # topical B-roll stingers (HyperFrames)
+python build_wipe.py        # brand grid-wipe transition
+python insert_broll.py      # splice B-roll (video only; audio continuous)
+python build_captions.py    # captions + overlay cards → captioned.mp4 (SLOW)
+python build_composite.py   # logo, end cards, music, loudnorm → output/reel_final.mp4
+python build_caption_txt.py # social caption → output/caption.txt
+python build_thumbnail.py   # branded still → output/thumbnail.jpg
+```
+
+`build_thumbnail.py` grabs a frame from the finished `reel_final.mp4` (default:
+3.0s in — already carries the logo, since that's baked in for the whole main
+segment) and stamps a kicker pill + bold headline on top, gold-accenting any
+`**word**` you wrap. Every field is optional via `<reel>/content.json`:
+
+```json
+{ "thumbnail": { "at": 4.2, "kicker": "FREE MIGRATION SEMINAR",
+                 "headline": "GET YOUR **189 VISA** FASTER" } }
+```
+
+With no override you still get a branded still (frame + logo + legibility
+shade) — kicker/headline just add the hook on top.
+
+Fast iteration (avoid full 4–9 min caption renders):
+- live preview: launch config `reels-preview` (update its `cwd` if the newest
+  reel changes — it points at `<reel>/work/cap_proj`). Stop this server before
+  running `build_captions.py` (it locks `cap_proj`).
+- `python preview_window.py START END` — draft-render just a time window.
+
+After any rebuild of reel_final.mp4, verify colour tags read bt709/tv:
+`ffprobe -select_streams v:0 -show_entries stream=color_range,color_space,color_transfer,color_primaries output/reel_final.mp4`
+
+## Must do — B-roll placement is script-judged, not a fixed count
+
+B-roll only ever goes over **connecting/filler phrases** in the transcript —
+never over a moment carrying key information. The AI judges the script (the
+assembled transcript from `build_base.py`) to find those connecting/filler
+spans and picks an anchor phrase for each one; the **number of B-roll spots
+is however many such spans genuinely exist, scaled to the video's length** —
+it is not a fixed count. A short reel with few connecting phrases gets fewer
+(or zero) B-roll cuts; a longer one can get more.
+
+Each B-roll's design must be specific to what the speaker is actually saying
+at that spot in that reel — never generic, and never reused wholesale from
+another reel.
+
+- Write a `<reel>/broll.py` (`STINGERS = [(name, duration, body_html), ...]`)
+  and a `<reel>/broll_plan.json` (`n_segments`, `plan: {segment: stinger}`,
+  `boundaries: {segment: time}`) — one stinger + placement per genuine
+  connecting-phrase moment found in *this* reel's transcript. See the
+  docstrings in `build_broll.py` / `insert_broll.py`.
+- **Gotcha:** if a reel has no `broll.py` / `broll_plan.json` override,
+  `build_broll.py` and `insert_broll.py` silently fall back to the *previous*
+  reel's hard-coded defaults — currently 4 fixed Lakemba stingers at 4 fixed
+  boundaries. That fallback only exists so the old Lakemba reel keeps
+  rebuilding unchanged; it is **not** a safe default for a new reel, and it
+  is also not the intended count-scales-with-content behaviour — it's a
+  legacy fixed-4 placement, not an AI-judged one. Always derive both files
+  from this reel's own transcript before running the B-roll steps.
+
+## Document highlights (e.g. redacted visa grant letters)
+
+`build_captions.py` can overlay a document as a designed "paper card + stamp"
+at whatever point in the video the speaker is actually talking about it —
+same anchor-phrase principle as B-roll: you name the words as spoken, and
+`anchor_phrase.py`'s `resolve_anchor()` locates them in the transcript
+(exact/fuzzy ≥0.8) and computes the window. If the phrase isn't found, the
+document is **skipped with a loud warning**, never guessed onto a made-up
+timecode — fix the `anchor_phrase` or add the window by hand.
+
+**Redact BEFORE it ever touches this pipeline.** These letters carry PII
+(name, DOB, passport/grant number). Run them through
+`podcut/tools/letter-redactor/redact_letter.py` first:
+
+```
+python ../../tools/letter-redactor/redact_letter.py grant1.pdf grant1.png --format png
+```
+
+Only drop the **redacted** output into `<reel>/documents/`. Never put a raw,
+unredacted letter there.
+
+Then reference it from `<reel>/content.json`:
+
+```json
+{
+  "documents": [
+    { "image": "grant1.png", "anchor_phrase": "his 189 grant came through",
+      "label": "189 VISA GRANT" }
+  ]
+}
+```
+
+A reel with no `documents` entry gets none — this is opt-in per reel, not a
+forced element on every video.
