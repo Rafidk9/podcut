@@ -27,6 +27,9 @@ real_sample/
 *.mov
 *.MOV
 !**/README*
+# ...except the shared brand end-card videos build_composite.py requires --
+# these are small finished brand assets, not raw/client footage.
+!assets/endcards/*.mp4
 
 # Raw client footage / per-reel working data: only the shared pipeline
 # scripts + README (which live directly in reels/, not a subfolder) are
