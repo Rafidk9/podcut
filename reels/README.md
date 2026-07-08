@@ -59,6 +59,20 @@ gold-accenting any `**word**` you wrap. Every field is optional via
 With no override you still get a branded still (frame + logo + legibility
 shade) — kicker/headline just add the hook on top.
 
+## Caption band position
+
+The 2-word caption band defaults to `top: 62%` (suits a normally-framed
+talking head). If the subject sits lower or higher in frame, raise/lower it
+per reel via `content.json`:
+
+```json
+{ "cap_top": "56%" }
+```
+
+Lower the percentage to move the band up (toward headroom) — check the
+subject's face position in `work/base_broll.mp4` before picking a value so
+captions never land on their face.
+
 ## Background music
 
 `build_composite.py` defaults to the Lakemba reel's track (`funky-chunk-kevin-macleod.mp3`

@@ -45,6 +45,11 @@ DEFAULT_CONTENT = {
     # locates it in the transcript. "image" is a filename under <reel>/documents/
     # (put the letter-redactor's REDACTED output there, never the raw original).
     "documents": [],   # e.g. [{"image": "grant1.png", "anchor_phrase": "his 189 grant came through", "label": "189 VISA GRANT"}]
+    # Vertical anchor of the 2-word caption band (CSS top, band is centred on it
+    # via translateY(-50%)). Default 62% suits a normally-framed talking head;
+    # raise it (smaller %) toward the headroom when the subject sits low in frame
+    # so captions never land on their face.
+    "cap_top": "62%",
 }
 
 # Small dot-matrix silhouette of mainland Australia (same visual language as
@@ -210,6 +215,7 @@ def make_proj(base):
 
     nm, info, cta = content["name"], content["info"], content["cta"]
     html = (_CAP_BLOCK.replace("__DUR__", f"{dur:.3f}")
+            .replace("__CAP_TOP__", str(content["cap_top"]))
             .replace("__CARDS__", json.dumps(cards))
             .replace("__DOCS__", json.dumps(docs))
             .replace("__DATE_START__", str(info["start"]))
@@ -270,7 +276,7 @@ _CAP_BLOCK = """<!doctype html>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:1080px;height:1920px;overflow:hidden;background:transparent}
-  #cap{position:absolute;left:0;right:0;top:62%;transform:translateY(-50%);text-align:center}
+  #cap{position:absolute;left:0;right:0;top:__CAP_TOP__;transform:translateY(-50%);text-align:center}
   .card{position:absolute;left:0;right:0;top:0;padding:0 70px;opacity:0;visibility:hidden}
   .w{font-family:"Poppins",sans-serif;font-weight:800;font-size:96px;line-height:1.05;color:#fff;
      letter-spacing:.01em;text-shadow:0 6px 22px rgba(0,0,0,.75),0 2px 4px rgba(0,0,0,.95);
