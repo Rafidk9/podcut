@@ -28,7 +28,7 @@ DISCLAIMER = (
 "▎ Before proceeding with any application or decision, we recommend seeking advice from a Registered Migration Agent or Australian legal practitioner."
 )
 
-MUSIC_CREDIT = '\U0001F3B5 Music: "Funky Chunk" — Kevin MacLeod (incompetech.com)'
+DEFAULT_MUSIC_CREDIT = '\U0001F3B5 Music: "Funky Chunk" — Kevin MacLeod (incompetech.com)'
 
 OFFICES = f"""{bold("Melbourne")}
 \U0001F4CD L11, 50 Queen Street, Melbourne VIC 3000
@@ -70,6 +70,7 @@ DEFAULT_CAPTION = {   # Lakemba reel
     "contact": "Book a FREE consultation with a PFEC Registered Migration Agent — [NEED: speaking agent name + MARN]",
     "website": "[NEED: website URL]",
     "hashtags": "#askPFEC #PFECGlobal #StudyInAustralia #PRPathway #MigrationSeminar #AustraliaPR #InternationalStudents #PermanentResidency #RegisteredMigrationAgent",
+    "music_credit": DEFAULT_MUSIC_CREDIT,   # override when build_composite.py's music.track isn't the default
 }
 
 
@@ -104,7 +105,7 @@ def build():
 
 {c['hashtags']}
 
-{MUSIC_CREDIT}
+{c['music_credit']}
 
 {DISCLAIMER}
 """

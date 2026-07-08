@@ -45,10 +45,11 @@ python build_caption_txt.py # social caption → output/caption.txt
 python build_thumbnail.py   # branded still → output/thumbnail.jpg
 ```
 
-`build_thumbnail.py` grabs a frame from the finished `reel_final.mp4` (default:
-3.0s in — already carries the logo, since that's baked in for the whole main
-segment) and stamps a kicker pill + bold headline on top, gold-accenting any
-`**word**` you wrap. Every field is optional via `<reel>/content.json`:
+`build_thumbnail.py` grabs a frame from `work/base_broll.mp4` (default: 3.0s
+in — pre-caption, so no kinetic caption word can freeze into the still),
+composites the logo fresh, then stamps a kicker pill + bold headline on top,
+gold-accenting any `**word**` you wrap. Every field is optional via
+`<reel>/content.json`:
 
 ```json
 { "thumbnail": { "at": 4.2, "kicker": "FREE MIGRATION SEMINAR",
@@ -57,6 +58,28 @@ segment) and stamps a kicker pill + bold headline on top, gold-accenting any
 
 With no override you still get a branded still (frame + logo + legibility
 shade) — kicker/headline just add the hook on top.
+
+## Background music
+
+`build_composite.py` defaults to the Lakemba reel's track (`funky-chunk-kevin-macleod.mp3`
+at volume 0.05) so old reels keep rebuilding unchanged. Override per reel via
+`<reel>/content.json`:
+
+```json
+{ "music": { "track": "adding-the-sun-kevin-macleod.mp3", "volume": 0.02 } }
+```
+
+- `track` — a filename under `assets/music/`. Drop the file there and add its
+  licence entry to `assets/music/CREDIT.txt` (same CC-BY-4.0/incompetech
+  convention as the existing track) *before* referencing it, and mirror that
+  exact credit line into this reel's `content.json` under
+  `caption_txt.music_credit` so `build_caption_txt.py` picks it up instead of
+  the hardcoded default.
+- `volume` — linear gain on the music bed before sidechain ducking under her
+  voice (not final loudness — the two-pass loudnorm at the end still targets
+  -14 LUFS overall). 0.05 was tuned for "Funky Chunk"; quieter/busier tracks
+  may need a different level entirely — always listen back to the mixed
+  result under her lowest-energy line, not just a peak moment.
 
 Fast iteration (avoid full 4–9 min caption renders):
 - live preview: launch config `reels-preview` (update its `cwd` if the newest

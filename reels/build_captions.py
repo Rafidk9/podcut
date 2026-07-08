@@ -21,9 +21,12 @@ MARA_BADGE_CROP = "1030:920:112:165"   # ffmpeg crop=w:h:x:y -> just the badge
 # Per-reel content. DEFAULT_CONTENT reproduces the Lakemba reel exactly; any reel
 # can override any key via <reel>/content.json (see load_content()). Card times
 # are on the OUTPUT timeline (unaffected by B-roll splicing). The "info" card
-# reuses a 3-beat top card (kicker / big line1 / smaller line2). MARA badge
-# "mode": "image" = official mark PNG on the navy plate; "styled" = navy plate
-# with "MARA REGISTERED" + "MARN <n>" text (used when there's no official mark).
+# reuses a 3-beat top card (kicker / big line1 / smaller line2). "name" + "mara"
+# render as ONE merged lower-third (badge tile + name/role panel) sharing
+# "name"'s start/end -- "mara" no longer carries its own timing. MARA badge
+# "mode": "image" = official OMARA sticker PNG in the tile; "styled" = a CSS/SVG
+# recreation of that same sticker (dotted-Australia map + registration number)
+# for agents with no official artwork on file.
 DEFAULT_CONTENT = {
     "asr_fix": {"pfc": "PFEC", "pfpc": "PFEC", "ils": "IELTS"},
     "gold": ["VISA", "EOI", "IELTS", "PTE", "NAATI", "189", "POINTS", "PR",
@@ -33,7 +36,7 @@ DEFAULT_CONTENT = {
              "start": 0.6, "end": 4.8},
     "mara": {"mode": "image",
              "src": os.path.join(ASSETS_ROOT, "marn designs", "Ali's MARN.png"),
-             "marn": "2117037", "start": 0.5, "settle": 1.7, "end": 6.6},
+             "marn": "2117037"},
     "info": {"kicker": "FREE MIGRATION SEMINAR", "line1": "13 JULY", "line1_size": 80,
              "line2": "Lakemba Senior Citizens' Centre", "start": 40.2, "end": 43.5},
     "cta": {"text": "REGISTER NOW!", "start": 48.75, "end": 50.75},
@@ -43,6 +46,26 @@ DEFAULT_CONTENT = {
     # (put the letter-redactor's REDACTED output there, never the raw original).
     "documents": [],   # e.g. [{"image": "grant1.png", "anchor_phrase": "his 189 grant came through", "label": "189 VISA GRANT"}]
 }
+
+# Small dot-matrix silhouette of mainland Australia (same visual language as
+# the cold-open world map in build_opener.py), reused here as the icon on the
+# recreated OMARA sticker for agents with no official artwork on file.
+_AU_DOTS = [
+    "..111100.",
+    "..1111111",
+    ".11111111",
+    "11111111.",
+    "..111111.",
+    "....1....",
+]
+
+
+def _dotmap_html():
+    cells = []
+    for row in _AU_DOTS:
+        for ch in row:
+            cells.append('<i class="on"></i>' if ch == "1" else "<i></i>")
+    return "".join(cells)
 
 
 def load_content():
@@ -97,12 +120,6 @@ def chunk_2word(words):
     return chunks
 
 
-_SEAL_SVG = ('<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4.4-3 8-7 9'
-             '-4-1-7-4.6-7-9V5l7-3z" fill="#100796"/><path d="M8.4 12.2l2.5 2.5 4.7-5" '
-             'stroke="#FFC500" stroke-width="2.5" stroke-linecap="round" '
-             'stroke-linejoin="round"/></svg>')
-
-
 def make_proj(base):
     """Generate the transparent captions/overlay HyperFrames project (cap_proj)
     for the given base video (used for its duration). No render — returns
@@ -133,15 +150,13 @@ def make_proj(base):
     mara = content["mara"]
     if mara["mode"] == "image":
         crop_mara_badge(proj, mara["src"])
-        mara_class, mara_inner = "", (
-            '<div class="plate"><img src="mara_badge.png" alt="MARA registration"/>'
-            '<div class="shine"></div></div>')
-    else:   # "styled": navy plate + MARA REGISTERED + MARN <n>, no name/artwork
-        mara_class = "styled"
-        mara_inner = (f'<div class="plate"><div class="seal">{_SEAL_SVG}</div>'
-                      f'<div class="txt"><div class="kick">MARA Registered</div>'
-                      f'<div class="marn">MARN&nbsp;<b>{mara["marn"]}</b></div></div>'
-                      f'<div class="shine"></div></div>')
+        badge_class, badge_inner = "has-image", '<img src="mara_badge.png" alt="MARA registration"/>'
+    else:   # "styled": recreate the OMARA sticker (dot-map + reg-number strip)
+        badge_class = ""
+        badge_inner = (f'<div class="dotmap">{_dotmap_html()}</div>'
+                      f'<div class="hdr">MIGRATION AGENTS<br>REGISTRATION NUMBER</div>'
+                      f'<div class="numstrip">{mara["marn"]}</div>'
+                      f'<div class="url">www.mara.gov.au</div>')
 
     # Document highlights: each spec names an anchor_phrase (words as spoken),
     # never a timecode -- resolve_anchor() locates it in the transcript
@@ -210,11 +225,8 @@ def make_proj(base):
             .replace("__NAME_END__", str(nm["end"]))
             .replace("__NAME_TEXT__", nm["text"])
             .replace("__NAME_ROLE__", nm["role"])
-            .replace("__MARA_START__", str(mara["start"]))
-            .replace("__MARA_SETTLE__", str(mara["settle"]))
-            .replace("__MARA_END__", str(mara["end"]))
-            .replace("__MARA_CLASS__", mara_class)
-            .replace("__MARA_INNER__", mara_inner))
+            .replace("__BADGE_CLASS__", badge_class)
+            .replace("__BADGE_INNER__", badge_inner))
     open(os.path.join(proj, "index.html"), "w", encoding="utf-8").write(html)
     json.dump({"id": "pfec-captions", "name": "PFEC captions + overlays"},
               open(os.path.join(proj, "meta.json"), "w"))
@@ -302,40 +314,34 @@ _CAP_BLOCK = """<!doctype html>
   #confetti{position:absolute;left:50%;top:1462px;width:0;height:0}
   #confetti .p{position:absolute;left:0;top:0;width:16px;height:16px;border-radius:3px;opacity:0}
 
-  /* Speaker intro lower-third: navy plate + gold accent bar (brand colours),
-     bottom-left, on screen only for the opening seconds (never overlaps the
-     bottom CTA slot -- that card runs much later) */
-  #nameCard{position:absolute;left:60px;top:1555px;opacity:0;visibility:hidden;text-align:left}
-  #nameCard .plate{display:inline-block;background:#100796;border-left:12px solid #FFC500;
-     border-radius:14px;padding:20px 36px 18px 28px;box-shadow:0 14px 34px rgba(0,0,0,.45)}
-  #nameCard .nm{font-family:"Poppins",sans-serif;font-weight:800;font-size:44px;color:#fff;
+  /* Speaker intro lower-third: ONE merged card -- gold OMARA badge tile (left)
+     + navy-to-gold name/role panel (right), bottom-left, on screen only for
+     the opening seconds (never overlaps the bottom CTA slot -- that card runs
+     much later). Badge + name share this single entrance/exit. */
+  #introCard{position:absolute;left:44px;top:1490px;opacity:0;visibility:hidden;
+     display:flex;align-items:stretch;border-radius:20px;overflow:hidden;
+     box-shadow:0 16px 40px rgba(0,0,0,.5)}
+  #introCard .badge-tile{position:relative;flex:none;width:152px;background:#FFC500;
+     display:flex;flex-direction:column;align-items:center;justify-content:center;
+     text-align:center;padding:12px 8px;gap:3px;overflow:hidden}
+  #introCard .badge-tile.has-image{padding:0}
+  #introCard .badge-tile.has-image img{display:block;width:100%;height:100%;object-fit:cover}
+  #introCard .dotmap{display:grid;grid-template-columns:repeat(9,4.2px);
+     grid-auto-rows:4.2px;gap:1.6px}
+  #introCard .dotmap i{width:4.2px;height:4.2px;border-radius:50%;background:transparent}
+  #introCard .dotmap i.on{background:#1A1A1A}
+  #introCard .hdr{font-family:"Poppins",sans-serif;font-weight:800;font-size:10.5px;
+     line-height:1.2;color:#1A1A1A;letter-spacing:.01em}
+  #introCard .numstrip{background:#fff;border-radius:4px;padding:3px 9px;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:19px;color:#100796;
+     letter-spacing:.01em}
+  #introCard .url{font-family:"Poppins",sans-serif;font-weight:700;font-size:8px;color:#1A1A1A}
+  #introCard .info-panel{flex:auto;display:flex;flex-direction:column;justify-content:center;
+     background:linear-gradient(90deg,#100796 58%,#B9821E 100%);padding:20px 34px;text-align:left}
+  #introCard .nm{font-family:"Poppins",sans-serif;font-weight:800;font-size:38px;color:#fff;
      letter-spacing:.01em;line-height:1.1}
-  #nameCard .role{font-family:"Poppins",sans-serif;font-weight:700;font-size:25px;color:#FFC500;
-     letter-spacing:.09em;text-transform:uppercase;margin-top:6px}
-
-  /* MARA credential badge: the OFFICIAL MARA registration mark mounted on a
-     brand-navy plate (blue kept per user; the mark carries the MARN + govt
-     branding, no personal name). Base position = resting spot under the logo;
-     the hero entrance animates it up FROM screen-centre via GSAP so it's
-     noticed before it docks. */
-  #maraCard{position:absolute;left:50%;top:250px;opacity:0;visibility:hidden}
-  #maraCard .plate{position:relative;overflow:hidden;border-radius:22px;
-     background:linear-gradient(135deg,#100796,#1A10C0);border:3px solid #FFC500;
-     padding:16px;box-shadow:0 16px 42px rgba(0,0,0,.55)}
-  #maraCard img{display:block;width:320px;height:auto;border-radius:10px}
-  #maraCard .shine{position:absolute;top:-40%;left:-60%;width:36%;height:180%;pointer-events:none;
-     background:linear-gradient(75deg,transparent,rgba(255,255,255,.42),transparent);transform:skewX(-20deg)}
-  /* styled MARA badge (navy plate + MARA REGISTERED + MARN text, no artwork) */
-  #maraCard.styled .plate{display:flex;align-items:center;gap:20px;padding:18px 32px 18px 20px}
-  #maraCard .seal{flex:none;width:84px;height:84px;border-radius:50%;
-     background:radial-gradient(circle at 38% 32%,#FFE985,#FFC500 58%,#E0A400);
-     display:flex;align-items:center;justify-content:center;box-shadow:0 5px 16px rgba(0,0,0,.45)}
-  #maraCard .seal svg{width:46px;height:46px}
-  #maraCard .txt{text-align:left;line-height:1}
-  #maraCard .kick{font-family:"Poppins",sans-serif;font-weight:800;font-size:24px;letter-spacing:.16em;
-     color:#FFC500;text-transform:uppercase;margin-bottom:8px}
-  #maraCard .marn{font-family:"Poppins",sans-serif;font-weight:800;font-size:52px;color:#fff;letter-spacing:.02em}
-  #maraCard .marn b{color:#FFC500}
+  #introCard .role{font-family:"Poppins",sans-serif;font-weight:700;font-size:21px;color:#FFE9B0;
+     letter-spacing:.03em;margin-top:5px}
 
   /* Document highlight: redacted letter shown as a "paper card + stamp" --
      never a raw full-bleed photo -- landing in the upper zone so it never
@@ -369,8 +375,10 @@ _CAP_BLOCK = """<!doctype html>
     <div class="venueWrap"><div class="venueBlock"></div><div class="venue">__INFO_LINE2__</div></div>
   </div>
   <div id="ctaCard"><div class="pill">__CTA_TEXT__</div></div>
-  <div id="nameCard"><div class="plate"><div class="nm">__NAME_TEXT__</div><div class="role">__NAME_ROLE__</div></div></div>
-  <div id="maraCard" class="__MARA_CLASS__">__MARA_INNER__</div>
+  <div id="introCard">
+    <div class="badge-tile __BADGE_CLASS__">__BADGE_INNER__</div>
+    <div class="info-panel"><div class="nm">__NAME_TEXT__</div><div class="role">__NAME_ROLE__</div></div>
+  </div>
   <div id="confetti"></div>
   <div id="docHost"></div>
 </div>
@@ -458,30 +466,17 @@ _CAP_BLOCK = """<!doctype html>
   tl.to(cc, {opacity:0, y:18, duration:0.2, ease:"power2.in"}, __CTA_END__-0.2);
   tl.set(cc, {visibility:"hidden"}, __CTA_END__);
 
-  // Speaker intro lower-third: slides in from the left with the house back-ease,
-  // holds through the opening beat, slips back out.
-  var nc = document.getElementById("nameCard");
+  // Speaker intro lower-third: badge tile + name/role panel move as ONE unit,
+  // sliding in from the left with the house back-ease, holding through the
+  // opening beat, then slipping back out together.
+  var ic = document.getElementById("introCard");
   var NS = __NAME_START__, NE = __NAME_END__;
   if (NE > NS) {
-    tl.set(nc,{visibility:"visible"}, NS);
-    tl.fromTo(nc, {opacity:0, x:-46}, {opacity:1, x:0, duration:0.32, ease:"back.out(1.8)"}, NS);
-    tl.to(nc, {opacity:0, x:-30, duration:0.25, ease:"power2.in"}, Math.max(NS+0.4, NE-0.25));
-    tl.set(nc,{visibility:"hidden"}, NE);
+    tl.set(ic,{visibility:"visible"}, NS);
+    tl.fromTo(ic, {opacity:0, x:-56}, {opacity:1, x:0, duration:0.34, ease:"back.out(1.8)"}, NS);
+    tl.to(ic, {opacity:0, x:-36, duration:0.25, ease:"power2.in"}, Math.max(NS+0.4, NE-0.25));
+    tl.set(ic,{visibility:"hidden"}, NE);
   }
-
-  // MARA credential badge: hero entrance -- pops in at screen-centre (large),
-  // holds with a gold shimmer sweep to draw the eye, then flies up and docks
-  // under the logo. xPercent keeps it horizontally centred through the scale.
-  var mc = document.getElementById("maraCard");
-  var MS = __MARA_START__, MSET = __MARA_SETTLE__, ME = __MARA_END__;
-  gsap.set(mc, {xPercent:-50});
-  tl.set(mc, {visibility:"visible"}, MS);
-  tl.fromTo(mc, {opacity:0, y:470, scale:1.32, rotation:-5},
-                {opacity:1, y:470, scale:1.32, rotation:0, duration:0.4, ease:"back.out(1.9)"}, MS);
-  tl.fromTo(mc.querySelector(".shine"), {xPercent:-140}, {xPercent:320, duration:0.6, ease:"power1.inOut"}, MS+0.5);
-  tl.to(mc, {y:0, scale:1, duration:0.5, ease:"power3.inOut"}, MSET);
-  tl.to(mc, {opacity:0, y:-30, duration:0.28, ease:"power2.in"}, ME-0.28);
-  tl.set(mc, {visibility:"hidden"}, ME);
 
   // Confetti burst: ~16 dots explode outward from the pill the instant it lands.
   var confettiHost = document.getElementById("confetti");

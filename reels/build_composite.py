@@ -13,18 +13,26 @@ os.makedirs(OUT, exist_ok=True)
 LOGO = os.path.join(ASSETS, "derived", "logo_chip.png")
 DIS = os.path.join(ASSETS, "endcards", "disclaimer-card.mp4")
 CON = os.path.join(ASSETS, "endcards", "consultation-card.mp4")
-MUSIC = os.path.join(ASSETS, "music", "funky-chunk-kevin-macleod.mp3")
+DEFAULT_MUSIC = "funky-chunk-kevin-macleod.mp3"   # the Lakemba reel's track
 CAPTIONED = os.path.join(WORK, "captioned.mp4")
 OPENER = os.path.join(WORK, "opener.mp4")     # optional cold open (build_opener.py)
 
 
-def music_volume():
-    """Per-reel override via <reel>/content.json -> {"music": {"volume": 0.05}}.
-    Defaults to 0.05 (the Lakemba reel's tuned level) if not overridden."""
+def music_config():
+    """Per-reel override via <reel>/content.json -> {"music": {"track": "...",
+    "volume": 0.05}}. "track" is a filename under assets/music/ (see its
+    CREDIT.txt -- every track there must carry a licence entry, and any reel
+    using a non-default track must reproduce that credit line in caption.txt
+    via content.json's "caption_txt.music_credit", same as the disclaimer).
+    Defaults reproduce the Lakemba reel's tuned track+level if unspecified."""
     cfg = os.path.join(REEL, "content.json")
+    music = {}
     if os.path.isfile(cfg):
-        return json.load(open(cfg, encoding="utf-8")).get("music", {}).get("volume", 0.05)
-    return 0.05
+        music = json.load(open(cfg, encoding="utf-8")).get("music", {})
+    track = os.path.join(ASSETS, "music", music.get("track", DEFAULT_MUSIC))
+    if not os.path.isfile(track):
+        raise SystemExit(f"content.json music.track not found: {track}")
+    return track, music.get("volume", 0.05)
 
 
 def dur(p):
@@ -86,8 +94,8 @@ def main():
     # clear", rather than a single static blanket-quiet volume.
     mixed = os.path.join(WORK, "mixed.mp4")
     fade_out_st = max(0.0, total - 2.4)
-    vol = music_volume()
-    run(["-i", assembled, "-stream_loop", "-1", "-i", MUSIC,
+    music_track, vol = music_config()
+    run(["-i", assembled, "-stream_loop", "-1", "-i", music_track,
          "-filter_complex",
          f"[1:a]atrim=0:{total:.3f},volume={vol},afade=t=in:st=0:d=1.5,"
          f"afade=t=out:st={fade_out_st:.3f}:d=2.4[m];"
