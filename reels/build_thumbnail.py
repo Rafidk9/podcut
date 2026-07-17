@@ -112,11 +112,15 @@ _THUMB_HTML = """<!doctype html>
      without a flat/opaque band that would look like a bug, not a design. */
   #shade{position:absolute;left:0;right:0;top:0;height:620px;
      background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0))}
-  #kicker{position:absolute;left:60px;top:130px;display:inline-block;background:#100796;
+  /* top:228/316 (not 130/216) -- the logo (top:38px, scaled to 432px wide,
+     ~174px tall at its 492:198 native ratio) bottoms out at ~212px, so the
+     kicker pill needs to clear that or it collides with "Education |
+     Migration" underneath the wordmark. */
+  #kicker{position:absolute;left:60px;top:228px;display:inline-block;background:#100796;
      color:#fff;font-family:"Poppins",sans-serif;font-weight:700;font-size:32px;
      letter-spacing:.05em;padding:14px 32px;border-radius:999px;
      box-shadow:0 10px 26px rgba(0,0,0,.4)}
-  #headline{position:absolute;left:60px;right:60px;top:216px;font-family:"Poppins",sans-serif;
+  #headline{position:absolute;left:60px;right:60px;top:316px;font-family:"Poppins",sans-serif;
      font-weight:900;font-size:84px;line-height:1.08;color:#fff;letter-spacing:.005em;
      text-shadow:0 8px 26px rgba(0,0,0,.85),0 2px 6px rgba(0,0,0,.95)}
   #headline .accent{color:#FFC500}

@@ -43,7 +43,14 @@ python build_captions.py    # captions + overlay cards → captioned.mp4 (SLOW)
 python build_composite.py   # logo, end cards, music, loudnorm → output/reel_final.mp4
 python build_caption_txt.py # social caption → output/caption.txt
 python build_thumbnail.py   # branded still → output/thumbnail.jpg
+python qa_reel.py           # pre-post QA gate (spec/colour/loudness/true-peak/
+                            # black-frames/caption sanity/safe-zone) — run last,
+                            # exits non-zero on any FAIL
 ```
+
+`qa_reel.py` is the automated half of the pre-post checklist; it does NOT replace
+an eyes/ears pass (reverb/noise, mishears, on-screen PII, MARN correctness,
+factual accuracy, and real in-app safe-zones still need a human).
 
 `build_thumbnail.py` grabs a frame from `work/base_broll.mp4` (default: 3.0s
 in — pre-caption, so no kinetic caption word can freeze into the still),
