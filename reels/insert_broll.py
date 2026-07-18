@@ -2,50 +2,42 @@
 boundaries, each masked by a quick on-brand grid-wipe transition (adapted from
 HyperFrames' registry `grid-pixelate-wipe`) instead of a flat instant cut.
 Original audio stays fully continuous throughout (B-roll replaces video only)."""
-import os, json, shutil, subprocess
+import os, json, shutil
 
 from reel_paths import WORK, REEL  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
+from ffmpeg_util import COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
 WIPE_DUR = 0.5
-
-# Legacy Lakemba defaults (kept so that reel builds unchanged with no config).
-# segment index -> which topical broll stinger plays there; each ties to the
-# moment it cuts away from/into (see build_broll.py for the content design).
-_DEFAULT_PLAN = {1: "broll_1", 3: "broll_2", 4: "broll_3", 5: "broll_4"}
-# absolute boundary time (on the base/base_broll timeline) for each -- these
-# are exactly where each chosen segment starts, i.e. the cut point.
-_DEFAULT_BOUNDARIES = {1: 8.19, 3: 19.13, 4: 25.88, 5: 28.71}
-_DEFAULT_N_SEGMENTS = 9
-_DEFAULT_BROLL_DUR = 1.3
 
 
 def load_plan():
     """Per-reel B-roll placement: <reel>/broll_plan.json = {"n_segments": N,
     "broll_dur": D, "plan": {"<seg idx>": "<stinger name>"},
-    "boundaries": {"<seg idx>": <absolute time>}}. Falls back to the legacy
-    Lakemba constants if the reel has no override."""
+    "boundaries": {"<seg idx>": <absolute time>}}.
+
+    Required per reel -- deliberately NO cross-reel fallback. An earlier
+    version silently reused a previous reel's fixed 4-stinger placement (at
+    THAT reel's own boundary timestamps) whenever this file was missing --
+    which is wrong content at wrong timestamps with no error, not a safe
+    default (see build_broll.py's load_stingers() docstring for the same
+    reasoning). If a reel genuinely has no B-roll, write broll_plan.json
+    with "plan": {} and "boundaries": {} rather than omitting the file."""
     cfg = os.path.join(REEL, "broll_plan.json")
-    if os.path.isfile(cfg):
-        j = json.load(open(cfg, encoding="utf-8"))
-        plan = {int(k): v for k, v in j["plan"].items()}
-        boundaries = {int(k): float(v) for k, v in j["boundaries"].items()}
-        return plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3))
-    return _DEFAULT_PLAN, _DEFAULT_BOUNDARIES, _DEFAULT_N_SEGMENTS, _DEFAULT_BROLL_DUR
+    if not os.path.isfile(cfg):
+        raise SystemExit(
+            f"{cfg} not found. Every reel needs its own broll_plan.json -- "
+            "derive placement from THIS reel's transcript (see the docstrings "
+            "in build_broll.py / insert_broll.py), or write one with "
+            '"plan": {} and "boundaries": {} if this reel genuinely has no '
+            "B-roll. There is no cross-reel default.")
+    j = json.load(open(cfg, encoding="utf-8"))
+    plan = {int(k): v for k, v in j["plan"].items()}
+    boundaries = {int(k): float(v) for k, v in j["boundaries"].items()}
+    return plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3))
 
 
 PLAN, BOUNDARIES, N_SEGMENTS, BROLL_DUR = load_plan()
 
 VF = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30"
-# Force correct SDR tags on every re-encode in this file too -- seg_XX.mp4
-# inputs are already correctly BT.709-tagged (fixed in build_base.py), but any
-# encode step needs these explicit or the muxed output can end up untagged/
-# ambiguous again.
-COLOR_TAGS = ["-color_primaries", "bt709", "-color_trc", "bt709",
-             "-colorspace", "bt709", "-color_range", "tv"]
-
-
-def run(args):
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error"] + args, check=True)
 
 
 def splice_broll_into_segment(seg_path, broll_path, out_path):
