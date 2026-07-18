@@ -1,11 +1,12 @@
 """Reel base assembly: trim each take's trailing filler/backchannel, normalize to
 1080x1920 / 30fps + subtle grade, concat into base.mp4. Also emits an assembled
 transcript on the OUTPUT timeline for later captioning."""
-import json, os, subprocess, shutil, glob
+import json, os, glob
 
 from reel_paths import IN, REEL  # noqa: E402 -- per-reel folders
 from reel_paths import WORK  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
+from ffmpeg_util import COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
+import content_check  # noqa: E402 -- per-reel folders
 
 # words dropped when trailing a take (the "take-end" confirmations) or leading
 DROP = {"mm-hmm", "mmhmm", "mm", "okay", "ok", "yes", "yeah", "um", "uh", "hmm",
@@ -55,8 +56,6 @@ SDR_VF = ("scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
           "eq=contrast=1.03:saturation=0.98,setsar=1,fps=30,"
           "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709,"
           "format=yuv420p")
-COLOR_TAGS = ["-color_primaries", "bt709", "-color_trc", "bt709",
-             "-colorspace", "bt709", "-color_range", "tv"]
 
 
 def load_zoom():
@@ -138,6 +137,8 @@ def norm(w):
 
 
 def main():
+    content_check.check(REEL)  # catch a typo'd content.json key before the build runs
+
     seg_dir = os.path.join(WORK, "segments")
     os.makedirs(seg_dir, exist_ok=True)
     concat_list = os.path.join(seg_dir, "concat.txt")
@@ -175,13 +176,12 @@ def main():
             direction = zoom_segments[i] if i < len(zoom_segments) else "hold"
             zf = zoom_filter(direction, zoom_amount, dur)
         vf = (SDR_VF if sdr else VF) + zf
-        subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error",
-                        "-ss", f"{k_start:.3f}", "-i", os.path.join(IN, name + ext),
-                        "-t", f"{dur:.3f}", "-vf", vf, "-r", "30",
-                        "-c:v", "libx264", "-preset", "medium", "-crf", "19",
-                        *COLOR_TAGS,
-                        "-c:a", "aac", "-ar", "48000", "-ac", "2",
-                        "-video_track_timescale", "90000", seg], check=True)
+        run(["-ss", f"{k_start:.3f}", "-i", os.path.join(IN, name + ext),
+             "-t", f"{dur:.3f}", "-vf", vf, "-r", "30",
+             "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+             *COLOR_TAGS,
+             "-c:a", "aac", "-ar", "48000", "-ac", "2",
+             "-video_track_timescale", "90000", seg])
         lines.append(f"file '{os.path.abspath(seg)}'")
 
         # remap kept words onto the output timeline
@@ -194,8 +194,7 @@ def main():
 
     open(concat_list, "w").write("\n".join(lines) + "\n")
     base = os.path.join(WORK, "base.mp4")
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat",
-                    "-safe", "0", "-i", concat_list, "-c", "copy", base], check=True)
+    run(["-f", "concat", "-safe", "0", "-i", concat_list, "-c", "copy", base])
     json.dump({"provider": "elevenlabs+assembled", "words": assembled},
               open(os.path.join(WORK, "assembled.transcript.json"), "w"), indent=2)
     print(f"\nbase.mp4 total = {out_t:.2f}s, {len(assembled)} words assembled")

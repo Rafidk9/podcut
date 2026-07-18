@@ -2,12 +2,11 @@
   logo chip (top-center) -> concat disclaimer(3s)+consultation(3s) end cards
   -> music bed (Inspired, under speech, fade in 1.5s / out 2.4s) -> two-pass
   loudnorm to -14 LUFS / -1 dBTP. B-roll is a later pass."""
-import os, json, shutil, subprocess
+import os, json, subprocess
 
 from reel_paths import WORK, OUT, REEL, ASSETS_ROOT  # noqa: E402 -- per-reel folders
+from ffmpeg_util import FF, COLOR_TAGS, run, dur  # noqa: E402 -- shared ffmpeg wrappers
 ASSETS = ASSETS_ROOT
-FF = shutil.which("ffmpeg") or "ffmpeg"
-FFPROBE = shutil.which("ffprobe") or "ffprobe"
 os.makedirs(OUT, exist_ok=True)
 
 LOGO = os.path.join(ASSETS, "derived", "logo_chip.png")
@@ -88,22 +87,12 @@ def voice_denoise_model():
     return model
 
 
-def dur(p):
-    return float(subprocess.run([FFPROBE, "-v", "error", "-show_entries", "format=duration",
-        "-of", "default=nw=1:nokey=1", p], capture_output=True, text=True).stdout.strip())
-
-
-def run(args):
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error"] + args, check=True)
-
-
 # Explicit SDR/BT.709 tags on every encode -- without these, libx264 just
 # forwards whatever ambiguous/wrong tags rode in on the input (this is how the
 # HDR-tagged raw iPhone footage's colour metadata ended up stamped onto the
 # ENTIRE final file, including the plain-SDR end cards concatenated on here).
-VENC = ["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
-        "-r", "30", "-color_primaries", "bt709", "-color_trc", "bt709",
-        "-colorspace", "bt709", "-color_range", "tv", "-video_track_timescale", "90000"]
+VENC = (["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30"]
+        + COLOR_TAGS + ["-video_track_timescale", "90000"])
 AENC = ["-c:a", "aac", "-ar", "48000", "-ac", "2"]
 
 

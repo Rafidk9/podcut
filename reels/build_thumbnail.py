@@ -12,8 +12,8 @@ Run after build_composite.py (needs output/reel_final.mp4)."""
 import os, json, re, shutil, subprocess
 
 from reel_paths import WORK, OUT, REEL, ASSETS_ROOT, hyperframes_cli  # noqa: E402 -- per-reel folders
+from ffmpeg_util import FF, run  # noqa: E402 -- shared ffmpeg wrappers
 
-FF = shutil.which("ffmpeg") or "ffmpeg"
 LOGO = os.path.join(ASSETS_ROOT, "derived", "logo_chip.png")
 
 # Per-reel override via <reel>/content.json -> {"thumbnail": {...}}. Every key
@@ -58,15 +58,13 @@ def build():
     # relying on the one build_composite.py bakes into the captioned video.
     raw_bg = os.path.join(WORK, "thumb_bg_raw.png")
     pre_caption = os.path.join(WORK, "base_broll.mp4")
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error",
-                    "-ss", f"{content['at']:.3f}", "-i", pre_caption,
-                    "-frames:v", "1", raw_bg], check=True)
+    run(["-ss", f"{content['at']:.3f}", "-i", pre_caption,
+         "-frames:v", "1", raw_bg])
 
     bg = os.path.join(WORK, "thumb_bg.png")
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error",
-                    "-i", raw_bg, "-i", LOGO,
-                    "-filter_complex", "[1]scale=432:-1[lg];[0][lg]overlay=(W-w)/2:38[v]",
-                    "-map", "[v]", "-frames:v", "1", bg], check=True)
+    run(["-i", raw_bg, "-i", LOGO,
+         "-filter_complex", "[1]scale=432:-1[lg];[0][lg]overlay=(W-w)/2:38[v]",
+         "-map", "[v]", "-frames:v", "1", bg])
 
     # 2) transparent branded overlay, rendered as a single RGBA PNG frame
     proj = os.path.join(WORK, "thumb_proj")
@@ -97,10 +95,9 @@ def build():
 
     # 3) composite: still image, single frame, no alpha-video decode gymnastics
     out = os.path.join(OUT, "thumbnail.jpg")
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error",
-                    "-i", bg, "-i", overlay,
-                    "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto[v]",
-                    "-map", "[v]", "-frames:v", "1", "-q:v", "2", out], check=True)
+    run(["-i", bg, "-i", overlay,
+         "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto[v]",
+         "-map", "[v]", "-frames:v", "1", "-q:v", "2", out])
 
     # 4) optional bottom footer badge (e.g. the campaign wordmark card) with a
     # soft drop shadow, so the thumbnail carries the full logo, not just the

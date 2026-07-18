@@ -8,7 +8,7 @@ Delete WORK/opener.mp4 to ship without the cold open."""
 import os, json, shutil, subprocess
 
 from reel_paths import WORK, hyperframes_cli  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
+from ffmpeg_util import FF, COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
 
 DUR = 2.3
 
@@ -219,15 +219,14 @@ def main():
 
     # bt709 tags + silent stereo bed so the concat demuxer sees uniform streams
     out = os.path.join(WORK, "opener.mp4")
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error", "-i", raw,
-                    "-f", "lavfi", "-t", f"{DUR:.3f}", "-i", "anullsrc=r=48000:cl=stereo",
-                    "-map", "0:v", "-map", "1:a", "-shortest",
-                    "-vf", "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709",
-                    "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
-                    "-color_primaries", "bt709", "-color_trc", "bt709",
-                    "-colorspace", "bt709", "-color_range", "tv",
-                    "-c:a", "aac", "-ar", "48000", "-ac", "2",
-                    "-video_track_timescale", "90000", out], check=True)
+    run(["-i", raw,
+         "-f", "lavfi", "-t", f"{DUR:.3f}", "-i", "anullsrc=r=48000:cl=stereo",
+         "-map", "0:v", "-map", "1:a", "-shortest",
+         "-vf", "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709",
+         "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+         *COLOR_TAGS,
+         "-c:a", "aac", "-ar", "48000", "-ac", "2",
+         "-video_track_timescale", "90000", out])
     print("opener ready:", out)
 
 

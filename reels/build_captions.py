@@ -11,8 +11,7 @@ import os, json, shutil, subprocess
 
 from reel_paths import WORK, REEL, ASSETS_ROOT, hyperframes_cli  # noqa: E402 -- per-reel folders
 from anchor_phrase import resolve_anchor  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
-FFPROBE = shutil.which("ffprobe") or "ffprobe"
+from ffmpeg_util import FF, FFPROBE, COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
 
 FILLERS = {"um", "uh", "erm", "er", "ah", "hmm", "mm", "mm-hmm", "mmhmm", "uh-huh"}
 SENTENCE_END = (".", "?", "!")
@@ -189,9 +188,8 @@ def norm(t):
 def crop_mara_badge(dest_dir, src):
     """Tight-crop the official MARA mark into <dest>/mara_badge.png (removes the
     white margin so it mounts cleanly on the navy plate)."""
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error",
-                    "-i", src, "-vf", f"crop={MARA_BADGE_CROP}",
-                    os.path.join(dest_dir, "mara_badge.png")], check=True)
+    run(["-i", src, "-vf", f"crop={MARA_BADGE_CROP}",
+         os.path.join(dest_dir, "mara_badge.png")])
 
 
 def load_words(content):
@@ -513,15 +511,12 @@ def build():
     # CRITICAL: force libvpx-vp9 decode -- ffmpeg's default vp9 decoder drops the
     # alpha plane (reports yuv420p) and would paint opaque black over the footage.
     out = os.path.join(WORK, "captioned.mp4")
-    color_tags = ["-color_primaries", "bt709", "-color_trc", "bt709",
-                 "-colorspace", "bt709", "-color_range", "tv"]
-    subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error", "-i", base,
-                    "-c:v", "libvpx-vp9", "-i", overlay,
-                    "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]",
-                    "-map", "[v]", "-map", "0:a", "-c:v", "libx264", "-preset", "medium",
-                    "-crf", "18", *color_tags, "-c:a", "copy",
-                    "-video_track_timescale", "90000", out],
-                   check=True)
+    run(["-i", base,
+         "-c:v", "libvpx-vp9", "-i", overlay,
+         "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]",
+         "-map", "[v]", "-map", "0:a", "-c:v", "libx264", "-preset", "medium",
+         "-crf", "18", *COLOR_TAGS, "-c:a", "copy",
+         "-video_track_timescale", "90000", out])
     print("rendered:", out)
 
 
