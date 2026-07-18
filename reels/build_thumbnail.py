@@ -24,6 +24,10 @@ DEFAULT_THUMB = {
     "at": 3.0,       # seconds into the main content to grab as the background frame
     "kicker": "",    # small pill above the headline, e.g. "FREE MIGRATION SEMINAR"
     "headline": "",  # big bold line; wrap a word in **stars** for the gold accent
+    "logo_card": None,   # path (relative to <reel>/) to a full-canvas RGBA PNG
+                          # whose opaque region is a standalone badge/card --
+                          # composited as a bottom footer badge with a drop
+                          # shadow. Opt-in: None means no card (unaffected).
 }
 
 
@@ -97,7 +101,45 @@ def build():
                     "-i", bg, "-i", overlay,
                     "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto[v]",
                     "-map", "[v]", "-frames:v", "1", "-q:v", "2", out], check=True)
+
+    # 4) optional bottom footer badge (e.g. the campaign wordmark card) with a
+    # soft drop shadow, so the thumbnail carries the full logo, not just the
+    # small persistent top chip.
+    if content["logo_card"]:
+        _composite_logo_card(out, os.path.join(REEL, content["logo_card"]))
+
     print("wrote", out)
+
+
+def _composite_logo_card(thumb_jpg, card_png, target_width=860, bottom_margin=90):
+    """Crop the opaque badge out of a full-canvas RGBA PNG (transparent
+    everywhere except a rounded-rect card), scale it to target_width, and
+    composite it as a bottom-center footer badge with a soft drop shadow."""
+    from PIL import Image, ImageFilter
+    import numpy as np
+
+    canvas = Image.open(card_png).convert("RGBA")
+    arr = np.array(canvas)
+    rows = np.where(arr[..., 3].max(axis=1) > 0)[0]
+    cols = np.where(arr[..., 3].max(axis=0) > 0)[0]
+    card = canvas.crop((int(cols.min()), int(rows.min()), int(cols.max()) + 1, int(rows.max()) + 1))
+
+    scale = target_width / card.width
+    card = card.resize((target_width, round(card.height * scale)), Image.LANCZOS)
+
+    thumb = Image.open(thumb_jpg).convert("RGBA")
+    x = (thumb.width - card.width) // 2
+    y = thumb.height - bottom_margin - card.height
+
+    shadow = Image.new("RGBA", thumb.size, (0, 0, 0, 0))
+    shadow_shape = Image.new("RGBA", card.size, (0, 0, 0, 0))
+    shadow_shape.putalpha(card.getchannel("A").point(lambda a: int(a * 0.55)))
+    shadow.paste(shadow_shape, (x, y + 14), shadow_shape)
+    shadow = shadow.filter(ImageFilter.GaussianBlur(18))
+
+    thumb = Image.alpha_composite(thumb, shadow)
+    thumb.paste(card, (x, y), card)
+    thumb.convert("RGB").save(thumb_jpg, quality=95)
 
 
 _THUMB_HTML = """<!doctype html>
