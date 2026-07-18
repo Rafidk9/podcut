@@ -49,6 +49,16 @@ Already implemented in `build_captions.py` (soft low-opacity brand-colour
 orbs + twinkle stars + a handle pill, sitting behind the captions), off by
 default. Offer it when a reel's footage has a lot of empty margin.
 
+## End-of-reel ritual: propose new learnings for confirmation
+
+When a reel edit is finished, before considering the task done: review what
+was learned this session — a taste correction (e.g. "these SFX sound
+funny"), a technical fix, a generalizable technique — and propose a short
+list to the user, asking which should be saved as standing preferences for
+future reels (in memory, and/or folded back into this doc). Don't silently
+decide on your own what's worth remembering — this is a review-and-confirm
+step every time, not a one-off or a silent auto-save.
+
 ## Reel folders are local-only — never on GitHub
 
 `reels/<date>_<slug>/` is gitignored (client footage/PII). If a reel is
