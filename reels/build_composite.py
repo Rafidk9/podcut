@@ -35,21 +35,34 @@ def music_config():
     return track, music.get("volume", 0.05)
 
 
+def sfx_path(filename):
+    """Resolve an SFX cue's audio file: reel-local assets/sfx/ first (for a
+    bespoke one-off sound), falling back to the shared assets/sfx/ library
+    (see its README.md) -- same precedence as a per-reel override with a
+    shared default, mirroring how music_config() treats assets/music/."""
+    local = os.path.join(REEL, "assets", "sfx", filename)
+    if os.path.isfile(local):
+        return local
+    shared = os.path.join(ASSETS, "sfx", filename)
+    if os.path.isfile(shared):
+        return shared
+    raise SystemExit(f"sfx cue file not found in reel or shared library: {filename}")
+
+
 def sfx_cues():
     """Per-reel one-shot SFX hits via <reel>/content.json -> {"sfx": {"cues":
     [{"file": "...", "at": <seconds on the assembled/content timeline>,
-    "volume": 0.8}, ...]}}. Files live in <reel>/assets/sfx/ (reel-local, not
-    the shared assets/ library -- these are one-off synthesized cues for this
-    edit, not reusable stock hits). Empty list if content.json has no "sfx"
-    key, so every other reel builds unchanged."""
+    "volume": 0.8}, ...]}}. "file" resolves via sfx_path() -- the shared
+    Tier-1 set (whoosh-impact.mp3, transition-whoosh.mp3, success-chime.mp3)
+    needs no per-reel copy; drop a same-named file in <reel>/assets/sfx/ only
+    to override one for this reel specifically. Empty list if content.json
+    has no "sfx" key, so every other reel builds unchanged."""
     cfg = os.path.join(REEL, "content.json")
     if not os.path.isfile(cfg):
         return []
     cues = json.load(open(cfg, encoding="utf-8")).get("sfx", {}).get("cues", [])
     for c in cues:
-        p = os.path.join(REEL, "assets", "sfx", c["file"])
-        if not os.path.isfile(p):
-            raise SystemExit(f"sfx cue file not found: {p}")
+        sfx_path(c["file"])  # raises if missing from both locations
     return cues
 
 
@@ -155,7 +168,7 @@ def main():
     sfx_in = []
     sfx_base_idx = 2 + len(extra_in) // 2
     for c in cues:
-        sfx_in += ["-i", os.path.join(REEL, "assets", "sfx", c["file"])]
+        sfx_in += ["-i", sfx_path(c["file"])]
 
     sfx_filters = []
     for i, c in enumerate(cues):
