@@ -1,0 +1,36 @@
+{
+  "asr_fix": { "pfc": "PFEC", "pfpc": "PFEC", "ils": "IELTS", "bfec": "PFEC", "tismat": "TSMIT" },
+  "gold": ["482", "VISA", "SPONSOR", "SPONSORING", "SPONSORSHIP", "EMPLOYER", "EMPLOYERS",
+           "PFEC", "TSMIT", "MYTH", "GENUINE", "TRUE", "OPTIONS"],
+  "name": { "text": "Apurva Golani", "role": "Registered Migration Agent",
+            "start": 0.6, "end": 4.8 },
+  "mara": { "mode": "styled", "marn": "2518793" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "BOOK YOUR FREE CONSULTATION", "start": 35.0, "end": 38.29 },
+  "music": { "volume": 0.01 },
+  "documents": [
+    {
+      "anchor_phrase": "PFEC Global recently helped the family of four get their 482 visa granted with the sponsoring business just being ten months old",
+      "label": "FAMILY OF FOUR — ALL 482 VISAS GRANTED",
+      "images": ["grant_1.png", "grant_2.png", "grant_3.png", "grant_4.png"]
+    }
+  ],
+  "thumbnail": { "at": 9.5, "kicker": "482 VISA MYTH BUSTED",
+                 "headline": "IS YOUR EMPLOYER **TOO NEW** TO SPONSOR YOU?" },
+  "caption_txt": {
+    "title": "Myth Busted: Your Employer's Business Isn't \"Too New\" to Sponsor a 482 Visa",
+    "body": [
+      "Are you worried that your employer's business is too new to sponsor your 482 visa? A lot of workers believe employers need to be trading for at least a year before they can sponsor someone — but that's not true.",
+      "PFEC Global recently helped a family of four get their 482 visa granted with a sponsoring business that was just ten months old. What matters is that the business is legally operating, the job is genuine, and the employer can meet the salary requirements as per TSMIT — not how long the business has existed."
+    ],
+    "bullets": [
+      "A business does NOT need 12+ months of trading history to sponsor a 482 visa",
+      "What matters: the business is legitimate, the job is genuine, and TSMIT salary requirements are met",
+      "PFEC Global recently secured a 482 visa grant for a business only 10 months old",
+      "Start-ups and young businesses can still offer a genuine sponsorship pathway"
+    ],
+    "urgency": "Don't let this myth stop you or your employer from exploring a 482 sponsorship pathway.",
+    "contact": "Book a FREE consultation with Apurva Golani, PFEC Registered Migration Agent (MARN 2518793)",
+    "hashtags": "#askPFEC #PFECGlobal #482Visa #EmployerSponsorship #TSS482 #AustraliaVisa #MigrationAgent #WorkVisaAustralia #TSMIT"
+  }
+}

@@ -31,9 +31,26 @@ real_sample/
 # these are small finished brand assets, not raw/client footage.
 !assets/endcards/*.mp4
 
-# Raw client footage / per-reel working data: only the shared pipeline
-# scripts + README (which live directly in reels/, not a subfolder) are
-# source-controlled here. Every reel folder -- dated (<YYYY-MM-DD>_<slug>/)
-# or not -- holds real client input/intermediates/deliverables and must
+# Raw client footage / per-reel working data: the shared pipeline scripts +
+# README (which live directly in reels/, not a subfolder) are source-
+# controlled here, as usual. Every reel folder -- dated (<YYYY-MM-DD>_<slug>/)
+# or not -- holds real client input/intermediates/deliverables and those must
 # never be committed.
-reels/*/
+#
+# The lightweight EDITORIAL CONFIG is the exception: content.json, clips.json,
+# broll_plan.json, and any per-reel broll.py/bg_swap.py are the actual
+# creative decisions (timing, copy, layout) behind a reel, carry no raw media,
+# and are the one thing worth surviving a deleted worktree or a lost laptop --
+# which nearly happened once. Everything else in a reel folder (input/, work/,
+# output/, assets/, documents/) stays untracked.
+reels/*/*
+!reels/*/content.json
+!reels/*/clips.json
+!reels/*/broll_plan.json
+!reels/*/broll.py
+!reels/*/bg_swap.py
+# reels/tests/ is shared test infra, not a per-reel folder -- the wildcard
+# above would otherwise sweep it up too since "tests" matches reels/*/*.
+# Only .py files, not __pycache__ (still caught by the blanket rule up top).
+!reels/tests/
+!reels/tests/*.py

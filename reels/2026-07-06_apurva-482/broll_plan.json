@@ -1,0 +1,5 @@
+{
+  "n_segments": 6,
+  "plan": { "1": "broll_1", "3": "broll_2" },
+  "boundaries": { "1": 5.88, "3": 20.24 }
+}

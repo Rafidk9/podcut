@@ -1,0 +1,86 @@
+{
+  "asr_fix": {},
+  "gold": ["VISA", "PFEC", "GLOBAL", "MIGRATION360", "ROADSHOW", "485", "PR",
+           "REGISTER", "LIMITED", "FREE", "CONSULTATION", "AUSTRALIA",
+           "MIGRATION", "REGISTERED"],
+  "name": { "text": "Tushar Chopra", "role": "Registered Migration Agent",
+            "start": 0.16, "end": 4.46 },
+  "mara": { "mode": "styled", "marn": "2418420" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "roadshow": {
+    "kicker": "MIGRATION 360 ROADSHOW",
+    "top": "760px",
+    "scale": 1.12,
+    "start": 29.64,
+    "end": 35.09,
+    "cities": [
+      { "city": "ADELAIDE", "date": "4 AUGUST", "time": "12 PM ONWARDS",
+        "venue": "PFEC Global Adelaide Office" },
+      { "city": "PERTH", "date": "6 AUGUST", "time": "12 PM ONWARDS",
+        "venue": "PFEC Global Perth Office" }
+    ]
+  },
+  "cta": { "text": "REGISTER NOW!", "start": 31.84, "end": 35.14 },
+  "hero_words": [
+    { "anchor_phrase": "stop scrolling", "text": "SCROLLING" }
+  ],
+  "hook_banner": { "text": "STUDENT VISA? READ THIS 👀", "start": 0.0, "end": 0.9 },
+  "caption_highlight": true,
+  "list_top": "51%",
+  "documents": [],
+  "lists": [
+    { "anchor_phrase": "whether it's a 485 the general skill migration or their pr pathway",
+      "title": "NOT SURE WHAT'S NEXT?",
+      "items": ["485 Visa", "General Skilled Migration", "PR Pathway"] }
+  ],
+  "badges": [
+    { "anchor_phrase": "one wrong move can cost your future", "text": "DON'T RISK IT",
+      "icon": "star", "color": "red", "pos": "top", "effect": "particles" },
+    { "anchor_phrase": "free one-to-one consultation", "text": "100% FREE",
+      "icon": "check", "color": "green", "pos": "top", "effect": "shimmer" },
+    { "anchor_phrase": "a real conversation about your visa options",
+      "text": "1-ON-1 GUIDANCE", "icon": "check", "color": "cyan", "pos": "top" }
+  ],
+  "decor": { "accents": true, "sparkles": true },
+  "zoom": { "amount": 0.06, "segments": ["in", "out", "in", "out", "in", "out", "in"],
+    "hits": [
+      { "clip": 0, "at": [4.64, 5.34], "amount": 0.14 },
+      { "clip": 2, "at": [2.86, 3.82], "amount": 0.16 },
+      { "clip": 3, "at": [3.48, 5.42], "amount": 0.13 },
+      { "clip": 4, "at": [3.58, 3.94], "amount": 0.15 },
+      { "clip": 6, "at": [2.60, 3.40], "amount": 0.16 }
+    ]
+  },
+  "voice_denoise": true,
+  "music": { "track": "funkorama-kevin-macleod.mp3", "volume": 0.06 },
+  "sfx": {
+    "cues": [
+      { "file": "whoosh-impact.mp3", "at": 3.48, "volume": 0.8 },
+      { "file": "transition-whoosh.mp3", "at": 4.26, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 16.30, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 21.65, "volume": 0.45 },
+      { "file": "success-chime.mp3", "at": 31.80, "volume": 0.7 }
+    ]
+  },
+  "thumbnail": { "kicker": "MIGRATION 360 ROADSHOW",
+                 "headline": "**LIMITED SPOTS** — ADELAIDE & PERTH",
+                 "logo_card": "assets/bg_360.png" },
+  "caption_txt": {
+    "title": "Limited Spots — PFEC Global's Migration360 Roadshow Is Coming to Your City",
+    "body": [
+      "If you're an international student, do you actually know what happens after your visa expires? Every year, hundreds of students finish their courses with no idea what their next step is — a 485, general skilled migration, or a PR pathway — and one wrong move can cost your future in Australia.",
+      "That's why PFEC Global is bringing the Migration360 Roadshow to your city. For one day only, get a FREE one-to-one consultation with a Registered Migration Agent — a real conversation about your visa options, not a guessing game."
+    ],
+    "bullets": [
+      "One wrong move can cost your migration future — don't guess your next step",
+      "FREE one-to-one consultation with a Registered Migration Agent, one day only",
+      "Adelaide: 4th August, 12pm onwards — PFEC Global Adelaide Office",
+      "Perth: 6th August, 12pm onwards — PFEC Global Perth Office"
+    ],
+    "urgency": "Spots are limited — register now so your migration journey stops being a guessing game.",
+    "contact": "Book your FREE consultation with Tushar Chopra, PFEC Registered Migration Agent (MARN 2418420)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #Roadshow #AdelaideEvents #PerthEvents #StudyInAustralia #PRPathway #485Visa #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Funkorama\" — Kevin MacLeod (incompetech.com)"
+  }
+}

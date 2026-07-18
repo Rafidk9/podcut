@@ -1,0 +1,5 @@
+{
+  "clips": [
+    { "name": "act_portal", "ext": ".mov", "keep": [0.0, 24.3], "sdr": true }
+  ]
+}

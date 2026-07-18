@@ -1,0 +1,48 @@
+{
+  "asr_fix": { "pfc": "PFEC", "pfpc": "PFEC", "pfpc's": "PFEC's" },
+  "gold": ["EMPLOYER", "SPONSOR", "SPONSORING", "482", "VISA", "SUBCLASS",
+           "PFEC", "ELIGIBILITY", "QUALIFICATIONS", "MIGRATION", "REGISTERED",
+           "HIRED", "CONSULTATION"],
+  "name": { "text": "Kapil Kamar", "role": "Principal Migration Agent",
+            "start": 0.4, "end": 2.85 },
+  "mara": { "mode": "styled", "marn": "2418610" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "BOOK A FREE CONSULTATION", "start": 29.4, "end": 32.7 },
+  "documents": [],
+  "lists": [
+    { "anchor_phrase": "eligibility qualifications work experience and visa options",
+      "title": "WE ASSESS YOUR",
+      "items": ["Eligibility", "Qualifications", "Work experience", "Visa options"] }
+  ],
+  "badges": [
+    { "anchor_phrase": "looking for an employer", "text": "EMPLOYER SPONSORSHIP",
+      "icon": "brief", "color": "navy", "pos": "top" },
+    { "anchor_phrase": "independently assess your eligibility", "text": "INDEPENDENT ASSESSMENT",
+      "icon": "star", "color": "cyan", "pos": "top" },
+    { "anchor_phrase": "hired the employer", "text": "YOU GET HIRED",
+      "icon": "check", "color": "green", "pos": "top" }
+  ],
+  "decor": { "accents": true, "sparkles": true },
+  "music": { "track": "funkorama-kevin-macleod.mp3", "volume": 0.06 },
+  "zoom": { "amount": 0.06, "segments": ["in", "out", "in", "out", "in", "in"] },
+  "voice_denoise": true,
+  "thumbnail": { "at": 30.0, "kicker": "482 EMPLOYER SPONSORSHIP",
+                 "headline": "WANT AN EMPLOYER TO **SPONSOR** YOU?" },
+  "caption_txt": {
+    "title": "Want an Employer to Sponsor You? Here's How PFEC Global Can Help",
+    "body": [
+      "Looking for an Australian employer who could sponsor you? At PFEC Global, our registered migration agents assess your eligibility, qualifications, work experience, and visa options — so you know exactly where you stand before you start applying.",
+      "If your profile meets the relevant requirements, we refer you to one of our partner recruitment consultants, who independently assess your eligibility for an available position. If you're successfully hired, your employer may consider sponsoring you for the subclass 482 visa."
+    ],
+    "bullets": [
+      "PFEC Global's registered migration agents assess your eligibility, qualifications, work experience and visa options",
+      "Qualifying profiles are referred to our partner recruitment consultants",
+      "The recruitment consultant independently assesses your eligibility for an available position",
+      "If you're successfully hired, your employer may consider sponsoring you for the subclass 482 visa"
+    ],
+    "urgency": "Serious about employer sponsorship? Get your eligibility assessed properly before you start applying.",
+    "contact": "Book a FREE consultation with Kapil Kamar, PFEC Principal Migration Agent (MARN 2418610)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #482Visa #EmployerSponsorship #TSS482 #SkilledMigration #AustraliaWorkVisa #MigrationAgent #WorkInAustralia #RegisteredMigrationAgent"
+  }
+}

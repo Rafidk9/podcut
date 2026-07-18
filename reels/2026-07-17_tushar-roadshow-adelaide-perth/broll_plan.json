@@ -1,0 +1,6 @@
+{
+  "n_segments": 7,
+  "broll_dur": 1.1,
+  "plan": { "1": "broll_1", "3": "broll_2", "4": "broll_3" },
+  "boundaries": { "1": 4.39, "3": 16.43, "4": 21.78 }
+}

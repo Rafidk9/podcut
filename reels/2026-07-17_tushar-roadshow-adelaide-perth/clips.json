@@ -1,0 +1,11 @@
+{
+  "clips": [
+    { "name": "P1", "ext": ".mov", "keep": [0.99, 5.38] },
+    { "name": "P2", "ext": ".mov", "keep": [1.87, 11.00] },
+    { "name": "P3", "ext": ".mov", "keep": [1.63, 4.54] },
+    { "name": "P4", "ext": ".mov", "keep": [0.69, 6.04] },
+    { "name": "P5", "ext": ".mov", "keep": [1.95, 7.20] },
+    { "name": "P6", "ext": ".mov", "keep": [1.75, 4.36] },
+    { "name": "P7", "ext": ".mov", "keep": [0.93, 6.30] }
+  ]
+}

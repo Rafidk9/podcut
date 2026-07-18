@@ -1,0 +1,34 @@
+{
+  "asr_fix": { "campaign": "Canberra" },
+  "gold": ["ACT", "CANBERRA", "MATRIX", "PORTAL", "JULY", "LIVE", "NOMINATION",
+           "FEE", "RANKED", "SCORE", "SUBMISSION", "UPDATE"],
+  "name": { "text": "Boi Nhi Do Christy", "role": "Registered Migration Agent",
+            "start": 0.6, "end": 5.0 },
+  "mara": { "mode": "styled", "marn": "2619437" },
+  "info": { "kicker": "NEW ACT PORTAL", "line1": "27 JULY", "line1_size": 92,
+            "line2": "Canberra Matrix goes live", "start": 0.9, "end": 5.4 },
+  "cta": { "text": "ASK PFEC ABOUT THE ACT MATRIX", "start": 20.4, "end": 24.0 },
+  "documents": [],
+  "cap_top": "38%",
+  "decor": { "handle": "@PFECGlobal", "accents": true, "sparkles": true },
+  "music": { "volume": 0.03 },
+  "thumbnail": { "at": 2.0, "kicker": "ACT VISA UPDATE",
+                 "headline": "**CANBERRA MATRIX** PORTAL — 27 JULY" },
+  "caption_txt": {
+    "title": "ACT's New Canberra Matrix Portal Goes Live on 27 July — Here's What Changes",
+    "body": [
+      "From 27 July, the ACT is launching its new Canberra Matrix portal — and if you're planning an ACT state nomination for a 190 or 491 visa, the way your Matrix works is changing.",
+      "The new portal lets you update your Canberra Matrix as your circumstances change, a new nomination application fee will apply, and — importantly — when two candidates have the same score, ranking will be based on your most recent update rather than your original submission date."
+    ],
+    "bullets": [
+      "The new ACT Canberra Matrix portal goes live on 27 July",
+      "You'll be able to update your Matrix as your circumstances change",
+      "A new nomination application fee will apply",
+      "Same-score candidates are now ranked by their latest update, not their first submission date"
+    ],
+    "urgency": "If you're in the ACT Matrix pool, review your score and timing before 27 July so the new ranking rules work in your favour.",
+    "contact": "Book a FREE consultation with Boi Nhi Do Christy, PFEC Registered Migration Agent (MARN 2619437)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #ACTNomination #CanberraMatrix #190Visa #491Visa #SkilledMigration #AustraliaPR #RegisteredMigrationAgent #ACTVisa"
+  }
+}
