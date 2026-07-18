@@ -70,7 +70,12 @@ DEFAULT_CAPTION = {   # Lakemba reel
     "contact": "Book a FREE consultation with a PFEC Registered Migration Agent — [NEED: speaking agent name + MARN]",
     "website": "[NEED: website URL]",
     "hashtags": "#askPFEC #PFECGlobal #StudyInAustralia #PRPathway #MigrationSeminar #AustraliaPR #InternationalStudents #PermanentResidency #RegisteredMigrationAgent",
-    "music_credit": DEFAULT_MUSIC_CREDIT,   # override when build_composite.py's music.track isn't the default
+    # No music credit line in the social caption by default. The track's CC-BY
+    # attribution (see assets/music/CREDIT.txt) still has to appear SOMEWHERE the
+    # track is used -- in-video, a pinned comment, or the platform's music field --
+    # just not in caption.txt. A reel can still opt back in by setting a non-empty
+    # caption_txt.music_credit (e.g. DEFAULT_MUSIC_CREDIT) in its content.json.
+    "music_credit": "",
 }
 
 
@@ -88,6 +93,8 @@ def build():
     c = load_caption()
     body = "\n\n".join(c["body"])
     bullets = "\n".join("✔ " + b for b in c["bullets"])
+    # Music credit is opt-in; when empty, drop the line entirely (no dangling gap).
+    credit = f"{c['music_credit'].strip()}\n\n" if c.get("music_credit", "").strip() else ""
     text = f"""{bold(c['title'])}
 
 {body}
@@ -105,9 +112,7 @@ def build():
 
 {c['hashtags']}
 
-{c['music_credit']}
-
-{DISCLAIMER}
+{credit}{DISCLAIMER}
 """
     path = os.path.join(OUT, "caption.txt")
     open(path, "w", encoding="utf-8").write(text)

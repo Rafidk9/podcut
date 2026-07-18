@@ -50,6 +50,102 @@ DEFAULT_CONTENT = {
     # raise it (smaller %) toward the headroom when the subject sits low in frame
     # so captions never land on their face.
     "cap_top": "62%",
+    # Vertical anchor of the animated checklist card ("lists" below). Default
+    # 44% suits a normally-framed talking head; raise this (larger %) when the
+    # subject sits lower/larger in frame so the card clears their chin instead
+    # of covering their mouth while they keep talking through it.
+    "list_top": "44%",
+    # Light decorative layer for reels with lots of dead wall space (subject
+    # framed small / plain backdrop). OFF by default. Per reel:
+    #   "decor": {"handle": "@PFECGlobal", "accents": true}
+    # "accents" = soft, low-opacity brand-colour orbs that drift gently in the
+    # empty margins; "handle" = a small social handle pill low-centre. Both sit
+    # BEHIND the captions/cards and animate on the same seek-safe timeline.
+    "decor": {},
+    # Animated checklist overlays (opt-in). When the speaker LISTS several items,
+    # they tick into a designed panel one at a time instead of just flashing past
+    # as 2-word captions. Each spec names an anchor_phrase (the listing as spoken)
+    # -> resolve_anchor locates the window; each item's own time is resolved
+    # inside that window so it lands as it's said. The plain 2-word caption is
+    # SUPPRESSED inside the window so the checklist is the clean focus. e.g.:
+    #   "lists": [{"anchor_phrase": "eligibility qualifications and visa options",
+    #              "title": "WE ASSESS YOUR",
+    #              "items": ["Eligibility", "Qualifications", "Visa options"]}]
+    "lists": [],
+    # Quick emphasis badges (opt-in): a small designed icon+text pill that pops
+    # in at a key spoken moment, floats, then leaves -- for punching up the hook
+    # and a couple of payoff beats. anchor_phrase-driven (same rule as the rest);
+    # icon: check|star|brief, color: navy|cyan|green|gold|red, pos: top|top-left|
+    # top-right (all sit in the upper zone, clear of the caption band + face).
+    # "effect" (opt-in, per-badge, catalog-sourced -- see registry blocks/
+    # components explored via `hyperframes catalog`): none/absent = the
+    # default pop+float+exit; "particles" = a burst of small dots radiates
+    # from the badge on entrance (adapted from the catalog's
+    # caption-particle-burst component -- suits alarm/urgency badges);
+    # "shimmer" = a light sweep crosses the pill right after it settles
+    # (adapted from the catalog's shimmer-sweep component -- suits
+    # value/premium badges); "pixelate" = the pill materializes out of a
+    # small grid of cells instead of scaling in (adapted from the catalog's
+    # grid-pixelate-wipe component -- the SAME technique already used for
+    # this reel's cut transitions, so it reads as a brand callback; suits an
+    # announcement/reveal badge). Use effects deliberately, not on every
+    # badge -- variety comes from contrast against a plain baseline, not
+    # from every element doing something different. e.g.:
+    #   "badges": [{"anchor_phrase": "successfully hired", "text": "YOU GET HIRED",
+    #               "icon": "check", "color": "green", "pos": "top", "effect": "shimmer"}]
+    "badges": [],
+    # Multi-city roadshow/event card (opt-in): unlike "info" (ONE kicker/date/
+    # venue, meant for a short beat), this pins a kicker + a stacked list of
+    # city cards (date/time/venue each) on screen for a LONG window -- e.g.
+    # from the moment the speaker says "limited spots" through to near the
+    # end of the video, so viewers have time to actually read/screenshot every
+    # city's details. Explicit "start"/"end" (not anchor_phrase-resolved) since
+    # the intent is usually "hold this until the video's almost over", not a
+    # single spoken moment. Sits in the upper zone (clear of the 62% caption
+    # band and the bottom CTA slot). e.g.:
+    #   "roadshow": {"kicker": "MIGRATION 360 ROADSHOW", "top": "900px",
+    #     "start": 34.7, "end": 40.1, "cities": [{"city": "ADELAIDE",
+    #     "date": "4 AUGUST", "time": "12 PM ONWARDS",
+    #     "venue": "PFEC Global Adelaide Office"}, ...]}
+    # "top" (CSS value, default "130px") -- pick it from where THIS footage's
+    # face/headroom actually is (check a frame), not a fixed guess; a talking
+    # head can be framed higher/lower/closer take to take.
+    "roadshow": {"kicker": "", "top": "130px", "start": 0.0, "end": 0.0, "cities": []},
+    # Urgency chip (opt-in): a small pill just above the roadshow kicker,
+    # sharing the roadshow card's on-screen window. Static text -- compute
+    # any "N DAYS TO GO" wording at BUILD time (Python, off the reel's real
+    # calendar) and pass the finished string; never compute a live date in
+    # the browser JS, since HyperFrames re-seeks/re-renders frames and needs
+    # every value fixed ahead of time. e.g.: {"text": "18 DAYS TO GO"}
+    "urgency_chip": {"text": ""},
+    # Full-screen "hero word" slam (opt-in, sparingly): like "lists"/
+    # "roadshow", each entry names an anchor_phrase and OWNS that window --
+    # the normal 2-word caption is suppressed there and this renders instead:
+    # one giant centered word/phrase, punch-scale entrance, brief hold, quick
+    # exit. Reserve for the single strongest hook or payoff line in a reel;
+    # using it more than once or twice defeats the point (impact comes from
+    # rarity). e.g.: [{"anchor_phrase": "stop scrolling", "text": "SCROLLING"}]
+    "hero_words": [],
+    # Tiny top-of-frame hook banner (opt-in), on screen only for the first
+    # beat before the viewer's thumb decides to scroll past. Sits above the
+    # logo's row (y<38) is too tight -- pin it just below the intro card
+    # instead via explicit start/end, short window (~1s). e.g.:
+    #   "hook_banner": {"text": "READ THIS IF YOU'RE ON A STUDENT VISA",
+    #                   "start": 0.0, "end": 0.9}
+    "hook_banner": {"text": "", "start": 0.0, "end": 0.0},
+    # Save/share prompt (opt-in): a closing beat late in a long dwell window
+    # (pass the same start/end as e.g. "roadshow" minus a couple seconds) --
+    # native engagement bait for advice/informational content, not a hard
+    # sell like the CTA pill. e.g.:
+    #   "save_prompt": {"text": "SAVE THIS FOR LATER", "start": 33.5, "end": 35.0}
+    "save_prompt": {"text": "", "start": 0.0, "end": 0.0},
+    # Caption background-highlight mode (opt-in, boolean): gives every 2-word
+    # caption card a solid rounded-box background behind the text (adapted
+    # from the catalog's caption-highlight component, brand colour instead of
+    # TikTok red) instead of plain drop-shadowed text on the raw footage --
+    # the native short-form-platform caption look. Off by default so every
+    # existing reel keeps rendering exactly as before.
+    "caption_highlight": False,
 }
 
 # Small dot-matrix silhouette of mainland Australia (same visual language as
@@ -133,10 +229,107 @@ def make_proj(base):
     gold = set(g.upper() for g in content["gold"])
     words = load_words(content)
     chunks = chunk_2word(words)
+
+    # Animated checklist overlays: resolve each list's window + each item's own
+    # time (searched only WITHIN the window so a word that recurs elsewhere in
+    # the reel can't hijack it), then suppress the plain 2-word caption inside
+    # the window so the ticking list is the clean focus.
+    lists = []
+    for spec in content.get("lists", []):
+        lstart, lend, score = resolve_anchor(words, spec["anchor_phrase"], pad_after=0.2)
+        if lstart is None:
+            print(f"  [lists] SKIPPING {spec.get('title') or spec['items']!r}: anchor_phrase "
+                  f"{spec['anchor_phrase']!r} not found (best {score:.2f} < 0.8)")
+            continue
+        items = spec["items"]
+        win = [w for w in words if lstart <= w["start"] <= lend]
+        span = max(0.8, lend - lstart)
+        times = []
+        for i, it in enumerate(items):
+            s, _e, _sc = resolve_anchor(win, it, pad_before=0.05, pad_after=0.0)
+            times.append(round(s, 3) if s is not None
+                         else round(lstart + 0.2 + i * (span - 0.9) / max(1, len(items)), 3))
+        lists.append({"title": spec.get("title", ""), "items": items, "times": times,
+                      "start": round(lstart, 3), "end": round(lend, 3)})
+        print(f"  [lists] {spec.get('title')!r} {items} -> {lstart:.2f}s-{lend:.2f}s "
+              f"(anchor match {score:.2f})")
+
+    def _in_list_window(t):
+        return any(l["start"] <= t < l["end"] for l in lists)
+
+    # Full-screen hero-word slams: like "lists", each owns its window and
+    # suppresses the plain 2-word caption there. Used sparingly (see
+    # DEFAULT_CONTENT docstring) for the single strongest hook/payoff line.
+    hero_words = []
+    for spec in content.get("hero_words", []):
+        hstart, hend, score = resolve_anchor(words, spec["anchor_phrase"])
+        if hstart is None:
+            print(f"  [hero] SKIPPING {spec.get('text')!r}: anchor_phrase "
+                  f"{spec['anchor_phrase']!r} not found (best {score:.2f} < 0.8)")
+            continue
+        hero_words.append({"text": spec["text"], "start": round(hstart, 3),
+                           "end": round(hend + 0.3, 3)})
+        print(f"  [hero] {spec['text']!r} -> {hstart:.2f}s-{hend + 0.3:.2f}s (anchor match {score:.2f})")
+
+    def _in_hero_window(t):
+        return any(h["start"] <= t < h["end"] for h in hero_words)
+
+    # Quick emphasis badges: resolve each to its spoken moment; it pops at the
+    # phrase and lingers a beat past it. Placed in the upper zone so it never
+    # collides with the caption band or the speaker's face.
+    BADGE_COLORS = {"navy": ("#100796", "#fff"), "cyan": ("#00B3E3", "#fff"),
+                    "green": ("#31EB7C", "#0a2e17"), "gold": ("#FFC500", "#100796"),
+                    "red": ("#E84B37", "#fff")}
+    BADGE_POS = {"top": {"center": True}, "top-left": {"left": 48},
+                 "top-right": {"right": 48}}
+    badges = []
+    for spec in content.get("badges", []):
+        bstart, bend, score = resolve_anchor(words, spec["anchor_phrase"])
+        if bstart is None:
+            print(f"  [badges] SKIPPING {spec.get('text')!r}: anchor_phrase "
+                  f"{spec['anchor_phrase']!r} not found (best {score:.2f} < 0.8)")
+            continue
+        bg, fg = BADGE_COLORS.get(spec.get("color", "navy"), BADGE_COLORS["navy"])
+        pos = BADGE_POS.get(spec.get("pos", "top"), BADGE_POS["top"])
+        badges.append({"text": spec["text"], "icon": spec.get("icon", "star"),
+                       "bg": bg, "fg": fg, "center": pos.get("center", False),
+                       "left": pos.get("left"), "right": pos.get("right"), "top": 232,
+                       "effect": spec.get("effect"),
+                       "start": round(bstart, 3), "end": round(bend + 0.6, 3)})
+        print(f"  [badges] {spec['text']!r} -> {bstart:.2f}s (anchor match {score:.2f})")
+
+    # Multi-city roadshow card (opt-in): explicit start/end window, holds a
+    # kicker + N stacked city date/time/venue blocks on screen. Like "lists",
+    # it SUPPRESSES the plain 2-word caption for its window -- it's meant to
+    # be read calmly over a long hold, and a caption band fighting for the
+    # same vertical space (or the card having to dodge it) defeats that.
+    roadshow = content.get("roadshow") or {}
+    rs_cities = roadshow.get("cities") or []
+    if rs_cities:
+        print(f"  [roadshow] {len(rs_cities)} cities -> "
+              f"{roadshow['start']:.2f}s-{roadshow['end']:.2f}s")
+
+    def _in_roadshow_window(t):
+        return bool(rs_cities) and roadshow["start"] <= t < roadshow["end"]
+
+    # Urgency chip (opt-in): shares the roadshow card's window verbatim, sits
+    # just above its kicker. Static build-time text only (see DEFAULT_CONTENT).
+    urgency_chip = content.get("urgency_chip") or {}
+
+    # Tiny hook banner (opt-in): explicit start/end, own tiny window at the
+    # very top of the video before the viewer decides to keep scrolling.
+    hook_banner = content.get("hook_banner") or {}
+
+    # Save/share prompt (opt-in): explicit start/end, a closing engagement
+    # beat layered into an existing long dwell window (e.g. late in roadshow).
+    save_prompt = content.get("save_prompt") or {}
+
     cards = []
     for k, g in enumerate(chunks):
         start = g[0]["start"]
         end = chunks[k + 1][0]["start"] if k + 1 < len(chunks) else g[-1]["end"] + 0.4
+        if _in_list_window(start) or _in_roadshow_window(start) or _in_hero_window(start):
+            continue   # the checklist/roadshow/hero-slam overlay owns this window
         spans = []
         for w in g:
             is_gold = norm(w["text"]).upper() in gold
@@ -213,11 +406,76 @@ def make_proj(base):
         print(f"  [documents] '{spec['image']}' -> {start:.2f}s-{end:.2f}s "
               f"(anchor match {score:.2f})")
 
+    # Light decorative layer (opt-in). Orbs + handle live behind the captions
+    # and animate on the SAME paused timeline (tl) so they survive frame-seek.
+    decor = content.get("decor") or {}
+    decor_dom, decor_js = "", ""
+    if decor.get("accents") or decor.get("handle") or decor.get("sparkles"):
+        orbs = ("".join(f'<span class="orb o{i}"></span>' for i in range(1, 6))
+                if decor.get("accents") else "")
+        sparks = ("".join(f'<span class="spk s{i}{"" if i % 2 else " white"}"></span>'
+                           for i in range(1, 6))
+                  + '<span class="ring r1"></span><span class="ring r2"></span>'
+                  if decor.get("sparkles") else "")
+        handle = (f'<div id="handle">{decor["handle"]}</div>'
+                  if decor.get("handle") else "")
+        decor_dom = f'<div id="decor">{orbs}{sparks}{handle}</div>'
+        parts = []
+        if decor.get("accents"):
+            # each orb: fade to a low opacity, then a slow full-length vertical
+            # drift (varied px + sign) so the cluster breathes without syncing.
+            parts.append(
+                "  var DDUR=__DDUR__;\n"
+                "  [['o1',0.20,-46],['o2',0.17,40],['o3',0.16,34],"
+                "['o4',0.18,-30],['o5',0.15,26]].forEach(function(c,i){\n"
+                "    var el=document.querySelector('#decor .'+c[0]); if(!el) return;\n"
+                "    tl.to(el,{opacity:c[1],duration:1.3,ease:'sine.out'}, 0.3+i*0.15);\n"
+                "    tl.to(el,{y:c[2],duration:DDUR,ease:'sine.inOut'}, 0);\n"
+                "  });")
+        if decor.get("sparkles"):
+            # stars twinkle (finite yoyo repeats spanning the clip); rings fade
+            # in then slowly rotate + drift like the orbs.
+            rep = int(dur / 0.9) + 2
+            parts.append(
+                "  document.querySelectorAll('#decor .spk').forEach(function(el,i){\n"
+                "    tl.fromTo(el,{opacity:0,scale:0.55,rotation:-20},"
+                "{opacity:0.85,scale:1,rotation:0,duration:0.9,ease:'sine.inOut',"
+                f"repeat:{rep},yoyo:true}}, 0.4+i*0.5);\n"
+                "  });\n"
+                "  [['r1',0.24,34],['r2',0.20,-28]].forEach(function(c){\n"
+                "    var el=document.querySelector('#decor .'+c[0]); if(!el) return;\n"
+                "    tl.to(el,{opacity:c[1],duration:1.2,ease:'sine.out'}, 0.6);\n"
+                "    tl.to(el,{rotation:c[2],y:c[2],duration:__DDUR__,ease:'sine.inOut'}, 0);\n"
+                "  });")
+        if decor.get("handle"):
+            parts.append(
+                "  var hd=document.getElementById('handle');\n"
+                "  if(hd){tl.to(hd,{opacity:0.9,duration:0.6,ease:'power2.out'}, 1.0);}")
+        decor_js = ("\n".join(parts)).replace("__DDUR__", f"{dur:.3f}")
+
     nm, info, cta = content["name"], content["info"], content["cta"]
     html = (_CAP_BLOCK.replace("__DUR__", f"{dur:.3f}")
             .replace("__CAP_TOP__", str(content["cap_top"]))
+            .replace("__LIST_TOP__", str(content["list_top"]))
+            .replace("__DECOR_DOM__", decor_dom)
+            .replace("__DECOR_JS__", decor_js)
             .replace("__CARDS__", json.dumps(cards))
             .replace("__DOCS__", json.dumps(docs))
+            .replace("__LISTS__", json.dumps(lists))
+            .replace("__BADGES__", json.dumps(badges))
+            .replace("__HERO_WORDS__", json.dumps(hero_words))
+            .replace("__URGENCY_CHIP__", json.dumps(urgency_chip))
+            .replace("__HOOK_BANNER__", json.dumps(hook_banner))
+            .replace("__SAVE_PROMPT__", json.dumps(save_prompt))
+            .replace("__CAP_HIGHLIGHT_CLASS__", "highlight" if content.get("caption_highlight") else "")
+            .replace("__ROADSHOW__", json.dumps({
+                "kicker": roadshow.get("kicker", ""),
+                "start": roadshow.get("start", 0.0),
+                "end": roadshow.get("end", 0.0),
+                "cities": rs_cities,
+            }))
+            .replace("__ROADSHOW_TOP__", str(roadshow.get("top", "130px")))
+            .replace("__ROADSHOW_SCALE__", str(roadshow.get("scale", 1.0)))
             .replace("__DATE_START__", str(info["start"]))
             .replace("__DATE_END__", str(info["end"]))
             .replace("__INFO_KICKER__", info["kicker"])
@@ -282,6 +540,51 @@ _CAP_BLOCK = """<!doctype html>
      letter-spacing:.01em;text-shadow:0 6px 22px rgba(0,0,0,.75),0 2px 4px rgba(0,0,0,.95);
      display:inline-block;margin:0 26px}
   .w.gold{color:#FFC500}
+  /* Caption background-highlight mode (opt-in via content.json
+     "caption_highlight" -- see DEFAULT_CONTENT docstring; adapted from the
+     catalog's caption-highlight component in brand colour instead of TikTok
+     red). Each word gets its own solid rounded box instead of plain
+     drop-shadowed text over the raw footage -- reads as native short-form
+     platform captions, which is the point: audience-recognizable format. */
+  #cap.highlight .w{background:#E84B37;padding:4px 18px;border-radius:14px;
+     text-shadow:none;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  #cap.highlight .w.gold{background:#100796;color:#FFC500}
+
+  /* Full-screen hero-word slam (content.json "hero_words") -- one giant
+     centered word/phrase for the single strongest hook/payoff line in a
+     reel; see DEFAULT_CONTENT docstring for why this must stay rare. */
+  #heroHost{position:absolute;inset:0;pointer-events:none}
+  .hero-slam{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+     text-align:center;opacity:0;visibility:hidden;padding:0 40px}
+  .hero-slam span{font-family:"Poppins",sans-serif;font-weight:800;font-size:150px;
+     line-height:0.98;color:#FFC500;letter-spacing:.01em;display:inline-block;
+     text-shadow:0 10px 30px rgba(0,0,0,.6),0 3px 6px rgba(0,0,0,.9)}
+
+  /* Tiny top-of-frame hook banner (content.json "hook_banner"): a small pill
+     for the first ~1s, before the viewer decides whether to keep scrolling. */
+  #hookBanner{position:absolute;left:0;right:0;top:235px;text-align:center;
+     opacity:0;visibility:hidden}
+  #hookBanner span{display:inline-block;background:rgba(16,7,150,.88);color:#fff;
+     font-family:"Poppins",sans-serif;font-weight:700;font-size:27px;letter-spacing:.02em;
+     padding:12px 30px;border-radius:999px;box-shadow:0 10px 26px rgba(0,0,0,.4);
+     border:1px solid rgba(255,255,255,.16)}
+
+  /* Save/share prompt (content.json "save_prompt"): a closing engagement
+     beat, sits in the upper zone (freed up once the roadshow card moved
+     down for face-clearance) during the tail of an existing dwell window. */
+  #savePrompt{position:absolute;left:0;right:0;top:400px;text-align:center;
+     opacity:0;visibility:hidden}
+  #savePrompt span{display:inline-block;background:#FFC500;color:#100796;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:30px;letter-spacing:.01em;
+     padding:14px 32px;border-radius:999px;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+
+  /* Urgency chip (content.json "urgency_chip"): sits just above the roadshow
+     kicker, shares its window verbatim. */
+  #urgencyChip{position:absolute;left:0;right:0;top:660px;text-align:center;
+     opacity:0;visibility:hidden}
+  #urgencyChip span{display:inline-block;background:#E84B37;color:#fff;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:26px;letter-spacing:.04em;
+     padding:9px 26px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
 
   /* Overlay card: seminar date kicker (top). Each element gets its own
      colour-block backdrop + a distinct entrance so the three facts (what /
@@ -309,6 +612,45 @@ _CAP_BLOCK = """<!doctype html>
      transform:scaleX(0);transform-origin:left center;z-index:0;box-shadow:0 8px 22px rgba(0,0,0,.3)}
   #dateCard .venue{position:relative;z-index:1;font-family:"Poppins",sans-serif;font-weight:700;
      font-size:30px;color:#fff;padding:8px 6px}
+
+  /* Multi-city roadshow card: kicker + stacked city blocks, pinned on screen
+     for a long window (unlike the single-shot #dateCard). "top" is per-reel
+     configurable (__ROADSHOW_TOP__) -- position it clear of the speaker's
+     face for THIS footage's framing, not a fixed guess (check where their
+     head actually sits across the WHOLE window, not just one frame -- a
+     talking head can lean/move during a multi-second hold). "scale" is an
+     opt-in uniform enlarge (__ROADSHOW_SCALE__, default 1.0) for reels that
+     need the card to read bigger/bolder; transform-origin is top-center so
+     scaling grows downward from the fixed "top" anchor instead of drifting
+     the kicker's position. Compact sizing (vs. #dateCard) since it has to
+     fit in whatever headroom/chest band is actually free, not the whole
+     upper zone. */
+  #roadshowCard{position:absolute;left:0;right:0;top:__ROADSHOW_TOP__;text-align:center;
+     opacity:0;visibility:hidden;transform:scale(__ROADSHOW_SCALE__);transform-origin:top center}
+  #roadshowCard .rs-kicker{position:relative;display:inline-block;background:#100796;
+     color:#fff;font-family:"Poppins",sans-serif;font-weight:700;font-size:26px;
+     letter-spacing:.05em;padding:10px 28px;border-radius:999px;
+     box-shadow:0 8px 22px rgba(0,0,0,.35);opacity:0;transform:scale(.85) translateY(-18px)}
+  #roadshowCard .rs-cities{margin-top:16px;display:flex;flex-direction:column;
+     align-items:center;gap:14px}
+  #roadshowCard .rs-city{position:relative;width:960px;border-radius:20px;
+     background:linear-gradient(135deg,#100796 0%,#1c1099 60%,#2a0f8f 100%);
+     padding:14px 26px 16px;box-shadow:0 14px 32px rgba(0,0,0,.45);
+     border:1px solid rgba(255,255,255,.14);opacity:0;transform:translateY(36px) scale(.92)}
+  #roadshowCard .rs-city-name{display:inline-block;background:#FFC500;color:#100796;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:26px;letter-spacing:.05em;
+     padding:4px 20px;border-radius:999px;margin-bottom:8px}
+  #roadshowCard .rs-row{display:flex;align-items:center;justify-content:center;gap:14px;
+     flex-wrap:wrap}
+  #roadshowCard .rs-date{position:relative;display:inline-block;background:#E84B37;
+     color:#fff;font-family:"Poppins",sans-serif;font-weight:900;font-size:34px;
+     padding:6px 18px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.3);
+     transform-origin:center}
+  #roadshowCard .rs-time{display:inline-block;background:#00B3E3;color:#fff;
+     font-family:"Poppins",sans-serif;font-weight:700;font-size:22px;
+     padding:7px 16px;border-radius:999px;box-shadow:0 5px 14px rgba(0,0,0,.25)}
+  #roadshowCard .rs-venue{margin-top:8px;font-family:"Poppins",sans-serif;font-weight:700;
+     font-size:21px;color:#FFE9B0;letter-spacing:.01em}
 
   /* Overlay card: CTA red pill (bottom, y ~1420 per spec) */
   #ctaCard{position:absolute;left:0;right:0;top:1420px;text-align:center;opacity:0;visibility:hidden}
@@ -369,10 +711,90 @@ _CAP_BLOCK = """<!doctype html>
      display:flex;align-items:center;justify-content:center;transform:scale(0) rotate(-18deg);
      box-shadow:0 10px 26px rgba(0,0,0,.4);border:4px solid #fff}
   .doc-card .stamp svg{width:58px;height:58px}
+
+  /* Light decorative layer (opt-in via content.json "decor"): soft brand-colour
+     orbs drifting in the empty wall margins + a small social handle low-centre.
+     Deliberately low-opacity/blurred so it reads as airy atmosphere, never
+     competing with the speaker or captions. Sits behind everything (first in
+     the DOM). */
+  #decor{position:absolute;inset:0;pointer-events:none;z-index:0}
+  #decor .orb{position:absolute;border-radius:50%;filter:blur(14px);opacity:0}
+  #decor .o1{width:150px;height:150px;background:#FFC500;left:120px;top:330px}
+  #decor .o2{width:120px;height:120px;background:#00B3E3;left:840px;top:250px}
+  #decor .o3{width:96px;height:96px;background:#E84B37;left:140px;top:1180px}
+  #decor .o4{width:130px;height:130px;background:#100796;left:880px;top:1300px}
+  #decor .o5{width:80px;height:80px;background:#FFC500;left:860px;top:660px}
+  #decor #handle{position:absolute;left:0;right:0;bottom:64px;text-align:center;
+     font-family:"Poppins",sans-serif;font-weight:700;font-size:30px;color:#fff;
+     letter-spacing:.05em;opacity:0;text-shadow:0 3px 12px rgba(0,0,0,.7)}
+  /* extra "little visuals" (decor.sparkles): 4-point twinkle stars + thin
+     outline rings, crisp counterpoints to the soft orbs, in the empty margins. */
+  #decor .spk{position:absolute;opacity:0;background:#FFC500;
+     clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
+  #decor .spk.white{background:#fff}
+  #decor .s1{width:30px;height:30px;left:180px;top:540px}
+  #decor .s2{width:24px;height:24px;left:872px;top:470px}
+  #decor .s3{width:20px;height:20px;left:112px;top:980px}
+  #decor .s4{width:28px;height:28px;left:946px;top:1050px}
+  #decor .s5{width:22px;height:22px;left:928px;top:1500px}
+  #decor .ring{position:absolute;opacity:0;border-radius:50%;background:transparent;border:3px solid}
+  #decor .r1{width:56px;height:56px;left:120px;top:1150px;border-color:#00B3E3}
+  #decor .r2{width:44px;height:44px;left:900px;top:620px;border-color:#FFC500}
+
+  /* Animated checklist overlay (content.json "lists"): a designed navy panel
+     that sits over the speaker's chest (clear of the face) while they list
+     items -- each row ticks in with a green check as it's spoken. Replaces the
+     2-word caption for the window so the two never fight. */
+  #listHost{position:absolute;inset:0;pointer-events:none}
+  .list-card{position:absolute;left:50%;top:__LIST_TOP__;transform:translateX(-50%);width:780px;
+     opacity:0;visibility:hidden;background:rgba(16,7,150,.82);border-radius:28px;
+     padding:26px 40px 30px;box-shadow:0 26px 64px rgba(0,0,0,.55);
+     border:1px solid rgba(255,255,255,.14)}
+  .list-card .lc-title{font-family:"Poppins",sans-serif;font-weight:800;font-size:34px;
+     color:#FFC500;letter-spacing:.06em;margin-bottom:14px;text-align:left}
+  .list-card .lc-row{display:flex;align-items:center;gap:22px;padding:11px 0;opacity:0}
+  .list-card .lc-check{flex:none;width:58px;height:58px;border-radius:50%;background:#31EB7C;
+     display:flex;align-items:center;justify-content:center;transform:scale(0);
+     box-shadow:0 6px 16px rgba(49,235,124,.45)}
+  .list-card .lc-check svg{width:34px;height:34px}
+  .list-card .lc-label{font-family:"Poppins",sans-serif;font-weight:800;font-size:48px;
+     color:#fff;letter-spacing:.01em}
+
+  /* Quick emphasis badges (content.json "badges"): a small icon+text pill that
+     pops in at a key spoken moment in the upper zone, floats, then leaves. */
+  #badgeHost{position:absolute;inset:0;pointer-events:none}
+  .badge-pop{position:absolute;opacity:0;visibility:hidden;display:flex;align-items:center;
+     gap:15px;padding:15px 30px;border-radius:999px;white-space:nowrap;
+     box-shadow:0 14px 34px rgba(0,0,0,.42)}
+  .badge-pop .bp-ico{flex:none;width:42px;height:42px;display:flex;align-items:center;
+     justify-content:center}
+  .badge-pop .bp-ico svg{width:42px;height:42px}
+  .badge-pop .bp-txt{font-family:"Poppins",sans-serif;font-weight:800;font-size:42px;
+     letter-spacing:.02em}
+  /* Badge effect: "shimmer" -- a light sweep masked over the pill, position
+     driven by a GSAP-tweened CSS custom property (catalog: shimmer-sweep). */
+  .badge-pop .bp-shimmer{position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+     mix-blend-mode:overlay;background:linear-gradient(120deg,transparent 0%,
+     transparent calc(var(--shimmer-pos,-20%) - 15%),rgba(255,255,255,.85) var(--shimmer-pos,-20%),
+     transparent calc(var(--shimmer-pos,-20%) + 15%),transparent 100%)}
+  /* Badge effect: "particles" -- small dots radiating from the pill on entry
+     (catalog: caption-particle-burst, seeded RNG so it's frame-deterministic). */
+  .badge-pop .bp-particle{position:absolute;left:50%;top:50%;border-radius:50%;
+     opacity:0;pointer-events:none}
+  /* Badge effect: "pixelate" -- pill materializes out of a small cell grid
+     instead of scaling in (catalog: grid-pixelate-wipe -- same technique as
+     this reel's cut transitions, scoped down to badge size). */
+  .badge-pop .bp-pixel-overlay{position:absolute;inset:0;pointer-events:none;display:grid;
+     border-radius:inherit;overflow:hidden}
+  .badge-pop .bp-pixel-overlay .bp-cell{transform:scale(1);transform-origin:center center}
 </style></head><body>
 <div id="root" data-composition-id="main" data-timeline-locked
      data-start="0" data-duration="__DUR__" data-fps="30" data-width="1080" data-height="1920">
-  <div id="cap"></div>
+  __DECOR_DOM__
+  <div id="cap" class="__CAP_HIGHLIGHT_CLASS__"></div>
+  <div id="heroHost"></div>
+  <div id="hookBanner"><span></span></div>
+  <div id="savePrompt"><span></span></div>
   <div id="dateCard">
     <div class="kickerWrap"><div class="kicker">__INFO_KICKER__<div class="shine"></div></div></div>
     <br>
@@ -380,6 +802,8 @@ _CAP_BLOCK = """<!doctype html>
     <br>
     <div class="venueWrap"><div class="venueBlock"></div><div class="venue">__INFO_LINE2__</div></div>
   </div>
+  <div id="urgencyChip"><span></span></div>
+  <div id="roadshowCard"></div>
   <div id="ctaCard"><div class="pill">__CTA_TEXT__</div></div>
   <div id="introCard">
     <div class="badge-tile __BADGE_CLASS__">__BADGE_INNER__</div>
@@ -387,6 +811,8 @@ _CAP_BLOCK = """<!doctype html>
   </div>
   <div id="confetti"></div>
   <div id="docHost"></div>
+  <div id="listHost"></div>
+  <div id="badgeHost"></div>
 </div>
 <script>
 (function(){
@@ -463,6 +889,62 @@ _CAP_BLOCK = """<!doctype html>
     tl.to(el, {opacity:0, y:-14, duration:0.2, ease:"power2.in"}, DE-0.2);
     tl.set(el, {visibility:"hidden"}, DE);
   });
+
+  // Multi-city roadshow card: kicker pops, then each city card stamps in one
+  // after another (staggered), then the WHOLE thing holds on screen (no
+  // per-element exit choreography needed -- it just fades out near RS.end,
+  // since the point is dwell time, not a quick beat like #dateCard).
+  var RS = __ROADSHOW__;
+  if (RS && RS.cities && RS.cities.length) {
+    var rsHost = document.getElementById("roadshowCard");
+    var rsKicker = document.createElement("div");
+    rsKicker.className = "rs-kicker";
+    rsKicker.textContent = RS.kicker || "";
+    rsHost.appendChild(rsKicker);
+    var rsCities = document.createElement("div");
+    rsCities.className = "rs-cities";
+    rsHost.appendChild(rsCities);
+
+    var RS_S = RS.start, RS_E = RS.end;
+    tl.set(rsHost, {visibility:"visible"}, RS_S);
+    tl.fromTo(rsHost, {opacity:0}, {opacity:1, duration:0.01}, RS_S);
+    tl.fromTo(rsKicker, {opacity:0, scale:0.85, y:-18},
+      {opacity:1, scale:1, y:0, duration:0.3, ease:"back.out(2.2)"}, RS_S);
+
+    RS.cities.forEach(function(c, i){
+      var el = document.createElement("div");
+      el.className = "rs-city";
+      el.innerHTML =
+        '<div class="rs-city-name">' + c.city + '</div><br>' +
+        '<div class="rs-row"><span class="rs-date">' + c.date + '</span>' +
+        '<span class="rs-time">' + c.time + '</span></div>' +
+        '<div class="rs-venue">' + c.venue + '</div>';
+      rsCities.appendChild(el);
+
+      var enter = RS_S + 0.32 + i * 0.4;
+      tl.fromTo(el, {opacity:0, y:46, scale:0.92},
+        {opacity:1, y:0, scale:1, duration:0.4, ease:"back.out(1.8)"}, enter);
+      var dateEl = el.querySelector(".rs-date");
+      tl.fromTo(dateEl, {scale:1.3}, {scale:1, duration:0.24, ease:"back.out(3)"}, enter + 0.08);
+    });
+
+    // Whole card slips out just before the window closes.
+    tl.to(rsHost, {opacity:0, y:-16, duration:0.25, ease:"power2.in"}, RS_E - 0.25);
+    tl.set(rsHost, {visibility:"hidden"}, RS_E);
+
+    // Urgency chip: shares the roadshow card's window verbatim, pops in
+    // just ahead of the kicker.
+    var UC = __URGENCY_CHIP__;
+    if (UC && UC.text) {
+      var ucEl = document.getElementById("urgencyChip");
+      ucEl.querySelector("span").textContent = UC.text;
+      tl.set(ucEl, {visibility:"visible"}, RS_S);
+      tl.fromTo(ucEl, {opacity:0, scale:0.8, y:-10},
+        {opacity:1, scale:1, y:0, duration:0.26, ease:"back.out(2.4)"}, RS_S);
+      tl.to(ucEl, {opacity:0, y:-10, duration:0.2, ease:"power2.in"}, RS_E - 0.2);
+      tl.set(ucEl, {visibility:"hidden"}, RS_E);
+    }
+  }
 
   // Overlay card 2: CTA red pill (bottom placement, per spec text-only)
   var cc = document.getElementById("ctaCard");
@@ -567,6 +1049,174 @@ _CAP_BLOCK = """<!doctype html>
     tl.to(el, {opacity:0, y:-26, scale:0.94, duration:0.22, ease:"power2.in"}, d.end - 0.22);
     tl.set(el, {visibility:"hidden"}, d.end);
   });
+
+  // Animated checklist overlays: the panel scales in, then each row ticks in
+  // (green check pops + label slides) at its own resolved moment, and the whole
+  // panel slips out before the window ends.
+  var LISTS = __LISTS__;
+  var listHost = document.getElementById("listHost");
+  var CHK = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.4 4.4L19 7" stroke="#0a2e17" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  LISTS.forEach(function(L){
+    var card = document.createElement("div");
+    card.className = "list-card";
+    var inner = L.title ? '<div class="lc-title">' + L.title + '</div>' : '';
+    L.items.forEach(function(it){
+      inner += '<div class="lc-row"><span class="lc-check">' + CHK + '</span>' +
+               '<span class="lc-label">' + it + '</span></div>';
+    });
+    card.innerHTML = inner;
+    listHost.appendChild(card);
+
+    tl.set(card, {visibility:"visible"}, L.start);
+    tl.fromTo(card, {opacity:0, y:28, scale:0.92},
+      {opacity:1, y:0, scale:1, duration:0.34, ease:"back.out(1.7)"}, L.start);
+
+    var rows = card.querySelectorAll(".lc-row");
+    L.times.forEach(function(t, i){
+      var row = rows[i]; if (!row) return;
+      var chk = row.querySelector(".lc-check");
+      tl.fromTo(row, {opacity:0, x:-28}, {opacity:1, x:0, duration:0.26, ease:"power2.out"}, t);
+      tl.fromTo(chk, {scale:0, rotation:-30}, {scale:1, rotation:0, duration:0.3, ease:"back.out(2.6)"}, t + 0.04);
+    });
+
+    tl.to(card, {opacity:0, y:-18, scale:0.96, duration:0.26, ease:"power2.in"}, L.end - 0.26);
+    tl.set(card, {visibility:"hidden"}, L.end);
+  });
+
+  // Quick emphasis badges: an icon+text pill pops in (back-ease), floats gently,
+  // then leaves. The icon inherits the badge's text colour (COL placeholder).
+  var BADGES = __BADGES__;
+  var badgeHost = document.getElementById("badgeHost");
+  var BICONS = {
+    check: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.6l4.4 4.4L19 7" stroke="COL" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    star:  '<svg viewBox="0 0 24 24" fill="COL"><path d="M12 2l1.9 7.1L21 11l-7.1 1.9L12 20l-1.9-7.1L3 11l7.1-1.9z"/></svg>',
+    brief: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2.4" fill="COL"/><path d="M8.5 8V6.4A2 2 0 0110.5 4.4h3A2 2 0 0115.5 6.4V8" stroke="COL" stroke-width="2.2"/></svg>'
+  };
+  // Seeded PRNG (mulberry32, adapted from the catalog's caption-particle-burst
+  // component) -- NOT Math.random(): HyperFrames re-seeks/re-renders frames,
+  // so any randomness in the timeline must reproduce identically every time.
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  BADGES.forEach(function(b, bi){
+    var el = document.createElement("div");
+    el.className = "badge-pop";
+    el.style.background = b.bg; el.style.color = b.fg;
+    if (b.left != null) el.style.left = b.left + "px";
+    if (b.right != null) el.style.right = b.right + "px";
+    if (b.center) el.style.left = "50%";
+    el.style.top = b.top + "px";
+    var ico = (BICONS[b.icon] || BICONS.star).replace(/COL/g, b.fg);
+    el.innerHTML = '<span class="bp-ico">' + ico + '</span><span class="bp-txt">' + b.text + '</span>';
+    badgeHost.appendChild(el);
+    if (b.center) gsap.set(el, {xPercent:-50});
+
+    tl.set(el, {visibility:"visible"}, b.start);
+    if (b.effect === "pixelate") {
+      // The cell-grid reveal below IS the entrance -- keep the pill itself
+      // a plain fade so the two don't fight for attention.
+      tl.fromTo(el, {opacity:0}, {opacity:1, duration:0.1}, b.start);
+    } else {
+      tl.fromTo(el, {opacity:0, scale:0.6, y:-16},
+        {opacity:1, scale:1, y:0, duration:0.34, ease:"back.out(2.4)"}, b.start);
+    }
+    tl.to(el, {y:8, duration:0.9, ease:"sine.inOut", repeat:1, yoyo:true}, b.start + 0.4);
+    tl.to(el, {opacity:0, scale:0.9, y:-14, duration:0.24, ease:"power2.in"}, b.end - 0.24);
+    tl.set(el, {visibility:"hidden"}, b.end);
+
+    if (b.effect === "shimmer") {
+      var mask = document.createElement("div");
+      mask.className = "bp-shimmer";
+      el.appendChild(mask);
+      gsap.set(el, {"--shimmer-pos": "-20%"});
+      tl.fromTo(el, {"--shimmer-pos": "-20%"}, {"--shimmer-pos": "120%",
+        duration: 0.7, ease: "power2.inOut"}, b.start + 0.34);
+    } else if (b.effect === "particles") {
+      var rng = mulberry32(bi * 137 + 99);
+      var N = 10;
+      for (var p = 0; p < N; p++) {
+        var angle = (p / N) * Math.PI * 2 + rng() * 0.6;
+        var dist = 46 + rng() * 40;
+        var sz = 4 + rng() * 5;
+        var dx = Math.cos(angle) * dist, dy = -Math.sin(angle) * dist;
+        var dot = document.createElement("div");
+        dot.className = "bp-particle";
+        dot.style.width = sz.toFixed(1) + "px"; dot.style.height = sz.toFixed(1) + "px";
+        dot.style.background = (p % 2 === 0) ? b.fg : "#fff";
+        el.appendChild(dot);
+        tl.set(dot, {x:0, y:0, opacity:0}, b.start);
+        tl.to(dot, {x:dx, y:dy, opacity:1, duration:0.16, ease:"power3.out"}, b.start + 0.30 + p*0.012);
+        tl.to(dot, {opacity:0, duration:0.35, ease:"power1.in"}, b.start + 0.46 + p*0.012);
+      }
+    } else if (b.effect === "pixelate") {
+      var cols = 8, rows2 = 3;
+      var overlay = document.createElement("div");
+      overlay.className = "bp-pixel-overlay";
+      overlay.style.gridTemplateColumns = "repeat(" + cols + ",1fr)";
+      overlay.style.gridTemplateRows = "repeat(" + rows2 + ",1fr)";
+      var cells = [];
+      for (var c = 0; c < cols * rows2; c++) {
+        var cell = document.createElement("div");
+        cell.className = "bp-cell";
+        cell.style.background = b.bg;
+        overlay.appendChild(cell);
+        cells.push(cell);
+      }
+      el.appendChild(overlay);
+      tl.set(cells, {scale:1}, b.start);
+      tl.to(cells, {scale:0, duration:0.36, stagger:{amount:0.3, from:"center"}, ease:"power2.in"}, b.start + 0.06);
+      tl.set(cells, {display:"none"}, b.start + 0.42);
+    }
+  });
+
+  // Full-screen hero-word slams: one giant centered word/phrase, punch-scale
+  // entrance, brief hold, quick exit. The matching 2-word caption card was
+  // already suppressed for this window (see _in_hero_window in Python).
+  var HERO = __HERO_WORDS__;
+  var heroHost = document.getElementById("heroHost");
+  HERO.forEach(function(h){
+    var el = document.createElement("div");
+    el.className = "hero-slam";
+    el.innerHTML = "<span>" + h.text + "</span>";
+    heroHost.appendChild(el);
+    tl.set(el, {visibility:"visible"}, h.start);
+    tl.fromTo(el, {opacity:0, scale:0.5},
+      {opacity:1, scale:1, duration:0.26, ease:"back.out(2.6)"}, h.start);
+    tl.to(el, {opacity:0, scale:1.15, duration:0.2, ease:"power2.in"}, h.end - 0.2);
+    tl.set(el, {visibility:"hidden"}, h.end);
+  });
+
+  // Tiny hook banner: on screen only for the first beat.
+  var HB = __HOOK_BANNER__;
+  if (HB && HB.text && HB.end > HB.start) {
+    var hbEl = document.getElementById("hookBanner");
+    hbEl.querySelector("span").textContent = HB.text;
+    tl.set(hbEl, {visibility:"visible"}, HB.start);
+    tl.fromTo(hbEl, {opacity:0, y:-16}, {opacity:1, y:0, duration:0.24, ease:"power2.out"}, HB.start);
+    tl.to(hbEl, {opacity:0, y:-12, duration:0.2, ease:"power2.in"}, HB.end - 0.2);
+    tl.set(hbEl, {visibility:"hidden"}, HB.end);
+  }
+
+  // Save/share prompt: a closing engagement beat.
+  var SP = __SAVE_PROMPT__;
+  if (SP && SP.text && SP.end > SP.start) {
+    var spEl = document.getElementById("savePrompt");
+    spEl.querySelector("span").textContent = SP.text;
+    tl.set(spEl, {visibility:"visible"}, SP.start);
+    tl.fromTo(spEl, {opacity:0, scale:0.85, y:16},
+      {opacity:1, scale:1, y:0, duration:0.3, ease:"back.out(2)"}, SP.start);
+    tl.to(spEl, {scale:1.05, duration:0.5, ease:"sine.inOut", repeat:1, yoyo:true}, SP.start + 0.4);
+    tl.to(spEl, {opacity:0, y:-12, duration:0.2, ease:"power2.in"}, SP.end - 0.2);
+    tl.set(spEl, {visibility:"hidden"}, SP.end);
+  }
+
+  __DECOR_JS__
 
   tl.seek(0);
   window.__timelines["main"]=tl;
