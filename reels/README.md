@@ -111,6 +111,77 @@ Fast iteration (avoid full 4–9 min caption renders):
 After any rebuild of reel_final.mp4, verify colour tags read bt709/tv:
 `ffprobe -select_streams v:0 -show_entries stream=color_range,color_space,color_transfer,color_primaries output/reel_final.mp4`
 
+## Must do — SFX (Tier 1) on every reel
+
+Every reel should get a Tier-1 SFX pass by default, not just on request:
+whoosh+thud on a hero-word slam, a reused transition whoosh at wipe cuts, and
+a success chime under the CTA pop-in. Wire cues via `<reel>/content.json`:
+
+```json
+{ "sfx": { "cues": [
+    { "file": "whoosh-impact.mp3", "at": 3.48, "volume": 0.8 },
+    { "file": "transition-whoosh.mp3", "at": 4.26, "volume": 0.45 },
+    { "file": "success-chime.mp3", "at": 31.80, "volume": 0.7 }
+] } }
+```
+
+- `at` — seconds on the same timeline as everything else in `content.json`
+  (the assembled/content timeline, i.e. before the disclaimer/consultation
+  end cards get appended). For a hero-word slam, sync it to the word's
+  resolved start minus the cue's own internal attack offset (see
+  `assets/sfx/README.md` for each stock cue's timing). For a wipe cut, use
+  `broll_plan.json`'s `boundaries` values directly — those are exact
+  final-timeline seconds; b-roll *replaces* footage rather than inserting it,
+  so there's no time-shift math needed.
+- `file` resolves against `<reel>/assets/sfx/` first, falling back to the
+  shared `assets/sfx/` library (`sfx_path()` in `build_composite.py`) — the
+  three stock Tier-1 cues need no per-reel copy; only add a reel-local file
+  to override one with a bespoke sound.
+- Always run `qa_reel.py` after adding/adjusting SFX — short percussive
+  transients can push loudnorm's true-peak measurement over target; there's
+  an `alimiter` safety net after the loudnorm pass for this.
+- **Whoosh/impact sounds must be synthesized from filtered noise layers,
+  never a bare sine-frequency sweep** — a sine chirp reads as a sci-fi/game
+  blip, not real air movement, and clashes with professional brand content.
+
+## Decorative layer (orbs / sparkles / handle)
+
+For reels with a lot of dead wall space (subject framed small, plain
+backdrop). Opt-in via `<reel>/content.json`:
+
+```json
+{ "decor": {"accents": true, "sparkles": true, "handle": "@PFECGlobal"} }
+```
+
+`accents` = soft, low-opacity brand-colour orbs drifting gently in the empty
+margins; `sparkles` = small twinkle stars + outline rings; `handle` = a small
+social-handle pill low-centre. All three sit behind the captions/cards and
+animate on the same seek-safe timeline (`build_captions.py`). Off by default
+— offer it when a reel's footage has a lot of empty margin around the
+subject.
+
+## Text Behind Subject (opt-in, expensive — use sparingly)
+
+A compositing z-order trick: real background → overlay layer → person
+cutout on top, using per-frame `rembg` (u2net_human_seg) matting, so the
+subject appears to genuinely stand in front of a graphic or block of text.
+Composite order matters: original footage (keeps the real room/background
+visible) → the overlay layer (animated: fade/slide entrance, optional
+shimmer sweep) → the person cutout, so they're in front of both.
+
+The overlay layer doesn't have to be a logo/image asset — it works exactly
+the same with rendered text (a list card, a keyword, a stat). There's no
+generalized reusable script for this yet; `bg_swap.py` (see an existing
+reel that used it) is a one-off hardcoded to one clip index + one asset —
+worth generalizing into a shared pipeline step (clip index + timing + either
+an image path or a text/HTML spec) if this becomes a recurring ask rather
+than copy-pasted per reel.
+
+**Cost tradeoff:** the matting pass is expensive — roughly 1-2 minutes of
+processing per few seconds of footage. Reserve this for the strongest 1-2
+moments per reel (a hook payoff, a key list/stat), not every caption beat —
+using it everywhere dilutes the effect and blows up render time.
+
 ## Must do — B-roll placement is script-judged, not a fixed count
 
 B-roll only ever goes over **connecting/filler phrases** in the transcript —
