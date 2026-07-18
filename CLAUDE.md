@@ -1,3 +1,6 @@
+<!-- Mirrored in AGENTS.md for non-Claude AI coding tools that look for that
+     filename instead. Keep both files in sync when either one changes. -->
+
 # PodCut — standing editorial preferences
 
 These apply by default to every reel produced with this pipeline — offer
