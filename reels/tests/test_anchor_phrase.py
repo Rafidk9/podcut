@@ -81,3 +81,16 @@ def test_custom_padding_overrides_defaults():
                                          pad_before=0.05, pad_after=0.2)
     assert start == round(1.4 - 0.05, 3)
     assert end == round(2.1 + 0.2, 3)
+
+
+def test_dictionary_correction_resolves_a_match_that_would_otherwise_skip():
+    """"Agentcis" ASR-mishears as two words ("agent cs") -- without the
+    dictionary pass (reels/dictionary.py, dictionary.txt) this scores 0.786
+    against a 1-word phrase, just under FUZZY_THRESHOLD (0.8). resolve_anchor
+    normalizes both sides through the SAME dictionary before scoring, so this
+    must resolve instead of skip. See dictionary.txt for the seeded pair."""
+    mishearing = words(("Our", 0.0, 0.2), ("agent", 0.2, 0.5), ("cs", 0.5, 0.7),
+                        ("platform.", 0.7, 1.0))
+    start, end, score = resolve_anchor(mishearing, "Agentcis platform")
+    assert score >= FUZZY_THRESHOLD
+    assert start is not None and end is not None

@@ -4,9 +4,12 @@ transcript on the OUTPUT timeline for later captioning."""
 import json, os, glob
 
 from reel_paths import IN, REEL  # noqa: E402 -- per-reel folders
-from reel_paths import WORK  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, X264_PRESET  # noqa: E402 -- per-reel folders
 from ffmpeg_util import COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
 import content_check  # noqa: E402 -- per-reel folders
+from dictionary import load_dictionary, correct_words  # noqa: E402 -- per-reel folders
+
+_DICT_TERMS, DICT_CORRECTIONS = load_dictionary()
 
 # words dropped when trailing a take (the "take-end" confirmations) or leading
 DROP = {"mm-hmm", "mmhmm", "mm", "okay", "ok", "yes", "yeah", "um", "uh", "hmm",
@@ -167,6 +170,16 @@ def main():
                 continue
             k_start = max(0.0, kept[0]["start"] - 0.10)
             k_end = kept[-1]["end"] + 0.25
+
+        # Domain-term dictionary pass: fix known ASR mishearings of PFEC's own
+        # vocabulary (agency name, visa subclasses, registration terms) in the
+        # TEXT only, before it's remapped onto the output timeline below --
+        # the actual audio/video is untouched, this only affects what captions
+        # render and what anchor_phrase.py can match against.
+        kept, corrections_log = correct_words(kept, DICT_CORRECTIONS)
+        for wrong, right, cs, ce in corrections_log:
+            print(f"  [dictionary] {name}: '{wrong}' -> '{right}' @ {cs:.2f}s-{ce:.2f}s")
+
         dur = k_end - k_start
 
         seg = os.path.join(seg_dir, f"seg_{i:02d}.mp4")
@@ -178,7 +191,7 @@ def main():
         vf = (SDR_VF if sdr else VF) + zf
         run(["-ss", f"{k_start:.3f}", "-i", os.path.join(IN, name + ext),
              "-t", f"{dur:.3f}", "-vf", vf, "-r", "30",
-             "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+             "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "19",
              *COLOR_TAGS,
              "-c:a", "aac", "-ar", "48000", "-ac", "2",
              "-video_track_timescale", "90000", seg])
