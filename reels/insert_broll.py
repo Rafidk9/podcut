@@ -4,7 +4,7 @@ HyperFrames' registry `grid-pixelate-wipe`) instead of a flat instant cut.
 Original audio stays fully continuous throughout (B-roll replaces video only)."""
 import os, json, shutil
 
-from reel_paths import WORK, REEL  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, REEL, X264_PRESET  # noqa: E402 -- per-reel folders
 from ffmpeg_util import COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
 WIPE_DUR = 0.5
 
@@ -50,7 +50,7 @@ def splice_broll_into_segment(seg_path, broll_path, out_path):
         f"[1:v]{VF},trim=start={BROLL_DUR},setpts=PTS-STARTPTS[rest];"
         f"[b][rest]concat=n=2:v=1:a=0[vout]",
         "-map", "[vout]", "-map", "1:a",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+        "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", "-pix_fmt", "yuv420p",
         *COLOR_TAGS,
         "-r", "30", "-c:a", "aac", "-ar", "48000", "-ac", "2",
         "-video_track_timescale", "90000", out_path,
@@ -80,7 +80,7 @@ def overlay_wipes(video_in, video_out, boundaries):
         prev = nxt
 
     args = cmd + ["-filter_complex", ";".join(filt), "-map", f"[{prev}]", "-map", "0:a",
-                  "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p",
+                  "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", "-pix_fmt", "yuv420p",
                   *COLOR_TAGS,
                   "-c:a", "copy", "-video_track_timescale", "90000", video_out]
     run(args)

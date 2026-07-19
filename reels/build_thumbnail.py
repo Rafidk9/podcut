@@ -11,7 +11,7 @@ extracted background frame. No alpha-video roundtrip needed for a still.
 Run after build_composite.py (needs output/reel_final.mp4)."""
 import os, json, re, shutil, subprocess
 
-from reel_paths import WORK, OUT, REEL, ASSETS_ROOT, hyperframes_cli  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, OUT, REEL, ASSETS_ROOT, PREVIEW, hyperframes_cli  # noqa: E402 -- per-reel folders
 from ffmpeg_util import FF, run  # noqa: E402 -- shared ffmpeg wrappers
 
 LOGO = os.path.join(ASSETS_ROOT, "derived", "logo_chip.png")
@@ -46,6 +46,10 @@ def _accent_html(text):
 
 
 def build():
+    if PREVIEW:
+        print("build_thumbnail.py: skipped: preview mode")
+        return
+
     final = os.path.join(OUT, "reel_final.mp4")
     if not os.path.isfile(final):
         raise SystemExit(f"{final} not found -- run build_composite.py first.")

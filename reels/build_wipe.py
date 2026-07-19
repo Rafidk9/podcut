@@ -7,7 +7,7 @@ transition, not a generic wipe. Overlaid centered on each B-roll cut boundary
 to mask the hard cut with a quick, on-brand flourish (~0.5s total)."""
 import os, shutil, subprocess, json
 
-from reel_paths import WORK, hyperframes_cli  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, HF_QUALITY, HF_FPS, hyperframes_cli  # noqa: E402 -- per-reel folders
 FF = shutil.which("ffmpeg") or "ffmpeg"
 DUR = 0.5   # total transition length; peak (full coverage) sits at DUR/2
 
@@ -54,7 +54,7 @@ def build():
     env = dict(os.environ)
     env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
     subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(out),
-                    "-f", "30", "--format", "webm", "-q", "standard", "--quiet"],
+                    "-f", str(HF_FPS), "--format", "webm", "-q", HF_QUALITY, "--quiet"],
                    cwd=proj, check=True, env=env)
     print("rendered", out)
 
