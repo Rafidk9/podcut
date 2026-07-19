@@ -15,11 +15,11 @@ PII, MARN correctness, factual accuracy and in-app safe-zones still need a human
 """
 import json, os, re, shutil, subprocess, sys
 
-from reel_paths import REEL, OUT  # noqa: E402 -- per-reel folders
+from reel_paths import REEL, OUT, WORK, PREVIEW  # noqa: E402 -- per-reel folders
 FF = shutil.which("ffmpeg") or "ffmpeg"
 FFPROBE = shutil.which("ffprobe") or "ffprobe"
 
-FINAL = os.path.join(OUT, "reel_final.mp4")
+FINAL = os.path.join(OUT, "reel_final_preview.mp4" if PREVIEW else "reel_final.mp4")
 OK, WARN, FAIL, INFO = "OK", "WARN", "FAIL", "info"
 results = []
 
@@ -47,6 +47,31 @@ def ff_null(af=None, vf=None, frames=None):
         cmd += ["-frames:v", str(frames)]
     cmd += ["-f", "null", "-"]
     return subprocess.run(cmd, capture_output=True, text=True).stderr
+
+
+def check_preview_marker():
+    """A preview build must never pass as a deliverable, however it's
+    invoked -- catch it two ways: the _preview filename suffix (build_all.py
+    --preview / build_composite.py always name it this way) AND the
+    -metadata preview_build tag baked into the file itself (still catches a
+    preview file that got renamed/copied over reel_final.mp4 by mistake)."""
+    by_name = "_preview" in os.path.basename(FINAL)
+    # format_tags land on the *format*, not a stream -- no -select_streams here.
+    out = subprocess.run([FFPROBE, "-v", "error", "-show_entries", "format_tags=preview_build",
+                          "-of", "default=nw=1:nokey=1", FINAL],
+                         capture_output=True, text=True).stdout.strip() if os.path.isfile(FINAL) else ""
+    by_tag = out not in ("", "N/A")
+    if by_name or by_tag:
+        add(FAIL, "Preview build", "not a deliverable"
+            + (" (filename)" if by_name else "") + (" (metadata tag)" if by_tag else ""))
+    elif PREVIEW:
+        # --preview was passed but neither signal fired -- still refuse; a
+        # preview build must never silently pass just because the marker
+        # logic missed it.
+        add(FAIL, "Preview build", "--preview requested but no preview marker found on the "
+            "file -- refusing anyway, this should not happen")
+    else:
+        add(OK, "Preview build", "no (this is a full build)")
 
 
 def check_specs():
@@ -163,6 +188,49 @@ def check_caption_text():
         "review: " + ", ".join(risky) if risky else "no guarantee-style claims in copy")
 
 
+def _norm_word(t):
+    return t.strip().strip(".,!?;:\"'").lower()
+
+
+def check_drift():
+    """Caption/audio sync check: build_captions.py persists the first/last
+    rendered caption cue's own text + start time (caption_sync.json) at
+    render time. Re-reading the CURRENT assembled.transcript.json here and
+    finding that same word confirms the two haven't drifted apart since --
+    e.g. someone re-ran build_base.py with different clip trims (or a
+    different broll_plan.json changed a splice boundary) without a matching
+    re-run of build_captions.py, leaving stale captions baked into the video
+    at the wrong point relative to the real audio. Always prints the
+    measured drift for both ends, pass or fail, so trends are visible over
+    time even when everything's fine."""
+    sync_path = os.path.join(WORK, "caption_sync.json")
+    transcript_path = os.path.join(WORK, "assembled.transcript.json")
+    if not os.path.isfile(sync_path) or not os.path.isfile(transcript_path):
+        add(INFO, "Caption/audio drift", "sync data unavailable (run build_captions.py to enable)")
+        return
+
+    sync = json.load(open(sync_path, encoding="utf-8"))
+    words = json.load(open(transcript_path, encoding="utf-8"))["words"]
+
+    for label, key in (("first", "first_cue"), ("last", "last_cue")):
+        cue = sync.get(key)
+        if not cue:
+            continue
+        target = _norm_word(cue["text"])
+        candidates = [w for w in words if _norm_word(w["text"]) == target]
+        if not candidates:
+            add(WARN, f"Caption/audio drift ({label})",
+                f"word {cue['text']!r} not found in current transcript -- rebuild captions")
+            continue
+        nearest = min(candidates, key=lambda w: abs(w["start"] - cue["start"]))
+        drift_ms = abs(nearest["start"] - cue["start"]) * 1000
+        status = FAIL if drift_ms >= 200 else (WARN if drift_ms >= 120 else OK)
+        note = "" if status == OK else (" (>200ms)" if status == FAIL else " (>120ms)")
+        add(status, f"Caption/audio drift ({label})",
+            f"{drift_ms:.0f}ms{note} -- {cue['text']!r} baked @ {cue['start']:.2f}s, "
+            f"now @ {nearest['start']:.2f}s")
+
+
 def check_safezone():
     cap_top = "62%"
     cfg = os.path.join(REEL, "content.json")
@@ -186,11 +254,12 @@ def check_safezone():
 def main():
     print(f"QA: {os.path.relpath(FINAL)}\n")
     if not os.path.isfile(FINAL):
-        print("[FAIL] final reel not found -- run build_composite.py first")
+        print("[FAIL] final reel not found -- run "
+              + ("build_composite.py --preview first" if PREVIEW else "build_composite.py first"))
         return 2
-    for fn in (check_specs, check_duration, check_loudness, check_clipping,
+    for fn in (check_preview_marker, check_specs, check_duration, check_loudness, check_clipping,
                check_black_and_firstframe, check_deliverables, check_caption_text,
-               check_safezone):
+               check_drift, check_safezone):
         try:
             fn()
         except Exception as e:  # never let one probe crash the whole report
