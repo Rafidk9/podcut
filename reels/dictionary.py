@@ -8,7 +8,7 @@ File format (one entry per line, '#' starts a comment, blank lines ignored):
     TERM             a domain term, kept as-is -- informational/reference
                      only, does not by itself change matching
     wrong=>right     case-insensitive correction. "wrong" can be more than
-                     one word ("agent cs=>Agentcis") -- matched as whole
+                     one word ("marn number=>MARN") -- matched as whole
                      tokens, never a partial-word substring.
 """
 import os

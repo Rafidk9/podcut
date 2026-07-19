@@ -84,13 +84,15 @@ def test_custom_padding_overrides_defaults():
 
 
 def test_dictionary_correction_resolves_a_match_that_would_otherwise_skip():
-    """"Agentcis" ASR-mishears as two words ("agent cs") -- without the
-    dictionary pass (reels/dictionary.py, dictionary.txt) this scores 0.786
-    against a 1-word phrase, just under FUZZY_THRESHOLD (0.8). resolve_anchor
-    normalizes both sides through the SAME dictionary before scoring, so this
-    must resolve instead of skip. See dictionary.txt for the seeded pair."""
-    mishearing = words(("Our", 0.0, 0.2), ("agent", 0.2, 0.5), ("cs", 0.5, 0.7),
+    """"MARN number" is a seeded dictionary correction (dictionary.txt) that
+    collapses redundant phrasing ("MARN number") down to "MARN" -- without
+    the dictionary pass (reels/dictionary.py, dictionary.txt) this scores
+    0.786 against a 1-word phrase, just under FUZZY_THRESHOLD (0.8).
+    resolve_anchor normalizes both sides through the SAME dictionary before
+    scoring, so this must resolve instead of skip. See dictionary.txt for
+    the seeded pair."""
+    mishearing = words(("Our", 0.0, 0.2), ("marn", 0.2, 0.5), ("number", 0.5, 0.7),
                         ("platform.", 0.7, 1.0))
-    start, end, score = resolve_anchor(mishearing, "Agentcis platform")
+    start, end, score = resolve_anchor(mishearing, "MARN platform")
     assert score >= FUZZY_THRESHOLD
     assert start is not None and end is not None

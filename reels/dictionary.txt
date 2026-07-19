@@ -4,14 +4,13 @@
 # Format: one entry per line.
 #   TERM             a domain term, kept as reference/documentation only
 #   wrong=>right     case-insensitive correction; "wrong" may be several
-#                    words ("agent cs=>Agentcis"), matched as whole tokens
+#                    words ("marn number=>MARN"), matched as whole tokens
 #
 # The correction pairs below are BEST-GUESS placeholders for likely ASR
 # mishearings -- REVIEW AGAINST REAL TRANSCRIPTS before trusting them blindly
 # on a live reel. Each guess is commented with what it's guarding against.
 
 # --- reference terms (no correction implied) ---
-Agentcis
 PFEC
 PFEC Global
 MARN
@@ -23,12 +22,6 @@ subclass 189
 subclass 190
 subclass 491
 Lakemba
-
-# --- corrections: Agentcis (PFEC's internal platform name -- ASR has no
-#     prior for this word and will split/flatten it into real words it knows) ---
-agent cs=>Agentcis                 # NEEDS REVIEW: given example, most likely mishearing
-agents is=>Agentcis                # NEEDS REVIEW: "Agentcis" flattened to two common words
-agent sis=>Agentcis                # NEEDS REVIEW: same flattening, different split point
 
 # --- corrections: PFEC (spoken as one word, "P-FEC" / "piffek" -- ASR may
 #     spell out the letters or hear a similar-sounding real word/phrase) ---

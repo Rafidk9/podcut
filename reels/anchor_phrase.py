@@ -23,7 +23,7 @@ def resolve_anchor(words, phrase, pad_before=0.15, pad_after=0.6):
     Both `words` and `phrase` are run through the SAME domain-term dictionary
     (reels/dictionary.py) before matching -- a defense-in-depth pass
     independent of build_base.py's own correction step, so a domain term
-    (e.g. "Agentcis" ASR-mishears as "agent cs") can't sink a fuzzy match
+    (e.g. "MARN number" ASR-flattens redundant phrasing) can't sink a fuzzy match
     below FUZZY_THRESHOLD just because it landed here uncorrected, or because
     an anchor_phrase was written using the correct spelling while an
     uncorrected transcript still has the split/mangled ASR version. Word-

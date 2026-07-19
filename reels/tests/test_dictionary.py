@@ -16,30 +16,30 @@ def test_missing_file_warns_once_and_returns_empty(tmp_path):
     assert corrections == []
 
 
-def test_seed_file_loads_agentcis_correction():
+def test_seed_file_loads_marn_correction():
     terms, corrections = load_dictionary()
-    assert any(w == "agent cs" and r == "Agentcis" for w, r in corrections)
+    assert any(w == "marn number" and r == "MARN" for w, r in corrections)
 
 
 def test_correct_words_merges_multiword_mishearing_and_keeps_timing():
-    w = words(("Our", 0.0, 0.2), ("agent", 0.2, 0.5), ("cs", 0.5, 0.7), ("platform.", 0.7, 1.0))
-    corrected, log = correct_words(w, [("agent cs", "Agentcis")])
-    assert [x["text"] for x in corrected] == ["Our", "Agentcis", "platform."]
+    w = words(("Our", 0.0, 0.2), ("acme", 0.2, 0.5), ("co", 0.5, 0.7), ("platform.", 0.7, 1.0))
+    corrected, log = correct_words(w, [("acme co", "AcmeCo")])
+    assert [x["text"] for x in corrected] == ["Our", "AcmeCo", "platform."]
     assert corrected[1]["start"] == 0.2
     assert corrected[1]["end"] == 0.7
-    assert log == [("agent cs", "Agentcis", 0.2, 0.7)]
+    assert log == [("acme co", "AcmeCo", 0.2, 0.7)]
 
 
 def test_correct_words_preserves_trailing_punctuation():
-    w = words(("agent", 0.0, 0.2), ("cs,", 0.2, 0.4))
-    corrected, _log = correct_words(w, [("agent cs", "Agentcis")])
-    assert corrected[0]["text"] == "Agentcis,"
+    w = words(("acme", 0.0, 0.2), ("co,", 0.2, 0.4))
+    corrected, _log = correct_words(w, [("acme co", "AcmeCo")])
+    assert corrected[0]["text"] == "AcmeCo,"
 
 
 def test_correct_words_case_insensitive():
-    w = words(("Agent", 0.0, 0.2), ("CS", 0.2, 0.4))
-    corrected, _log = correct_words(w, [("agent cs", "Agentcis")])
-    assert corrected[0]["text"] == "Agentcis"
+    w = words(("Acme", 0.0, 0.2), ("CO", 0.2, 0.4))
+    corrected, _log = correct_words(w, [("acme co", "AcmeCo")])
+    assert corrected[0]["text"] == "AcmeCo"
 
 
 def test_correct_words_no_corrections_is_a_no_op():
@@ -51,19 +51,19 @@ def test_correct_words_no_corrections_is_a_no_op():
 
 def test_correct_words_leaves_non_matching_words_untouched():
     w = words(("completely", 0.0, 0.3), ("unrelated", 0.3, 0.6))
-    corrected, log = correct_words(w, [("agent cs", "Agentcis")])
+    corrected, log = correct_words(w, [("acme co", "AcmeCo")])
     assert corrected == w
     assert log == []
 
 
 def test_normalize_text_string_level_whole_phrase():
-    assert normalize_text("our agent cs platform", [("agent cs", "Agentcis")]) == "our Agentcis platform"
+    assert normalize_text("our acme co platform", [("acme co", "AcmeCo")]) == "our AcmeCo platform"
 
 
 def test_normalize_text_case_insensitive_and_flexible_whitespace():
-    assert normalize_text("Our AGENT   CS Platform", [("agent cs", "Agentcis")]) == "Our Agentcis Platform"
+    assert normalize_text("Our ACME   CO Platform", [("acme co", "AcmeCo")]) == "Our AcmeCo Platform"
 
 
 def test_normalize_text_does_not_match_partial_words():
-    # "cs" inside "docs" must not be treated as the token "cs".
-    assert normalize_text("check the docs", [("cs", "XX")]) == "check the docs"
+    # "co" inside "coat" must not be treated as the token "co".
+    assert normalize_text("check the coat", [("co", "XX")]) == "check the coat"
