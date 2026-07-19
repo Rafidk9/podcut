@@ -7,11 +7,12 @@ visa grant letter -- placed wherever the transcript's anchor_phrase resolves).
 Architecture: render ONLY the graphics as a TRANSPARENT layer via HyperFrames
 (fast -- Chrome never touches the footage), then ffmpeg-composite that overlay
 onto base_broll.mp4 (one clean encode, footage/B-roll quality preserved)."""
-import os, json, shutil, subprocess
+import os, json, shutil, subprocess, sys
 
-from reel_paths import WORK, REEL, ASSETS_ROOT, hyperframes_cli  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, REEL, ASSETS_ROOT, HF_QUALITY, HF_FPS, X264_PRESET, hyperframes_cli  # noqa: E402 -- per-reel folders
 from anchor_phrase import resolve_anchor  # noqa: E402 -- per-reel folders
 from ffmpeg_util import FF, FFPROBE, COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
+import caption_cache  # noqa: E402 -- per-reel folders
 
 FILLERS = {"um", "uh", "erm", "er", "ah", "hmm", "mm", "mm-hmm", "mmhmm", "uh-huh"}
 SENTENCE_END = (".", "?", "!")
@@ -452,26 +453,31 @@ def make_proj(base):
         decor_js = ("\n".join(parts)).replace("__DDUR__", f"{dur:.3f}")
 
     nm, info, cta = content["name"], content["info"], content["cta"]
+    # This "base" project renders everything EXCEPT the 5 cache-eligible
+    # element types (cards, hero words, badges, lists, roadshow+urgency) --
+    # those render independently (see caption_cache.py) and get composited
+    # back on at their own resolved timestamps in build(). _CAP_BLOCK's JS
+    # for each of those is already empty-array/empty-object safe (CARDS
+    # .forEach on [] is a no-op, roadshow's `if (RS.cities.length)` guard
+    # skips cleanly, etc.) -- so reusing the SAME unmodified template with
+    # empty data for just those five is enough; no separate reduced
+    # template needed, which keeps this the exact template preview_window.py
+    # also relies on (see its own docstring) untouched.
     html = (_CAP_BLOCK.replace("__DUR__", f"{dur:.3f}")
             .replace("__CAP_TOP__", str(content["cap_top"]))
             .replace("__LIST_TOP__", str(content["list_top"]))
             .replace("__DECOR_DOM__", decor_dom)
             .replace("__DECOR_JS__", decor_js)
-            .replace("__CARDS__", json.dumps(cards))
+            .replace("__CARDS__", "[]")
             .replace("__DOCS__", json.dumps(docs))
-            .replace("__LISTS__", json.dumps(lists))
-            .replace("__BADGES__", json.dumps(badges))
-            .replace("__HERO_WORDS__", json.dumps(hero_words))
-            .replace("__URGENCY_CHIP__", json.dumps(urgency_chip))
+            .replace("__LISTS__", "[]")
+            .replace("__BADGES__", "[]")
+            .replace("__HERO_WORDS__", "[]")
+            .replace("__URGENCY_CHIP__", "{}")
             .replace("__HOOK_BANNER__", json.dumps(hook_banner))
             .replace("__SAVE_PROMPT__", json.dumps(save_prompt))
             .replace("__CAP_HIGHLIGHT_CLASS__", "highlight" if content.get("caption_highlight") else "")
-            .replace("__ROADSHOW__", json.dumps({
-                "kicker": roadshow.get("kicker", ""),
-                "start": roadshow.get("start", 0.0),
-                "end": roadshow.get("end", 0.0),
-                "cities": rs_cities,
-            }))
+            .replace("__ROADSHOW__", json.dumps({"kicker": "", "start": 0.0, "end": 0.0, "cities": []}))
             .replace("__ROADSHOW_TOP__", str(roadshow.get("top", "130px")))
             .replace("__ROADSHOW_SCALE__", str(roadshow.get("scale", 1.0)))
             .replace("__DATE_START__", str(info["start"]))
@@ -492,12 +498,297 @@ def make_proj(base):
     open(os.path.join(proj, "index.html"), "w", encoding="utf-8").write(html)
     json.dump({"id": "pfec-captions", "name": "PFEC captions + overlays"},
               open(os.path.join(proj, "meta.json"), "w"))
-    return proj, len(cards)
+
+    # Caption/audio drift check (qa_reel.py): persist the first and last
+    # rendered caption cue's own text + start time, so QA can later re-read
+    # the CURRENT assembled.transcript.json and confirm the word these cues
+    # were baked against hasn't moved -- catching e.g. a re-run of
+    # build_base.py (different clip trims) without a matching re-run of this
+    # script, which would leave stale captions baked into the video at the
+    # wrong timestamps. Only meaningful if at least one card rendered.
+    if cards:
+        first, last = cards[0], cards[-1]
+        json.dump({"first_cue": {"text": first["words"][0]["text"], "start": first["start"]},
+                   "last_cue": {"text": last["words"][0]["text"], "start": last["start"]}},
+                  open(os.path.join(WORK, "caption_sync.json"), "w", encoding="utf-8"))
+
+    # Everything needed to render the 5 cache-eligible element types
+    # independently in build() (see caption_cache.py) -- cards/hero_words/
+    # badges/lists were emptied out of the base HTML above specifically so
+    # build() can render+composite them separately instead.
+    cacheable = {
+        "cards": cards, "hero_words": hero_words, "badges": badges, "lists": lists,
+        "roadshow": {"kicker": roadshow.get("kicker", ""), "top": roadshow.get("top", "130px"),
+                     "scale": roadshow.get("scale", 1.0), "start": roadshow.get("start", 0.0),
+                     "end": roadshow.get("end", 0.0), "cities": rs_cities,
+                     "urgency_text": (urgency_chip or {}).get("text", "")},
+        "cap_top": content["cap_top"], "list_top": content["list_top"],
+        "caption_highlight": bool(content.get("caption_highlight")),
+    }
+    return proj, len(cards), cacheable
 
 
-def build():
+### Per-element cached renders (content-hash cache -- see caption_cache.py) ###
+# Each of the 5 cache-eligible types below renders as its OWN isolated
+# HyperFrames composition on a LOCAL 0-based timeline (duration = its own
+# end-start) instead of inside the one shared timeline `make_proj()` used to
+# put everything on. The JS is the SAME animation code as before, just with
+# every reference to the element's own absolute start/end swapped for 0/D
+# (D = local duration) -- entrance-at-start becomes entrance-at-0, exit-
+# before-end becomes exit-before-D, etc. decor is deliberately NOT here (see
+# caption_cache.py's module docstring for why: its GSAP timing depends on
+# the WHOLE video's duration, not just its own window, so it stays part of
+# the base composition instead of being independently cacheable).
+
+def _card_element(card, cap_top, highlight_class):
+    D = round(card["end"] - card["start"], 3)
+    words_html = " ".join(
+        '<span class="w' + (' gold' if w["gold"] else '') + '">' + w["text"] + '</span>'
+        for w in card["words"])
+    body = (f'<div id="cap" class="{highlight_class}">'
+            f'<div class="card" id="elCard">{words_html}</div></div>')
+    js = ("""
+  var el = document.getElementById("elCard");
+  tl.set(el, {visibility:"visible"}, 0);
+  tl.fromTo(el,
+    {opacity:0, y:34, scale:0.78, rotation:-3},
+    {opacity:1, y:0, scale:1, rotation:0, duration:0.22, ease:"back.out(2.2)"},
+    0);
+  var goldEls = el.querySelectorAll(".gold");
+  if (goldEls.length) {
+    tl.fromTo(goldEls, {scale:1}, {scale:1.08, duration:0.1, ease:"power2.out"}, 0.16);
+    tl.to(goldEls, {scale:1, duration:0.16, ease:"power2.inOut"}, 0.26);
+  }
+  tl.to(el, {opacity:0, scale:0.92, duration:0.08, ease:"power1.in"}, Math.max(0.12, __D__-0.08));
+  tl.set(el, {visibility:"hidden"}, __D__);
+""").replace("__D__", f"{D:.3f}")
+    content = {"words": card["words"], "cap_top": cap_top, "highlight_class": highlight_class}
+    return content, D, body, js
+
+
+def _hero_element(hero):
+    D = round(hero["end"] - hero["start"], 3)
+    body = f'<div id="heroHost"><div class="hero-slam" id="elHero"><span>{hero["text"]}</span></div></div>'
+    js = ("""
+  var el = document.getElementById("elHero");
+  tl.set(el, {visibility:"visible"}, 0);
+  tl.fromTo(el, {opacity:0, scale:0.5},
+    {opacity:1, scale:1, duration:0.26, ease:"back.out(2.6)"}, 0);
+  tl.to(el, {opacity:0, scale:1.15, duration:0.2, ease:"power2.in"}, __D__ - 0.2);
+  tl.set(el, {visibility:"hidden"}, __D__);
+""").replace("__D__", f"{D:.3f}")
+    content = {"text": hero["text"]}
+    return content, D, body, js
+
+
+def _badge_element(badge, index):
+    D = round(badge["end"] - badge["start"], 3)
+    style = f'background:{badge["bg"]};color:{badge["fg"]};top:{badge["top"]}px;'
+    if badge.get("left") is not None:
+        style += f'left:{badge["left"]}px;'
+    if badge.get("right") is not None:
+        style += f'right:{badge["right"]}px;'
+    if badge.get("center"):
+        style += 'left:50%;'
+    body = f'<div id="badgeHost"><div class="badge-pop" id="elBadge" style="{style}"></div></div>'
+    js = ("""
+  var BICONS = {
+    check: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.6l4.4 4.4L19 7" stroke="COL" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    star:  '<svg viewBox="0 0 24 24" fill="COL"><path d="M12 2l1.9 7.1L21 11l-7.1 1.9L12 20l-1.9-7.1L3 11l7.1-1.9z"/></svg>',
+    brief: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2.4" fill="COL"/><path d="M8.5 8V6.4A2 2 0 0110.5 4.4h3A2 2 0 0115.5 6.4V8" stroke="COL" stroke-width="2.2"/></svg>'
+  };
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var el = document.getElementById("elBadge");
+  var FG = "__FG__", BG = "__BG__", EFFECT = "__EFFECT__", BI = __BI__, TXT = __TEXT_JSON__;
+  var ico = (BICONS["__ICON__"] || BICONS.star).replace(/COL/g, FG);
+  el.innerHTML = '<span class="bp-ico">' + ico + '</span><span class="bp-txt">' + TXT + '</span>';
+  if (el.style.left === "50%") gsap.set(el, {xPercent:-50});
+
+  tl.set(el, {visibility:"visible"}, 0);
+  if (EFFECT === "pixelate") {
+    tl.fromTo(el, {opacity:0}, {opacity:1, duration:0.1}, 0);
+  } else {
+    tl.fromTo(el, {opacity:0, scale:0.6, y:-16},
+      {opacity:1, scale:1, y:0, duration:0.34, ease:"back.out(2.4)"}, 0);
+  }
+  tl.to(el, {y:8, duration:0.9, ease:"sine.inOut", repeat:1, yoyo:true}, 0.4);
+  tl.to(el, {opacity:0, scale:0.9, y:-14, duration:0.24, ease:"power2.in"}, __D__ - 0.24);
+  tl.set(el, {visibility:"hidden"}, __D__);
+
+  if (EFFECT === "shimmer") {
+    var mask = document.createElement("div");
+    mask.className = "bp-shimmer";
+    el.appendChild(mask);
+    gsap.set(el, {"--shimmer-pos": "-20%"});
+    tl.fromTo(el, {"--shimmer-pos": "-20%"}, {"--shimmer-pos": "120%",
+      duration: 0.7, ease: "power2.inOut"}, 0.34);
+  } else if (EFFECT === "particles") {
+    var rng = mulberry32(BI * 137 + 99);
+    var N = 10;
+    for (var p = 0; p < N; p++) {
+      var angle = (p / N) * Math.PI * 2 + rng() * 0.6;
+      var dist = 46 + rng() * 40;
+      var sz = 4 + rng() * 5;
+      var dx = Math.cos(angle) * dist, dy = -Math.sin(angle) * dist;
+      var dot = document.createElement("div");
+      dot.className = "bp-particle";
+      dot.style.width = sz.toFixed(1) + "px"; dot.style.height = sz.toFixed(1) + "px";
+      dot.style.background = (p % 2 === 0) ? FG : "#fff";
+      el.appendChild(dot);
+      tl.set(dot, {x:0, y:0, opacity:0}, 0);
+      tl.to(dot, {x:dx, y:dy, opacity:1, duration:0.16, ease:"power3.out"}, 0.30 + p*0.012);
+      tl.to(dot, {opacity:0, duration:0.35, ease:"power1.in"}, 0.46 + p*0.012);
+    }
+  } else if (EFFECT === "pixelate") {
+    var cols = 8, rows2 = 3;
+    var overlay = document.createElement("div");
+    overlay.className = "bp-pixel-overlay";
+    overlay.style.gridTemplateColumns = "repeat(" + cols + ",1fr)";
+    overlay.style.gridTemplateRows = "repeat(" + rows2 + ",1fr)";
+    var cells = [];
+    for (var c = 0; c < cols * rows2; c++) {
+      var cell = document.createElement("div");
+      cell.className = "bp-cell";
+      cell.style.background = BG;
+      overlay.appendChild(cell);
+      cells.push(cell);
+    }
+    el.appendChild(overlay);
+    tl.set(cells, {scale:1}, 0);
+    tl.to(cells, {scale:0, duration:0.36, stagger:{amount:0.3, from:"center"}, ease:"power2.in"}, 0.06);
+    tl.set(cells, {display:"none"}, 0.42);
+  }
+""").replace("__FG__", badge["fg"]).replace("__BG__", badge["bg"]) \
+    .replace("__EFFECT__", badge.get("effect") or "") \
+    .replace("__BI__", str(index)).replace("__ICON__", badge.get("icon", "star")) \
+    .replace("__TEXT_JSON__", json.dumps(badge["text"])).replace("__D__", f"{D:.3f}")
+    content = {"text": badge["text"], "icon": badge.get("icon", "star"), "bg": badge["bg"],
+               "fg": badge["fg"], "center": badge.get("center", False), "left": badge.get("left"),
+               "right": badge.get("right"), "top": badge["top"], "effect": badge.get("effect"),
+               "index": index}
+    return content, D, body, js
+
+
+def _list_element(lst, list_top):
+    D = round(lst["end"] - lst["start"], 3)
+    inner = f'<div class="lc-title">{lst["title"]}</div>' if lst["title"] else ""
+    chk = ('<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.4 4.4L19 7" '
+           'stroke="#0a2e17" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+    for it in lst["items"]:
+        inner += f'<div class="lc-row"><span class="lc-check">{chk}</span><span class="lc-label">{it}</span></div>'
+    body = f'<div id="listHost"><div class="list-card" id="elList">{inner}</div></div>'
+    times_rel = [round(t - lst["start"], 3) for t in lst["times"]]
+    js = ("""
+  var card = document.getElementById("elList");
+  tl.set(card, {visibility:"visible"}, 0);
+  tl.fromTo(card, {opacity:0, y:28, scale:0.92},
+    {opacity:1, y:0, scale:1, duration:0.34, ease:"back.out(1.7)"}, 0);
+  var rows = card.querySelectorAll(".lc-row");
+  var TIMES = __TIMES__;
+  TIMES.forEach(function(t, i){
+    var row = rows[i]; if (!row) return;
+    var chk = row.querySelector(".lc-check");
+    tl.fromTo(row, {opacity:0, x:-28}, {opacity:1, x:0, duration:0.26, ease:"power2.out"}, t);
+    tl.fromTo(chk, {scale:0, rotation:-30}, {scale:1, rotation:0, duration:0.3, ease:"back.out(2.6)"}, t + 0.04);
+  });
+  tl.to(card, {opacity:0, y:-18, scale:0.96, duration:0.26, ease:"power2.in"}, __D__ - 0.26);
+  tl.set(card, {visibility:"hidden"}, __D__);
+""").replace("__TIMES__", json.dumps(times_rel)).replace("__D__", f"{D:.3f}")
+    content = {"title": lst["title"], "items": lst["items"], "times_rel": times_rel, "list_top": list_top}
+    return content, D, body, js
+
+
+def _roadshow_element(rs):
+    D = round(rs["end"] - rs["start"], 3)
+    body = '<div id="roadshowCard"></div><div id="urgencyChip"><span></span></div>'
+    js = ("""
+  var rsHost = document.getElementById("roadshowCard");
+  var rsKicker = document.createElement("div");
+  rsKicker.className = "rs-kicker";
+  rsKicker.textContent = __KICKER__;
+  rsHost.appendChild(rsKicker);
+  var rsCities = document.createElement("div");
+  rsCities.className = "rs-cities";
+  rsHost.appendChild(rsCities);
+
+  tl.set(rsHost, {visibility:"visible"}, 0);
+  tl.fromTo(rsHost, {opacity:0}, {opacity:1, duration:0.01}, 0);
+  tl.fromTo(rsKicker, {opacity:0, scale:0.85, y:-18},
+    {opacity:1, scale:1, y:0, duration:0.3, ease:"back.out(2.2)"}, 0);
+
+  var CITIES = __CITIES__;
+  CITIES.forEach(function(c, i){
+    var el = document.createElement("div");
+    el.className = "rs-city";
+    el.innerHTML =
+      '<div class="rs-city-name">' + c.city + '</div><br>' +
+      '<div class="rs-row"><span class="rs-date">' + c.date + '</span>' +
+      '<span class="rs-time">' + c.time + '</span></div>' +
+      '<div class="rs-venue">' + c.venue + '</div>';
+    rsCities.appendChild(el);
+
+    var enter = 0.32 + i * 0.4;
+    tl.fromTo(el, {opacity:0, y:46, scale:0.92},
+      {opacity:1, y:0, scale:1, duration:0.4, ease:"back.out(1.8)"}, enter);
+    var dateEl = el.querySelector(".rs-date");
+    tl.fromTo(dateEl, {scale:1.3}, {scale:1, duration:0.24, ease:"back.out(3)"}, enter + 0.08);
+  });
+
+  tl.to(rsHost, {opacity:0, y:-16, duration:0.25, ease:"power2.in"}, __D__ - 0.25);
+  tl.set(rsHost, {visibility:"hidden"}, __D__);
+
+  var UC_TEXT = __UC_TEXT__;
+  if (UC_TEXT) {
+    var ucEl = document.getElementById("urgencyChip");
+    ucEl.querySelector("span").textContent = UC_TEXT;
+    tl.set(ucEl, {visibility:"visible"}, 0);
+    tl.fromTo(ucEl, {opacity:0, scale:0.8, y:-10},
+      {opacity:1, scale:1, y:0, duration:0.26, ease:"back.out(2.4)"}, 0);
+    tl.to(ucEl, {opacity:0, y:-10, duration:0.2, ease:"power2.in"}, __D__ - 0.2);
+    tl.set(ucEl, {visibility:"hidden"}, __D__);
+  }
+""").replace("__KICKER__", json.dumps(rs["kicker"])).replace("__CITIES__", json.dumps(rs["cities"])) \
+    .replace("__UC_TEXT__", json.dumps(rs.get("urgency_text", ""))).replace("__D__", f"{D:.3f}")
+    content = {"kicker": rs["kicker"], "cities": rs["cities"], "top": rs["top"], "scale": rs["scale"],
+               "urgency_text": rs.get("urgency_text", "")}
+    return content, D, body, js
+
+
+def _shared_css():
+    """The exact CSS ruleset _CAP_BLOCK uses, extracted verbatim (not
+    retyped) so every per-element render styles identically to the combined
+    composition -- unused selectors for elements not present in a given
+    element's own render are harmless."""
+    return _CAP_BLOCK.split("<style>", 1)[1].split("</style>", 1)[0]
+
+
+def _render_cacheable(element_type, content, duration, body_html, js_body, cache_dir, no_cache):
+    css = (_shared_css()
+           .replace("__CAP_TOP__", str(content.get("cap_top", "62%")))
+           .replace("__LIST_TOP__", str(content.get("list_top", "44%")))
+           .replace("__ROADSHOW_TOP__", str(content.get("top", "130px")))
+           .replace("__ROADSHOW_SCALE__", str(content.get("scale", 1.0)))
+           .replace("__INFO_L1_SIZE__", "80"))
+    path, hit = caption_cache.render_element(
+        element_type, content, duration, css, body_html, js_body,
+        WORK, cache_dir, hyperframes_cli(), HF_QUALITY, HF_FPS, no_cache=no_cache)
+    return path, hit
+
+
+def build(no_cache=False, clear_cache=False):
+    cache_dir = caption_cache.cache_root(REEL)
+    if clear_cache:
+        caption_cache.clear_cache(REEL)
+
     base = os.path.join(WORK, "base_broll.mp4")
-    proj, n_cards = make_proj(base)
+    proj, n_cards, cacheable = make_proj(base)
 
     overlay = os.path.join(WORK, "captions_overlay.webm")
     cli = hyperframes_cli()
@@ -505,18 +796,76 @@ def build():
     env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
     print(f"rendering {n_cards} caption cards + overlay cards (transparent)...")
     subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(overlay),
-                    "-f", "30", "--format", "webm", "-q", "standard", "--quiet"],
+                    "-f", str(HF_FPS), "--format", "webm", "-q", HF_QUALITY, "--quiet"],
                    cwd=proj, check=True, env=env)
+
+    # Cache-eligible elements: each renders (or reuses a cache hit for) its
+    # own short clip, then gets positioned onto the footage at its resolved
+    # absolute timestamp via -itsoffset -- same technique insert_broll.py's
+    # overlay_wipes() already uses for the grid-wipe transition.
+    layers = []  # (webm_path, abs_start, abs_end)
+    hits = misses = 0
+
+    for card in cacheable["cards"]:
+        content, D, body, js = _card_element(
+            card, cacheable["cap_top"], "highlight" if cacheable["caption_highlight"] else "")
+        path, hit = _render_cacheable("card", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, card["start"], card["start"] + D))
+        hits += hit; misses += not hit
+
+    for hero in cacheable["hero_words"]:
+        content, D, body, js = _hero_element(hero)
+        path, hit = _render_cacheable("hero", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, hero["start"], hero["start"] + D))
+        hits += hit; misses += not hit
+
+    for i, badge in enumerate(cacheable["badges"]):
+        content, D, body, js = _badge_element(badge, i)
+        path, hit = _render_cacheable("badge", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, badge["start"], badge["start"] + D))
+        hits += hit; misses += not hit
+
+    for lst in cacheable["lists"]:
+        content, D, body, js = _list_element(lst, cacheable["list_top"])
+        path, hit = _render_cacheable("list", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, lst["start"], lst["start"] + D))
+        hits += hit; misses += not hit
+
+    rs = cacheable["roadshow"]
+    if rs["cities"]:
+        content, D, body, js = _roadshow_element(rs)
+        path, hit = _render_cacheable("roadshow", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, rs["start"], rs["start"] + D))
+        hits += hit; misses += not hit
+
+    if hits or misses:
+        print(f"  [cache] {hits} hit(s), {misses} miss(es) "
+              f"({len(layers)} cache-eligible element(s) total)")
 
     # CRITICAL: force libvpx-vp9 decode -- ffmpeg's default vp9 decoder drops the
     # alpha plane (reports yuv420p) and would paint opaque black over the footage.
+    # Composite: base footage -> base composition overlay -> each cached
+    # element at its own -itsoffset (mirrors insert_broll.py's overlay_wipes()).
     out = os.path.join(WORK, "captioned.mp4")
-    run(["-i", base,
-         "-c:v", "libvpx-vp9", "-i", overlay,
-         "-filter_complex", "[0:v][1:v]overlay=0:0:format=auto,format=yuv420p[v]",
-         "-map", "[v]", "-map", "0:a", "-c:v", "libx264", "-preset", "medium",
-         "-crf", "18", *COLOR_TAGS, "-c:a", "copy",
-         "-video_track_timescale", "90000", out])
+    cmd = ["-i", base, "-c:v", "libvpx-vp9", "-i", overlay]
+    for path, start, _end in layers:
+        cmd += ["-itsoffset", f"{max(0.0, start):.3f}", "-c:v", "libvpx-vp9", "-i", path]
+
+    filt = ["[0:v][1:v]overlay=0:0:format=auto[v0]"]
+    prev = "v0"
+    for i, (_path, start, end) in enumerate(layers):
+        idx = i + 2
+        nxt = f"v{i + 1}"
+        filt.append(f"[{idx}:v]format=yuva420p[w{idx}]")
+        filt.append(f"[{prev}][w{idx}]overlay=0:0:format=auto:"
+                    f"enable='between(t,{start:.3f},{end:.3f})'[{nxt}]")
+        prev = nxt
+    filt.append(f"[{prev}]format=yuv420p[vout]")
+
+    cmd += ["-filter_complex", ";".join(filt), "-map", "[vout]", "-map", "0:a",
+            "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", *COLOR_TAGS, "-c:a", "copy",
+            "-video_track_timescale", "90000", out]
+    run(cmd)
     print("rendered:", out)
 
 
@@ -1220,4 +1569,4 @@ _CAP_BLOCK = """<!doctype html>
 """
 
 if __name__ == "__main__":
-    build()
+    build(no_cache="--no-cache" in sys.argv, clear_cache="--clear-cache" in sys.argv)
