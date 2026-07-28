@@ -12,7 +12,15 @@ WIPE_DUR = 0.5
 def load_plan():
     """Per-reel B-roll placement: <reel>/broll_plan.json = {"n_segments": N,
     "broll_dur": D, "plan": {"<seg idx>": "<stinger name>"},
-    "boundaries": {"<seg idx>": <absolute time>}}.
+    "boundaries": {"<seg idx>": <absolute time>},
+    "extra_wipes": [{"at": <absolute time>, "style": "grid"|"speed"|"flash"}, ...]}.
+
+    "extra_wipes" (optional, default []) masks a PLAIN hard cut (segment
+    boundary with no B-roll splice -- "boundaries" only ever covers indices
+    that appear in "plan") with a wipe transition of its own. "style" picks
+    which of build_wipe.py's rendered variants to use (default "grid" if
+    omitted) -- mix styles across a reel's cuts for visual variety rather
+    than reusing one flavour everywhere.
 
     Required per reel -- deliberately NO cross-reel fallback. An earlier
     version silently reused a previous reel's fixed 4-stinger placement (at
@@ -32,10 +40,11 @@ def load_plan():
     j = json.load(open(cfg, encoding="utf-8"))
     plan = {int(k): v for k, v in j["plan"].items()}
     boundaries = {int(k): float(v) for k, v in j["boundaries"].items()}
-    return plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3))
+    extra_wipes = [(float(w["at"]), w.get("style", "grid")) for w in j.get("extra_wipes", [])]
+    return plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3)), extra_wipes
 
 
-PLAN, BOUNDARIES, N_SEGMENTS, BROLL_DUR = load_plan()
+PLAN, BOUNDARIES, N_SEGMENTS, BROLL_DUR, EXTRA_WIPES = load_plan()
 
 VF = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30"
 
@@ -57,21 +66,24 @@ def splice_broll_into_segment(seg_path, broll_path, out_path):
     ])
 
 
-def overlay_wipes(video_in, video_out, boundaries):
-    """Mask each hard cut with the brand grid-wipe: peak coverage lands exactly
-    on the boundary, so the swap happens invisibly under full-navy coverage."""
-    wipe = os.path.join(WORK, "wipe.webm")
+def overlay_wipes(video_in, video_out, wipe_specs):
+    """Mask each hard cut with a wipe transition: peak coverage lands exactly
+    on the cut time, so the swap happens invisibly under full coverage.
+    wipe_specs: [(time, wipe_filename), ...] -- wipe_filename resolves under
+    WORK (e.g. "wipe.webm", "wipe_speed.webm", "wipe_flash.webm" -- see
+    build_wipe.py), so different cuts can use different transition styles."""
     half = WIPE_DUR / 2
     cmd = ["-i", video_in]
-    for b in boundaries:
-        start = max(0.0, b - half)
-        cmd += ["-itsoffset", f"{start:.3f}", "-c:v", "libvpx-vp9", "-i", wipe]
+    for t, wipe_file in wipe_specs:
+        start = max(0.0, t - half)
+        cmd += ["-itsoffset", f"{start:.3f}", "-c:v", "libvpx-vp9",
+                "-i", os.path.join(WORK, wipe_file)]
 
     filt = []
     prev = "0:v"
-    for i, b in enumerate(boundaries):
+    for i, (t, wipe_file) in enumerate(wipe_specs):
         idx = i + 1
-        start = max(0.0, b - half)
+        start = max(0.0, t - half)
         end = start + WIPE_DUR
         filt.append(f"[{idx}:v]format=yuva420p[w{idx}]")
         nxt = f"v{idx}"
@@ -106,12 +118,18 @@ def main():
     run(["-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", raw])
 
     out = os.path.join(WORK, "base_broll.mp4")
-    if BOUNDARIES:
-        overlay_wipes(raw, out, sorted(BOUNDARIES.values()))
-        print("wrote", out, "(with grid-wipe transitions masking each cut)")
+    def _wipe_file(style):
+        return "wipe.webm" if style == "grid" else f"wipe_{style}.webm"
+    wipe_specs = sorted(
+        [(t, "wipe.webm") for t in BOUNDARIES.values()] +
+        [(t, _wipe_file(style)) for t, style in EXTRA_WIPES],
+        key=lambda p: p[0])
+    if wipe_specs:
+        overlay_wipes(raw, out, wipe_specs)
+        print("wrote", out, f"(with {len(wipe_specs)} wipe transition(s) masking each cut)")
     else:
         shutil.copy2(raw, out)
-        print("wrote", out, "(no B-roll cuts for this reel -- straight concat)")
+        print("wrote", out, "(no B-roll cuts or extra wipes for this reel -- straight concat)")
 
 
 if __name__ == "__main__":

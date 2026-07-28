@@ -80,6 +80,37 @@ Lower the percentage to move the band up (toward headroom) — check the
 subject's face position in `work/base_broll.mp4` before picking a value so
 captions never land on their face.
 
+## Accent colour (opt-in)
+
+Captions and the hero slam normally lead on gold `#FFC500` (accent words) with
+red `#E84B37` caption boxes. A reel can shift **which brand colour leads**
+via `<reel>/content.json`:
+
+```json
+{ "accent": { "word": "#00B3E3", "highlight_bg": "#100796",
+              "highlight_word_bg": "#00B3E3", "highlight_word_fg": "#100796",
+              "hero": "#00B3E3" } }
+```
+
+- `word` — colour of the accent words (the `gold` list)
+- `highlight_bg` — the per-word caption box in `caption_highlight` mode
+- `highlight_word_bg` / `highlight_word_fg` — the accent word's box and its
+  text. `highlight_word_fg` is separate on purpose: reusing `word` there would
+  put the accent colour on an accent-coloured box and make it unreadable.
+- `hero` — the full-screen hero-word slam
+
+Every key is optional and omitting `accent` (or `{}`) emits no CSS at all, so
+reels that don't opt in render byte-identically. Values should stay inside the
+brand palette — navy `#100796`, gold `#FFC500`, cyan `#00B3E3`, green
+`#31EB7C`, red `#E84B37` — this switches the lead colour, it doesn't invent
+new ones. Badges take their own `color` (navy/cyan/green/gold/red) per badge,
+so set those to match; reserving red for genuine urgency (CTA, "limited
+spots") reads well against a non-red lead.
+
+Implementation: `_set_accent()` in `build_captions.py` emits override rules
+into the `__ACCENT_CSS__` placeholder at the end of the stylesheet, so they win
+on equal specificity. First used on the 2026-07-28 Kapil Adelaide reel.
+
 ## Background music
 
 `build_composite.py` defaults to the Lakemba reel's track (`funky-chunk-kevin-macleod.mp3`
@@ -140,6 +171,19 @@ a success chime under the CTA pop-in. Wire cues via `<reel>/content.json`:
 - Always run `qa_reel.py` after adding/adjusting SFX — short percussive
   transients can push loudnorm's true-peak measurement over target; there's
   an `alimiter` safety net after the loudnorm pass for this.
+- **Scale the volumes down on a cue-heavy reel.** The levels above are tuned
+  for the usual 6-8 cues. The mix lands around -27 LUFS, so the two-pass
+  `loudnorm=I=-14` adds ~13 dB as one flat gain and `alimiter=limit=0.79`
+  clamps the result — the harder and more often those transients hit that
+  ceiling, the more the AAC encode overshoots on decode, so measured true peak
+  ends up well above the limiter's own sample-peak ceiling. On the 2026-07-28
+  Adelaide reel (11 cues) the standard levels measured **-0.1 dBTP** and
+  sounded squashed; `0.30 / 0.55 / 0.50` gave **-1.9 dBTP at an identical
+  -14.2 LUFS**. Loudness unchanged + peak fixed is the signal you got it
+  right. To tell whether the mix or the limiter is at fault, compare
+  `work/mixed.mp4` against `output/reel_final.mp4` with
+  `ffmpeg -af ebur128=peak=true`, and measure a previously shipped reel the
+  same way to see whether it's a regression or the pipeline's norm.
 - **Whoosh/impact sounds must be synthesized from filtered noise layers,
   never a bare sine-frequency sweep** — a sine chirp reads as a sci-fi/game
   blip, not real air movement, and clashes with professional brand content.
@@ -195,6 +239,32 @@ it is not a fixed count. A short reel with few connecting phrases gets fewer
 Each B-roll's design must be specific to what the speaker is actually saying
 at that spot in that reel — never generic, and never reused wholesale from
 another reel.
+
+**Licence rule for real photography.** `build_broll.py`'s default is motion
+graphics, but a reel about a specific place can use real location photos (see
+the 2026-07-27 Tasmania and 2026-07-28 Adelaide reels). When it does, source
+**CC0 / CC BY / public domain only — never CC BY-SA**: incorporating a
+share-alike photo makes the finished reel "Adapted Material" that must itself
+be released under a compatible copyleft licence, which is not acceptable for
+brand content. Filter on licence *before* judging composition. Record every
+asset in `<reel>/assets/<place>/CREDITS.txt` (licence, author, source URL) and
+mirror the **CC BY** ones into `content.json`'s `caption_txt.music_credit` so
+they reach `output/caption.txt` — that field carries image credits too, not
+just the music line. CC0/PD need no attribution.
+
+**Adding new transition styles.** Write a per-reel `wipes_*.py` rather than
+editing `build_wipe.py` — `insert_broll.py` resolves any `extra_wipes` style
+`S` to `work/wipe_S.webm`, so dropping the file into the reel's `work/` is the
+whole wiring, and the shared templates keep rebuilding old reels unchanged.
+Two gotchas: (1) **B-roll cut boundaries hardcode `wipe.webm`** — only
+`extra_wipes` entries can name a style, so have the per-reel module render its
+own `wipe.webm` if you don't want the default grid wipe at those cuts;
+(2) **a wipe must fully cover the frame at the cut** (`DUR/2` = 0.25s). The
+shared grid wipe's last cell only lands ~0.43s and gets away with it because
+`from:"center"` leaves the middle solid — an edge-origin or diagonal cascade
+does not, and the hard cut shows through the uncovered corner. Use
+`stagger HALF*0.4` + `duration HALF*0.56` (closes at 0.24s), and verify by
+compositing the wipe over solid magenta at t=0.25: any magenta left is a gap.
 
 - Write a `<reel>/broll.py` (`STINGERS = [(name, duration, body_html), ...]`)
   and a `<reel>/broll_plan.json` (`n_segments`, `plan: {segment: stinger}`,

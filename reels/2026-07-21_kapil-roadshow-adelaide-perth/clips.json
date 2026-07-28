@@ -1,0 +1,7 @@
+{
+  "clips": [
+    { "name": "20260721_144853", "ext": ".mp4", "keep": [2.10, 7.02], "sdr": false, "grade": "sad" },
+    { "name": "IMG_1925", "ext": ".MOV", "keep": [2.58, 21.01], "sdr": false },
+    { "name": "IMG_1926", "ext": ".MOV", "keep": [2.44, 14.43], "sdr": false }
+  ]
+}

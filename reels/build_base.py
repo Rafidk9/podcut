@@ -22,20 +22,26 @@ ORDER = ["IMG_6897", "IMG_6900", "IMG_6901", "IMG_6903", "IMG_6904",
 
 
 def load_clips():
-    """Return [(name, ext, keep_or_None, sdr), ...]. Prefers <reel>/clips.json;
-    falls back to the legacy ORDER with .MOV and edge-trim (keep=None).
+    """Return [(name, ext, keep_or_None, sdr, grade), ...]. Prefers
+    <reel>/clips.json; falls back to the legacy ORDER with .MOV and edge-trim
+    (keep=None).
 
     "sdr": true on a clip skips the HLG/BT.2020->SDR tone-map path (see VF vs
     SDR_VF). The tone-map is only correct for genuine HDR input (iPhone HLG,
     10-bit BT.2020); an already-SDR / untagged source (e.g. a screen recording)
     must NOT go through zscale=t=linear -- it errors out on unknown input
-    transfer -- so those clips take the plain-SDR normalize path instead."""
+    transfer -- so those clips take the plain-SDR normalize path instead.
+
+    "grade": a key into GRADES (default "normal", i.e. every existing reel's
+    untouched look) -- a per-clip colour-grade override for a clip that should
+    read as tonally distinct from the rest of the reel (e.g. a dramatized
+    hook moment)."""
     cfg = os.path.join(REEL, "clips.json")
     if os.path.isfile(cfg):
         spec = json.load(open(cfg))["clips"]
-        return [(c["name"], c.get("ext", ".mov"), c.get("keep"), c.get("sdr", False))
-                for c in spec]
-    return [(name, ".MOV", None, False) for name in ORDER]
+        return [(c["name"], c.get("ext", ".mov"), c.get("keep"), c.get("sdr", False),
+                 c.get("grade", "normal")) for c in spec]
+    return [(name, ".MOV", None, False, "normal") for name in ORDER]
 
 # The raw iPhone footage is genuine HDR (yuv420p10le, HLG transfer, BT.2020,
 # confirmed via ffprobe). Converting straight to yuv420p without properly
@@ -45,20 +51,39 @@ def load_clips():
 # the wrong lens, producing flat/desaturated results system-wide. zscale+
 # tonemap does the real HDR->SDR conversion; the explicit -color_* flags on
 # the encoder make sure the OUTPUT file's tags actually say SDR/BT.709.
-VF = ("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
-      "tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,"
-      "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-      "eq=contrast=1.03:saturation=0.98,setsar=1,fps=30")
+VF_BASE = ("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,"
+           "tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,"
+           "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,")
 # Plain-SDR path for already-SDR / untagged sources (clips.json "sdr": true) --
-# same scale/crop/grade/fps as VF but WITHOUT the HDR tone-map, which errors on
-# input with no colour tags. setparams asserts BT.709/tv on the (untagged) frames
-# themselves -- the -color_* encoder flags alone only stick the matrix on
-# untagged input, leaving transfer/primaries unsigned; setparams makes libx264
-# write all four to the VUI so the OUTPUT verifies as bt709/tv end to end.
-SDR_VF = ("scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
-          "eq=contrast=1.03:saturation=0.98,setsar=1,fps=30,"
-          "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709,"
-          "format=yuv420p")
+# same scale/crop/grade/fps as VF_BASE but WITHOUT the HDR tone-map, which
+# errors on input with no colour tags. setparams asserts BT.709/tv on the
+# (untagged) frames themselves -- the -color_* encoder flags alone only stick
+# the matrix on untagged input, leaving transfer/primaries unsigned;
+# setparams makes libx264 write all four to the VUI so the OUTPUT verifies as
+# bt709/tv end to end.
+SDR_VF_BASE = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+
+# Named colour-grade presets, selected per clip via clips.json's "grade" field.
+# "normal" (default) is every existing reel's untouched look -- adding this
+# indirection changes nothing unless a clip opts into a different preset.
+# "sad": desaturated, slightly darker/cooler, soft vignette -- for a
+# dramatized hook moment that should read as heavier/anxious in contrast to
+# the rest of the reel, not for the on-brand talking-head segments.
+GRADES = {
+    "normal": {"eq": "contrast=1.03:saturation=0.98", "extra": ""},
+    "sad": {"eq": "contrast=0.97:saturation=0.55:brightness=-0.035:gamma=0.94",
+            "extra": ",vignette=PI/3.7:mode=backward"},
+}
+
+
+def vf_for(sdr, grade):
+    g = GRADES.get(grade, GRADES["normal"])
+    grade_vf = f"eq={g['eq']}{g['extra']}"
+    if sdr:
+        return (SDR_VF_BASE + f"{grade_vf},setsar=1,fps=30,"
+                "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709,"
+                "format=yuv420p")
+    return VF_BASE + f"{grade_vf},setsar=1,fps=30"
 
 
 def load_zoom():
@@ -150,7 +175,7 @@ def main():
     lines = []
     zoom_amount, zoom_segments, zoom_hits = load_zoom()
 
-    for i, (name, ext, keep, sdr) in enumerate(load_clips()):
+    for i, (name, ext, keep, sdr, grade) in enumerate(load_clips()):
         d = json.load(open(os.path.join(WORK, name + ".transcript.json")))
         words = d["words"]
         if keep:
@@ -188,7 +213,7 @@ def main():
         else:
             direction = zoom_segments[i] if i < len(zoom_segments) else "hold"
             zf = zoom_filter(direction, zoom_amount, dur)
-        vf = (SDR_VF if sdr else VF) + zf
+        vf = vf_for(sdr, grade) + zf
         run(["-ss", f"{k_start:.3f}", "-i", os.path.join(IN, name + ext),
              "-t", f"{dur:.3f}", "-vf", vf, "-r", "30",
              "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "19",

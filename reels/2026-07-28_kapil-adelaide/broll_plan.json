@@ -1,0 +1,22 @@
+{
+  "_comment": "9 segments, 8 cuts. THREE cuts carry a real Adelaide cutaway; per reels/README.md B-roll only ever sits over a connecting/filler phrase, so the count is script-judged, not fixed. The three chosen spots are the only genuine connectors in this script: (1) 5.85s, he re-introduces the city -- 'Adelaide is widely recognized as...' -- so the cutaway literally shows the place he is naming; (2) 14.30s, 'Combine that with the...' is a pure linking phrase into the nomination program; (3) 29.35s, 'And hence we are breaking this down in our...' is a pure linking phrase into the roadshow CTA. Nothing sits over the visa/eligibility detail. The remaining 5 cuts get extra_wipes instead, and NO transition style repeats across the reel: grid/speed/flash come from build_wipe.py, cyan/bars/iris/speedcyan/flashcyan from this reel's wipes_cyan.py.",
+  "n_segments": 9,
+  "broll_dur": 1.35,
+  "plan": {
+    "1": "broll_adl_city",
+    "3": "broll_adl_square",
+    "6": "broll_adl_night"
+  },
+  "boundaries": {
+    "1": 5.85,
+    "3": 14.30,
+    "6": 29.35
+  },
+  "extra_wipes": [
+    { "at": 8.87, "style": "bars" },
+    { "at": 18.87, "style": "iris" },
+    { "at": 22.35, "style": "speedcyan" },
+    { "at": 33.82, "style": "cyan" },
+    { "at": 35.77, "style": "flashcyan" }
+  ]
+}

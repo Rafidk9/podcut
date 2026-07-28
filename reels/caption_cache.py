@@ -21,10 +21,14 @@ import os
 import shutil
 import subprocess
 
-CACHE_VERSION = 2  # v2: badge text is now JSON-escaped into JS (v1 broke on
+CACHE_VERSION = 3  # v2: badge text is now JSON-escaped into JS (v1 broke on
                     # apostrophes/quotes in badge text, e.g. "DON'T RISK IT",
                     # silently rendering a blank badge -- see build_captions.py's
-                    # _badge_element())
+                    # _badge_element()). v3: dm_bubble card repositioned lower
+                    # (top:96px -> top:365px) -- it was rendering directly under
+                    # the brand logo chip (build_composite.py overlays the logo
+                    # at y=38, ~174px tall, so anything above ~215px is hidden
+                    # behind it) -- see _dm_bubble_element()/.dm-card CSS.
 
 _ELEMENT_HTML = """<!doctype html>
 <html><head><meta charset="UTF-8"/><meta name="viewport" content="width=1080, height=1920"/>

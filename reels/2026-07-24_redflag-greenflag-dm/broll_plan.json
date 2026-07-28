@@ -1,0 +1,12 @@
+{
+  "n_segments": 6,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 4.20, "style": "red" },
+    { "at": 7.84, "style": "green" },
+    { "at": 11.84, "style": "red" },
+    { "at": 16.32, "style": "green" },
+    { "at": 20.10, "style": "green" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "n_segments": 4,
+  "broll_dur": 1.5,
+  "plan": {
+    "1": "broll_wineglass",
+    "2": "broll_cradle"
+  },
+  "boundaries": {}
+}

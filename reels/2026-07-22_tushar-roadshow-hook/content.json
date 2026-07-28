@@ -1,0 +1,74 @@
+{
+  "asr_fix": { "pfc": "PFEC" },
+  "gold": ["MIGRATION", "POLICY", "ROADSHOW", "PFEC", "GLOBAL", "FREE",
+           "CONSULTATIONS", "STUDENT", "LIMITED", "BIO", "INTERNATIONAL", "REGISTER"],
+  "name": { "text": "Tushar Chopra", "role": "Registered Migration Agent",
+            "start": 0.1, "end": 4.0 },
+  "mara": { "mode": "styled", "marn": "2418420" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "LINK IN BIO", "start": 29.30, "end": 33.15 },
+  "hero_words": [
+    { "anchor_phrase": "don't be one of them", "text": "THEM" }
+  ],
+  "hook_banner": { "text": "", "start": 0.0, "end": 0.0 },
+  "documents": [
+    { "image": "migration360-poster.png",
+      "anchor_phrase": "we're bringing PFEC Global's",
+      "label": "", "poster": true, "width": 1040, "top": "1000px",
+      "pad_after": 0.2, "suppress_captions": true }
+  ],
+  "lists": [],
+  "badges": [
+    { "anchor_phrase": "migration policy changes constantly",
+      "text": "RULES CHANGE FAST", "icon": "brief", "color": "navy", "pos": "top" }
+  ],
+  "flight_map": {
+    "kicker": "5 CITIES. ONE ROADSHOW.",
+    "top": "800px",
+    "start": 21.10,
+    "end": 24.60,
+    "cities": [
+      { "city": "PERTH", "date": "4 AUG" },
+      { "city": "ADELAIDE", "date": "6 AUG" },
+      { "city": "BRISBANE", "date": "11 AUG" },
+      { "city": "MELBOURNE", "date": "12 AUG" },
+      { "city": "TASMANIA", "date": "13-14 AUG" }
+    ]
+  },
+  "decor": {},
+  "caption_highlight": true,
+  "zoom": { "amount": 0.07, "segments": ["in", "out", "in", "out", "in"] },
+  "voice_denoise": true,
+  "music": { "track": "funkorama-kevin-macleod.mp3", "volume": 0.06 },
+  "sfx": {
+    "cues": [
+      { "file": "whoosh-impact.mp3", "at": 4.435, "volume": 0.8 },
+      { "file": "transition-whoosh.mp3", "at": 5.61, "volume": 0.4 },
+      { "file": "transition-whoosh.mp3", "at": 11.93, "volume": 0.4 },
+      { "file": "transition-whoosh.mp3", "at": 17.86, "volume": 0.4 },
+      { "file": "transition-whoosh.mp3", "at": 26.24, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 29.20, "volume": 0.7 }
+    ]
+  },
+  "thumbnail": { "at": 4.9, "kicker": "MIGRATION 360 ROADSHOW",
+                 "headline": "DON'T BE ONE OF **THEM**" },
+  "caption_txt": {
+    "title": "Don't Be One of Them — PFEC Global's Migration360 Roadshow Is Coming to 5 Cities",
+    "body": [
+      "I've sat across from hundreds of students who waited too long to ask for help. Don't be one of them. Migration policy changes constantly — what worked for your friend last year might not work for you today. I've seen students miss opportunities simply because they didn't know their options existed.",
+      "That's exactly why we're bringing PFEC Global's Migration360 Roadshow to your city — one day, free consultations. If you're an international student, this one's for you. Link in the bio, spots are limited, and register now."
+    ],
+    "bullets": [
+      "Migration policy changes constantly — what worked for a friend last year may not apply to you today",
+      "Free, one-day consultations with a Registered Migration Agent in 5 cities",
+      "Perth: 4 August — Adelaide: 6 August — Brisbane: 11 August",
+      "Melbourne: 12 August — Tasmania: 13-14 August",
+      "12pm–2pm at each stop — link in bio, spots are limited, register now"
+    ],
+    "urgency": "Spots are limited across all 5 cities — link in bio before your city fills up.",
+    "contact": "Book your FREE consultation with Tushar Chopra, PFEC Registered Migration Agent (MARN 2418420)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #Roadshow #PerthEvents #AdelaideEvents #BrisbaneEvents #MelbourneEvents #TasmaniaEvents #StudyInAustralia #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Funkorama\" — Kevin MacLeod (incompetech.com)"
+  }
+}

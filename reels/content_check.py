@@ -18,10 +18,11 @@ import os
 # warning, not a schema that blocks unrecognized keys).
 KNOWN_KEYS = {
     "asr_fix", "gold", "name", "mara", "info", "cta", "documents",
-    "cap_top", "list_top", "decor", "lists", "badges", "roadshow",
-    "urgency_chip", "hero_words", "hook_banner", "save_prompt",
+    "cap_top", "list_top", "decor", "lists", "badges", "dm_bubbles", "roadshow",
+    "urgency_chip", "hero_words", "hook_banner", "save_prompt", "flight_map",
+    "landmark_sweep",
     "caption_highlight", "music", "sfx", "voice_denoise", "zoom",
-    "thumbnail", "caption_txt",
+    "thumbnail", "caption_txt", "accent",
 }
 
 
@@ -32,7 +33,11 @@ def check(reel_dir):
     if not os.path.isfile(cfg):
         return
     content = json.load(open(cfg, encoding="utf-8"))
-    unknown = sorted(set(content.keys()) - KNOWN_KEYS)
+    # A leading underscore marks an intentional in-file note (e.g. "_comment",
+    # "_zoom_note") rather than a field any script reads -- reels use these to
+    # explain a non-obvious timing or ASR decision, so don't flag them.
+    unknown = sorted(k for k in set(content.keys()) - KNOWN_KEYS
+                     if not k.startswith("_"))
     for key in unknown:
         print(f"  [content_check] WARNING: content.json has unrecognized top-level "
               f"key {key!r} -- typo? (or update content_check.KNOWN_KEYS if this is "

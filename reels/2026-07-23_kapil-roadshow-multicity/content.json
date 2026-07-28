@@ -1,0 +1,67 @@
+{
+  "asr_fix": { "pfeg": "PFEC", "shore": "TOUR", "p.f.c": "PFEC",
+               "fourth": "4TH", "fourteenth": "14TH" },
+  "gold": ["MIGRATION", "ROADSHOW", "PFEC", "FREE", "CONSULTATION",
+           "REGISTER", "LIMITED", "360"],
+  "name": { "text": "Kapil Kamar", "role": "Principal Migration Agent",
+            "start": 1.3, "end": 5.3 },
+  "mara": { "mode": "styled", "marn": "2418610" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "REGISTER NOW!", "start": 33.4, "end": 36.5 },
+  "hero_words": [
+    { "anchor_phrase": "Six cities, one mission", "text": "SIX CITIES",
+      "pad_after": 0.05, "hold": 0.05 },
+    { "anchor_phrase": "Spots are limited", "text": "LIMITED SPOTS",
+      "pad_after": 0.05, "hold": 0.05 }
+  ],
+  "documents": [
+    { "image": "migration360-poster.png",
+      "anchor_phrase": "PFEG Migration 360 Roadshow",
+      "label": "", "poster": true, "width": 960, "top": "950px",
+      "pad_before": 0.30, "pad_after": 6.60, "suppress_captions": true }
+  ],
+  "badges": [
+    { "anchor_phrase": "bringing free face to face migration consultation",
+      "text": "100% FREE", "icon": "check", "color": "green", "pos": "top-right" },
+    { "anchor_phrase": "bringing free face to face migration consultation",
+      "text": "1-ON-1 CONSULTATION", "icon": "people", "color": "gold", "pos": "top-left" }
+  ],
+  "decor": {},
+  "caption_highlight": true,
+  "zoom": { "amount": 0.07, "segments": ["in", "hold", "in", "in"] },
+  "voice_denoise": true,
+  "music": { "track": "cheery-monday-kevin-macleod.mp3", "volume": 0.05 },
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 0.0, "volume": 0.4 },
+      { "file": "whoosh-impact.mp3", "at": 1.70, "volume": 0.8 },
+      { "file": "transition-whoosh.mp3", "at": 5.50, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 19.36, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 27.54, "volume": 0.45 },
+      { "file": "whoosh-impact.mp3", "at": 32.15, "volume": 0.75 },
+      { "file": "success-chime.mp3", "at": 33.40, "volume": 0.7 }
+    ]
+  },
+  "thumbnail": { "at": 1.9, "kicker": "PFEC MIGRATION360 ROADSHOW",
+                 "headline": "**6 CITIES.** ONE MISSION." },
+  "caption_txt": {
+    "title": "PFEC Global's Migration360 Roadshow Is Coming to 6 Cities This August",
+    "body": [
+      "Six cities, one mission: your migration pathway. The PFEC Global Migration360 Roadshow is hitting every major student hub this August, bringing free face-to-face migration consultations straight to you.",
+      "No booking a paid appointment, no waiting for weeks. Just rock up, sit with a migration agent and get clarity on your next step. Mark your calendar: 4th to 14th of August at your nearest PFEC Global office."
+    ],
+    "bullets": [
+      "Perth: 4 August, 12-2pm",
+      "Adelaide: 6 August, 12-2pm",
+      "Brisbane: 11 August, 12-2pm",
+      "Melbourne: 12 August, 12-2pm",
+      "Hobart: 13 August, 12-2pm",
+      "Launceston: 14 August, 12-2pm"
+    ],
+    "urgency": "Spots are limited — register now via the link in the bio.",
+    "contact": "Book your FREE consultation with Kapil Kamar, PFEC Principal Migration Agent (MARN 2418610)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #Roadshow #PerthEvents #AdelaideEvents #BrisbaneEvents #MelbourneEvents #HobartEvents #LauncestonEvents #StudyInAustralia #SkilledMigration #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Cheery Monday\" — Kevin MacLeod (incompetech.com). Landmark photos: see reels/2026-07-23_kapil-roadshow-multicity/assets/landmarks/CREDITS.txt"
+  }
+}

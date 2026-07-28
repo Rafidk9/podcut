@@ -1,0 +1,281 @@
+{
+  "gold": [
+    "TASMANIA",
+    "MIGRATION",
+    "NOMINATION",
+    "PLACES",
+    "SUBCLASS",
+    "AUGUST",
+    "HOBART",
+    "LAUNCESTON",
+    "FREE",
+    "LIMITED",
+    "SPOTS",
+    "2026-2027",
+    "360",
+    "ROADSHOW",
+    "SKILLED",
+    "CONSULTATION"
+  ],
+  "name": {
+    "text": "Kapil Kamar",
+    "role": "Principal Migration Agent",
+    "start": 0.3,
+    "end": 5.0
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418610"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "cta": {
+    "text": "BOOK YOUR FREE SPOT!",
+    "start": 26.3,
+    "end": 27.96
+  },
+  "caption_style": "clip_wipe",
+  "cap_top": "62%",
+  "list_top": "56%",
+  "hook_banner": {
+    "text": "TASMANIA SKILLED MIGRATION",
+    "start": 0.45,
+    "end": 2.2
+  },
+  "badges": [
+    {
+      "anchor_phrase": "this year, 2026-2027",
+      "text": "2026–27 IS HERE",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top",
+      "effect": "pixelate",
+      "tilt": -5
+    },
+    {
+      "anchor_phrase": "this August 13th and 14th",
+      "text": "13 & 14 AUGUST",
+      "icon": "flag",
+      "color": "cyan",
+      "pos": "top",
+      "tilt": -5
+    },
+    {
+      "anchor_phrase": "free one-to-one migration consultation",
+      "text": "FREE 1-ON-1",
+      "icon": "check",
+      "color": "green",
+      "pos": "top",
+      "effect": "shimmer",
+      "tilt": -5
+    },
+    {
+      "anchor_phrase": "very limited spots",
+      "text": "LIMITED SPOTS",
+      "icon": "brief",
+      "color": "red",
+      "pos": "top",
+      "effect": "particles",
+      "tilt": -5
+    }
+  ],
+  "hero_words": [
+    {
+      "anchor_phrase": "two thousand and fifty places",
+      "text": "<span style=\"color:#FFC500\">2,050</span> <span style=\"font-size:0.5em\">PLACES</span>",
+      "top": "60%",
+      "tilt": -6,
+      "pad_after": 0.5,
+      "hold": 0.3
+    }
+  ],
+  "stat_jumps": [
+    {
+      "anchor_phrase": "twelve fifty for the subclass one ninety",
+      "label": "SUBCLASS 190",
+      "from": "1,200",
+      "to": "1,250",
+      "direction": "up",
+      "design": "count",
+      "top": "1080px",
+      "tilt": -4,
+      "pad_after": 0.4
+    },
+    {
+      "anchor_phrase": "eight hundred for the subclass four nine one",
+      "label": "SUBCLASS 491",
+      "from": "650",
+      "to": "800",
+      "direction": "up",
+      "design": "bars",
+      "top": "900px",
+      "tilt": -4,
+      "pad_after": 0.2
+    }
+  ],
+  "celebrations": [
+    {
+      "_comment": "Anchored on 'lucky you', NOT 'and lucky you' -- the latter opened the window at 13.86s, on top of the SUBCLASS 491 card still fading (to 14.18) plus the 13.93 flash wipe. pad_before 0.29 then pulls the window back to 14.00s so the 'AND LUCKY' caption chunk (starts 14.01) is suppressed instead of printing 'LUCKY' a second time under the confetti; the 491 card's pad_after is trimmed to 0.2 to keep clear of it.",
+      "anchor_phrase": "lucky you",
+      "text": "LUCKY YOU!",
+      "top": "56%",
+      "tilt": -6,
+      "pad_before": 0.29,
+      "pad_after": 0.25,
+      "hold": 0.75
+    }
+  ],
+  "lists": [
+    {
+      "anchor_phrase": "Hobart and Launceston",
+      "title": "WE'RE COMING TO",
+      "items": [
+        "Hobart",
+        "Launceston"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "image": "migration360-poster.png",
+      "anchor_phrase": "PFEC Global Migration 360 Roadshow",
+      "label": "",
+      "poster": true,
+      "width": 980,
+      "top": "930px",
+      "pad_before": 0.15,
+      "pad_after": 3.5,
+      "suppress_captions": true
+    }
+  ],
+  "zoom": {
+    "amount": 0.09,
+    "segments": [
+      "in",
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "out",
+      "hold"
+    ],
+    "hits": [
+      {
+        "clip": 1,
+        "at": [
+          5.28,
+          6.62
+        ],
+        "amount": 0.14
+      },
+      {
+        "clip": 2,
+        "at": [
+          3.18,
+          4.0
+        ],
+        "amount": 0.15
+      },
+      {
+        "clip": 4,
+        "at": [
+          5.72,
+          6.74
+        ],
+        "amount": 0.12
+      },
+      {
+        "clip": 6,
+        "at": [
+          13.6,
+          14.26
+        ],
+        "amount": 0.16
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_comment": "volume is a LINEAR gain on the source file, so it is only comparable between tracks of equal loudness. Motivator masters at -9.1 LUFS vs Cheery Monday -12.2 and Funky Chunk -13.4, i.e. it is the hottest track in assets/music/ -- reusing another track's 0.05 put the bed ~3.1 LU over the house level. 0.030 level-matches the Funky Chunk/Cheery Monday reference and then trims a further ~1.5 dB.",
+  "music": {
+    "track": "motivator-kevin-macleod.mp3",
+    "volume": 0.03
+  },
+  "sfx": {
+    "cues": [
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 2.04,
+        "volume": 0.25
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 5.23,
+        "volume": 0.25
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 6.85,
+        "volume": 0.8
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 10.52,
+        "volume": 0.5
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 12.88,
+        "volume": 0.5
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 13.93,
+        "volume": 0.25
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 14.05,
+        "volume": 0.5
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 19.13,
+        "volume": 0.25
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 25.33,
+        "volume": 0.25
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 26.3,
+        "volume": 0.7
+      }
+    ]
+  },
+  "_thumbnail_comment": "16.5s sits between the 13.93 flash and the 19.13 speed wipe -- every wipe covers the WHOLE frame for ~0.5s, so a grab time inside one (2.0s was) yields a purple gradient wash instead of the presenter.",
+  "thumbnail": {
+    "at": 16.5,
+    "kicker": "TASMANIA 2026–27",
+    "headline": "**2,050** NOMINATION PLACES"
+  },
+  "caption_txt": {
+    "title": "Tasmania's 2026–27 Skilled Migration Nomination Places Are Confirmed",
+    "body": [
+      "Thinking about skilled migration in Tasmania? Here's what you need to know for the 2026–27 program year: Tasmania has been allocated 2,050 state nomination places — 1,250 for the Subclass 190 and 800 for the Subclass 491.",
+      "And if you're in Tasmania, we're coming to you. On 13 and 14 August the PFEC Global Migration 360 Roadshow lands in Hobart and Launceston. Book a FREE one-to-one migration consultation with our registered migration agents — spots are very limited, so get in early."
+    ],
+    "bullets": [],
+    "urgency": "",
+    "contact": "Book your FREE consultation with Kapil Kamar, PFEC Principal Migration Agent (MARN 2418610)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #TasmaniaVisa #StateNomination #Subclass190 #Subclass491 #Hobart #Launceston #AustralianMigration #SkilledMigration #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Motivator\" — Kevin MacLeod (incompetech.com)"
+  }
+}

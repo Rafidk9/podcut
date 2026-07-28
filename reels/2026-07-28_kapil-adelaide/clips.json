@@ -1,0 +1,14 @@
+{
+  "_comment": "P1-P5 = the five takes from Kapil's Drive folder (2026-07-28), 4K HLG/BT.2020 iPhone footage so the default tone-map path applies (no 'sdr' flag). Slate count-in ('Two, one, go.'), P2's false start ('And there you go.') and P5's long flub run ('Sorry. Okay. And hence, sorry, my bad. Let them go...') are trimmed off -- only P5's clean final three lines are used. P2 and P3 are each split at their natural comma pause so every beat gets its own zoom treatment and its own transition style (see broll_plan.json). 9 segments = 8 cuts.",
+  "clips": [
+    { "name": "P1", "ext": ".MOV", "keep": [2.00, 7.85] },
+    { "name": "P2", "ext": ".MOV", "keep": [1.90, 4.92] },
+    { "name": "P2", "ext": ".MOV", "keep": [4.92, 10.35] },
+    { "name": "P3", "ext": ".MOV", "keep": [1.30, 5.87] },
+    { "name": "P3", "ext": ".MOV", "keep": [5.87, 9.35] },
+    { "name": "P4", "ext": ".MOV", "keep": [1.20, 8.20] },
+    { "name": "P5", "ext": ".MOV", "keep": [13.28, 17.75] },
+    { "name": "P5", "ext": ".MOV", "keep": [18.20, 20.15] },
+    { "name": "P5", "ext": ".MOV", "keep": [20.45, 22.45] }
+  ]
+}

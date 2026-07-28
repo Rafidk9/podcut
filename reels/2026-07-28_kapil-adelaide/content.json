@@ -1,0 +1,273 @@
+{
+  "_comment": "Kapil Kamar, Adelaide / South Australia study-to-migration reel. 9 scenes, cyan-led accent (see 'accent'), one distinct transition per cut (see broll_plan.json), three real Adelaide cutaways + one behind-subject Adelaide plate (bg_swap.py). ASR fixes below are load-bearing -- read their note before changing them.",
+  "_asr_note": "ElevenLabs heard 'Migration THURSDAY Roadshow' at 0.08 confidence; the event is the Migration 360 Roadshow (same name as the 2026-07-21/22/23 reels), so thursday->360. It also heard 'best MEDICINE pathways' at 0.72 confidence in a migration reel with no medical content anywhere else in the script -- read as 'migration pathways'. Flagged to the user for an ears-on confirmation; revert this one if he actually said medicine.",
+  "asr_fix": {
+    "thursday": "360",
+    "medicine": "migration"
+  },
+  "accent": {
+    "word": "#00B3E3",
+    "highlight_bg": "#100796",
+    "highlight_word_bg": "#00B3E3",
+    "highlight_word_fg": "#100796",
+    "hero": "#00B3E3"
+  },
+  "gold": [
+    "ADELAIDE",
+    "DESIGNATED",
+    "REGIONAL",
+    "VISA",
+    "NOMINATION",
+    "MIGRATION",
+    "PATHWAYS",
+    "FREE",
+    "LIMITED",
+    "360",
+    "ROADSHOW",
+    "SOUTH",
+    "AUSTRALIA"
+  ],
+  "name": {
+    "text": "Kapil Kamar",
+    "role": "Principal Migration Agent",
+    "start": 1.5,
+    "end": 5.4
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418610"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "hook_banner": {
+    "text": "STUDYING IN ADELAIDE?",
+    "start": 0.0,
+    "end": 1.1
+  },
+  "cta": {
+    "text": "BOOK NOW!",
+    "start": 36.55,
+    "end": 37.77
+  },
+  "caption_highlight": true,
+  "cap_top": "62%",
+  "hero_words": [
+    {
+      "anchor_phrase": "designated regional area",
+      "text": "REGIONAL AREA",
+      "pad_after": 0.05,
+      "hold": 0.05
+    }
+  ],
+  "lists": [
+    {
+      "anchor_phrase": "which means you can have additional years on your temporary grad visa",
+      "title": "WHAT ADELAIDE UNLOCKS",
+      "items": [
+        "Designated regional area",
+        "Extra years on your grad visa",
+        "SA State Nomination"
+      ]
+    }
+  ],
+  "badges": [
+    {
+      "anchor_phrase": "one of the more accessible in the country",
+      "text": "ONE OF THE MOST ACCESSIBLE",
+      "icon": "check",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "particles"
+    },
+    {
+      "anchor_phrase": "until we planned it out with them",
+      "text": "WE MAP IT WITH YOU",
+      "icon": "people",
+      "color": "green",
+      "pos": "top-left"
+    },
+    {
+      "anchor_phrase": "Bring your questions",
+      "text": "100% FREE",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top-right"
+    },
+    {
+      "anchor_phrase": "Limited spots are available",
+      "text": "LIMITED SPOTS",
+      "icon": "star",
+      "color": "red",
+      "pos": "top-left"
+    }
+  ],
+  "documents": [
+    {
+      "image": "migration360-poster.png",
+      "anchor_phrase": "Migration 360 Roadshow in Adelaide",
+      "label": "",
+      "poster": true,
+      "width": 960,
+      "top": "900px",
+      "pad_before": 0.3,
+      "_pad_after_note": "anchor ends 33.63 and scene 7 ends 33.82, so 0.15 lands the poster exactly on the cut. Prior roadshow reels used ~6.6 because their poster closed the video; here two more scenes follow, and a longer hold would suppress the captions and the CTA underneath it.",
+      "pad_after": 0.15,
+      "suppress_captions": true
+    }
+  ],
+  "_roadshow_note": "The event details card over the closing CTA (scenes 8+9). Date and venue were confirmed by the user on 2026-07-28 -- the script itself never states either, so do NOT re-derive them from another reel's flight_map. Window 33.95-37.77 starts just after the cyan wipe on the 33.82 cut clears (34.07), so the card's entrance is not hidden under it, and runs to the end of the content timeline. top=900px puts it on his chest: his face bottoms out at ~43% (825px) and his hands sit at ~60%+ in these two scenes, so 900-1100px threads between them; the 960px-wide poster used the same top earlier and read well. The card suppresses captions in its window -- that is the intended trade here, since the 100% FREE / LIMITED SPOTS badges and the BOOK NOW pill still carry the CTA for sound-off viewers and the card says more than the verbatim words would. No 'time' is set because none is known; build_captions.py now omits the time pill entirely when it is empty rather than drawing an empty cyan blob.",
+  "_roadshow_layout_note": "The card's built-in hierarchy is city pill > date > venue, with venue smallest at 21px. The brief wanted BOTH the date and the location large, so the venue NAME is promoted into the 'city' slot (gold pill, 26px/800) and the 'venue' line carries the street address instead. scale=1.1 enlarges the whole card uniformly; the body is 960px wide so 1.12 is the ceiling before it overruns the 1080 frame.",
+  "roadshow": {
+    "kicker": "MIGRATION 360 ROADSHOW · ADELAIDE",
+    "top": "900px",
+    "scale": 1.1,
+    "start": 33.95,
+    "end": 37.77,
+    "cities": [
+      {
+        "city": "PFEC GLOBAL ADELAIDE OFFICE",
+        "date": "6 AUGUST",
+        "time": "",
+        "venue": "Level M/90 King William Street, Adelaide SA 5000"
+      }
+    ]
+  },
+
+  "decor": {},
+  "_zoom_note": "hits[].at is RAW clip time (that take's own transcript clock), NOT the output timeline -- see build_base.py load_zoom(). clip index = position in clips.json. A clip carrying a hit ignores its 'segments' direction.",
+  "zoom": {
+    "amount": 0.08,
+    "segments": [
+      "in",
+      "in",
+      "out",
+      "in",
+      "in",
+      "out",
+      "in",
+      "in",
+      "in"
+    ],
+    "hits": [
+      {
+        "clip": 1,
+        "at": [
+          3.82,
+          4.86
+        ],
+        "amount": 0.16
+      },
+      {
+        "clip": 6,
+        "at": [
+          15.32,
+          16.8
+        ],
+        "amount": 0.15
+      },
+      {
+        "clip": 8,
+        "at": [
+          21.86,
+          22.3
+        ],
+        "amount": 0.18
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "music": {
+    "track": "nonstop-kevin-macleod.mp3",
+    "volume": 0.05
+  },
+  "_sfx_note": "Transition whooshes sit on the 8 cut times from broll_plan.json (exact final-timeline seconds). whoosh-impact cues are offset by -0.165s because that clip's thud lands 165ms in (assets/sfx/README.md). VOLUMES ARE DELIBERATELY LOWER THAN EARLIER REELS (0.30 / 0.55 / 0.50 vs the usual 0.4-0.45 / 0.8 / 0.7): this reel carries 11 cues rather than the usual 6-8, and at the old levels the SFX transients were what drove the limiter. The mix lands at -27 LUFS so loudnorm adds ~13dB flat, then alimiter=0.79 clamps the result -- the harder those short transients hit that ceiling, the more the AAC encode overshoots on decode. At the old levels qa_reel.py measured -0.1 dBTP (over the -1 target, and audibly squashed); at these levels it measures -1.9 dBTP with identical -14.2 LUFS. Raise these again only if you re-check true peak.",
+  "sfx": {
+    "cues": [
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 5.85,
+        "volume": 0.3
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 7.61,
+        "volume": 0.55
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 8.87,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 14.3,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 18.87,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 22.35,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 29.35,
+        "volume": 0.3
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 31.23,
+        "volume": 0.55
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 33.82,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 35.77,
+        "volume": 0.3
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 36.55,
+        "volume": 0.5
+      }
+    ]
+  },
+  "_thumbnail_note": "at=10.8 sits mid-scene-3, 1.9s clear of the nearest wipe (8.87 and 14.30) and outside all three B-roll cutaway windows and the bg_swap plate, so the still shows Kapil and not a gradient wash or a swapped background. Chosen over 26.5 on expression: at 26.5 he is mid-word with his mouth open, which reads badly frozen as a thumbnail; at 10.8 his mouth is nearly closed and he is mid-gesture, and the standing framing puts the river and skyline behind him, which suits an Adelaide thumbnail better than the park bench.",
+  "thumbnail": {
+    "at": 10.8,
+    "kicker": "MIGRATION 360 ROADSHOW · ADELAIDE",
+    "headline": "STUDYING IN **ADELAIDE**?"
+  },
+  "caption_txt": {
+    "title": "Studying in Adelaide? You Might Already Be on One of Australia's Best Migration Pathways",
+    "body": [
+      "If you're an international student in Adelaide, your location may already be working in your favour — and a lot of students don't realise it until someone maps it out with them.",
+      "Adelaide is widely recognised as a designated regional area, which can mean additional years on your temporary graduate visa once you finish your studies. Combine that with the South Australia State Nomination Program — one of the more accessible in the country — and your time in South Australia can set you up for your migration journey."
+    ],
+    "bullets": [
+      "Adelaide is widely recognised as a designated regional area",
+      "That can mean additional years on your temporary graduate visa",
+      "South Australia's State Nomination Program is one of the more accessible in the country",
+      "We're breaking it all down at the PFEC Global Migration 360 Roadshow in Adelaide — free to attend",
+      "📅 6 August, at the PFEC Global Adelaide Office — Level M/90 King William Street, Adelaide SA 5000"
+    ],
+    "urgency": "Limited spots are available — bring your questions and book your place on 6 August now.",
+    "contact": "Book a FREE consultation with a PFEC Registered Migration Agent — Kapil Kamar, Principal Migration Agent (MARN 2418610)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #StudyInAdelaide #SouthAustralia #AdelaideStudents #StateNomination #RegionalAustralia #485Visa #StudyInAustralia #InternationalStudents #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Nonstop\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nAdelaide imagery: \"Path of Lights HDR\" by Ikhwan Zailani Yuslim (CC BY 2.0) and \"Adelaide City\" by Shav Bird (CC BY 3.0), via Wikimedia Commons"
+  }
+}

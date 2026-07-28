@@ -21,6 +21,19 @@ podcut/assets.
 import os
 import sys
 
+# Content (badge/hero/thumbnail text, etc.) can legitimately contain emoji or
+# other non-ASCII characters -- Windows' default console codepage (cp1252)
+# can't encode those and crashes any print() that hits one. Every pipeline
+# script imports this module, so fixing stdout/stderr encoding once here
+# covers all of them. Guarded: reconfigure() isn't available on every stream
+# (e.g. some CI/redirect setups), so a failure here should never itself take
+# down the build over a cosmetic console-encoding concern.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 REELS_ROOT = os.path.dirname(os.path.abspath(__file__))
 PODCUT_ROOT = os.path.dirname(REELS_ROOT)
 ASSETS_ROOT = os.path.join(PODCUT_ROOT, "assets")

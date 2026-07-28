@@ -1,0 +1,71 @@
+{
+  "asr_fix": { "45": "485", "m-moment": "moment" },
+  "gold": ["VISA", "EXPIRING", "SKILLED", "MIGRATION", "485", "ROADSHOW",
+           "PFEC", "GLOBAL", "PLAN", "ELIGIBLE"],
+  "name": { "text": "Kapil Kamar", "role": "Principal Migration Agent",
+            "start": 4.93, "end": 9.13 },
+  "mara": { "mode": "styled", "marn": "2418610" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "REGISTER NOW!", "start": 31.83, "end": 35.33 },
+  "hero_words": [
+    { "anchor_phrase": "I'm so confused", "text": "CONFUSED",
+      "pad_after": 0.05, "hold": 0.05 }
+  ],
+  "hook_banner": { "text": "VISA EXPIRING? 😰 WATCH THIS", "start": 0.0, "end": 0.8 },
+  "documents": [
+    { "image": "migration360-poster.png",
+      "anchor_phrase": "PFEC Global Migration Three Sixty Roadshow",
+      "label": "", "poster": true, "width": 960, "top": "780px",
+      "pad_before": 0.35, "pad_after": 7.0, "suppress_captions": true }
+  ],
+  "lists": [
+    { "anchor_phrase": "are you eligible for a skilled migration visa do you go for the 485 visa or do you need to continue to study further",
+      "title": "NOT SURE WHAT'S NEXT?",
+      "items": ["Skilled Migration Visa", "485 Visa", "Continue Studying"] }
+  ],
+  "badges": [
+    { "anchor_phrase": "my visa is expiring", "text": "😰 VISA EXPIRING",
+      "icon": "star", "color": "red", "pos": "top-right", "effect": "particles" },
+    { "anchor_phrase": "you're not alone", "text": "YOU'RE NOT ALONE",
+      "icon": "check", "color": "green", "pos": "top-left" }
+  ],
+  "decor": {},
+  "caption_highlight": true,
+  "zoom": { "amount": 0.09, "segments": ["in", "out", "in"],
+    "hits": [
+      { "clip": 0, "at": [6.16, 6.94], "amount": 0.16 },
+      { "clip": 2, "at": [7.20, 10.34], "amount": 0.14 }
+    ]
+  },
+  "voice_denoise": true,
+  "music": { "track": "funky-chunk-kevin-macleod.mp3", "volume": 0.06 },
+  "sfx": {
+    "cues": [
+      { "file": "whoosh-impact.mp3", "at": 3.7, "volume": 0.8 },
+      { "file": "success-chime.mp3", "at": 31.73, "volume": 0.7 }
+    ]
+  },
+  "thumbnail": { "at": 6.43, "kicker": "MIGRATION 360 ROADSHOW",
+                 "headline": "STOP FEELING **CONFUSED** ABOUT YOUR VISA" },
+  "caption_txt": {
+    "title": "Feeling Confused About Your Next Visa Step? PFEC Global's Migration360 Roadshow Is Coming to Your City",
+    "body": [
+      "Oh my God, my visa is expiring and I still don't know what to do — sound familiar? You're not alone. Every year, thousands of international students finish studying and freeze at this exact moment: are you eligible for a skilled migration visa, do you go for the 485 visa, or do you need to continue studying further?",
+      "For this reason, to help you decide on your next steps, PFEC Global is bringing the Migration360 Roadshow to your city. Bring your questions and walk out with an actual plan — not more confusion."
+    ],
+    "bullets": [
+      "Thousands of international students finish studying and freeze at this exact moment — you don't have to",
+      "Not sure if it's a skilled migration visa, a 485 visa, or more study? We help you decide",
+      "Perth: 4 August, 12–2pm — PFEC Global Perth Office",
+      "Adelaide: 6 August, 12–2pm — PFEC Global Adelaide Office",
+      "Brisbane: 11 August, 12–2pm — PFEC Global Brisbane Office",
+      "Melbourne: 12 August, 12–2pm — PFEC Global Melbourne Office",
+      "Tasmania: 13–14 August, 12–2pm — venue TBD"
+    ],
+    "urgency": "Spots are limited — register now so your next step stops being a guessing game.",
+    "contact": "Book your FREE consultation with Kapil Kamar, PFEC Principal Migration Agent (MARN 2418610)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #Migration360 #Roadshow #PerthEvents #AdelaideEvents #BrisbaneEvents #MelbourneEvents #StudyInAustralia #485Visa #SkilledMigration #RegisteredMigrationAgent",
+    "music_credit": "Music: \"Funky Chunk\" — Kevin MacLeod (incompetech.com)"
+  }
+}
