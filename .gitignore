@@ -54,3 +54,14 @@ reels/*/*
 # Only .py files, not __pycache__ (still caught by the blanket rule up top).
 !reels/tests/
 !reels/tests/*.py
+
+# HyperFrames video projects (videos/<project-name>/): track the composition
+# source (index.html, shot-plan.json, meta.json, hyperframes.json,
+# package.json, AGENTS.md/CLAUDE.md, assets/) same as a reel's editorial
+# config. Don't track generated/regenerable output: Studio's preview cache,
+# proof snapshots (regenerate via `npx hyperframes snapshot`), and rendered
+# video (*.mp4/*.mov already ignored above; .webm alpha-overlay exports too).
+videos/*/.thumbnails/
+videos/*/snapshots/
+videos/*/renders/
+videos/*/*.webm

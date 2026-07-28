@@ -1,0 +1,102 @@
+{
+  "category": "logo-reveal",
+  "duration_s": 6.5,
+  "fps": 30,
+  "canvas": { "w": 1080, "h": 1920, "aspect": "9:16" },
+  "style": "PFEC-branded 'livestream announcement' sting, modeled beat-for-beat on a Jitter.video livestream-announcement template but restyled entirely in PFEC's own two-tone brand system (NOT the reference's original colors). Flat navy field, a single gold rule-bar wipe, a heavy-weight typewriter headline, a glossy chrome-shaded 3D brand-mark hero that auto-rotates, and a minimal footer lockup + CTA. Confident, corporate-tech, restrained — motion is the message, no narration. Strictly two-tone/monochrome-with-tint-ramp palette; no gradients or textures on the background. No third-party watermark of any kind (the reference had a jitter.video export badge — explicitly excluded, not part of the design).",
+  "palette": ["#100796", "#FFC500", "#100694", "#908EC0", "#C9C9E2", "#FFFFFF"],
+  "font": "Poppins",
+  "beats": [0.3, 0.8, 3.0, 4.5, 5.0],
+  "export": "mp4",
+
+  "asset_needs": [
+    {
+      "role": "hero-mark-source",
+      "kind": "svg",
+      "source": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\logo\\pfec-logo-colour.svg",
+      "treatment": "none",
+      "note": "Already-resolved local file, no search. Use ONLY the first <g> of this SVG (the abstract mark) — three parallel diagonal parallelogram bars, NOT the wordmark text groups below it. viewBox is 1200x429.3. Bar geometry (for re-derivation in the 3D build): bar 1 (fill #100694) points 103.49,18.37 / 15.96,280.03 / 146.85,280.03 / 234.37,18.37; bar 2 (fill #908EC0) points 281.78,18.37 / 194.24,280.03 / 325.14,280.03 / 412.68,18.37; bar 3 (fill #C9C9E2) points 459.87,18.37 / 372.35,280.03 / 503.24,280.03 / 590.77,18.37. Each bar is a constant-width parallelogram (top width ~130.9px = bottom width), evenly gapped (~47.4px gap top and bottom), all slanted at the same angle (horizontal shift ~87.5px over a height of ~261.7px, i.e. ~18.5deg off vertical, leaning like a forward slash). Combined mark bounding box is ~574.8 x 261.7 (~2.2:1 wide). Left-to-right tint ramp is dark->mid->light: #100694 -> #908EC0 -> #C9C9E2."
+    },
+    {
+      "role": "footer-logo-lockup",
+      "kind": "logo",
+      "source": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\derived\\logo_colour_1000.png",
+      "treatment": "none",
+      "note": "Pre-rendered full-color raster wordmark lockup for the small bottom-left footer placement — simpler than re-deriving the wordmark from SVG at small size. NOT used for the hero mark (hero mark is built from the SVG bars above, 3D-extruded)."
+    }
+  ],
+
+  "block": "logo-outro",
+  "customize": {
+    "reuse_first_note": "Base the piece-assembly / glow-bloom / hold-frame scaffolding on the `logo-outro` catalog block (npx hyperframes add logo-outro), then hand-author the parts it does not cover: (1) the multi-line typewriter headline with inline clock glyph + blinking cursor, (2) the glossy chrome 3D bar-motif build + continuous Y-axis auto-rotate (logo-outro's own reveal is a generic flat piece-assembly, not a shaded 3D extrusion+spin), and (3) the split two-sided footer CTA row (logo lockup left / CTA text right) in place of logo-outro's single centered tagline+URL-pill pattern. This is a hand-authored composite on top of the logo-reveal base per the module's reuse-first-for-gaps guidance.",
+    "background": {
+      "treatment": "flat solid fill, #100796 (PFEC navy), no gradient, no texture, no vignette",
+      "span": "0.0s - end"
+    },
+    "rule_bar": {
+      "beat": "0.3s - 0.8s",
+      "description": "a thin horizontal rule bar wipes in left-to-right near the upper third of the frame, above where the headline block will sit",
+      "color": "#FFC500",
+      "motion_primitive": "bar_wipe (motion-vocabulary 'Accent graphics') — fromTo({scaleX:0},{scaleX:1}, transformOrigin:'left center', duration ~0.5s, ease power3.out)",
+      "hold": "stays on screen static for the rest of the piece once wiped in"
+    },
+    "headline": {
+      "beat": "0.8s - 3.0s",
+      "gap_note": "HAND-AUTHOR — no catalog caption-* block covers a 3-line sequential typewriter with a trailing blinking cursor and an inline icon glyph; build directly per the `typewriter` primitive in motion-vocabulary.md (reveal via clip/width step), one line at a time.",
+      "font": "Poppins, weight 800/900 (Black)",
+      "color": "#FFC500",
+      "alignment": "left, stacked under the rule bar, same left margin as the rule bar's start edge",
+      "cursor": "blinking vertical bar/rectangle in #FFC500 at the end of the actively-typing line only; stops/hides on that line once the next line begins typing",
+      "lines": [
+        { "id": "line-1", "text": "Free Webinar", "types_during": "~0.8s - ~1.6s" },
+        { "id": "line-2", "text": "[Month Day, Year]", "types_during": "~1.6s - ~2.3s", "note": "render EXACTLY this bracketed placeholder text — intentionally an unfilled editable placeholder, not a resolved date" },
+        { "id": "line-3", "text": "[time] AEST", "types_during": "~2.3s - ~3.0s", "note": "render EXACTLY this bracketed placeholder text (also intentionally unfilled). Preceded inline by a small clock/spinner icon glyph in #FFC500, sized to the line's cap-height, ~0.4em gap before the text starts typing." }
+      ],
+      "post_typing": "by 3.0s all 3 lines sit fully typed and static; cursor blink on line 3 may continue briefly then settle/disappear by the time the hero mark lands (~4.5s) so the final hold frame (5.0s+) is clean/loopable"
+    },
+    "hero_mark": {
+      "beat": "3.0s - 4.5s reveal, then continuous auto-rotate 4.5s - end",
+      "gap_note": "HAND-AUTHOR — net-new. Adapt the layered-offset extrusion technique from `rules/3d-text-depth-layers` (stacked, offset, per-layer-shaded copies building a physical depth illusion) from TEXT glyphs to the 3-bar SVG shape geometry, driven via CSS 3D transforms (perspective + rotateY) rather than the rule's default 2D pixel-offset stack, so the extrusion actually reads as a rotating 3D solid, not a static drop-shadow stack.",
+      "source_geometry": "the 3 diagonal parallelogram bars extracted from the SVG first <g> (see asset_needs[0].note for exact coordinates/proportions)",
+      "construction": "each of the 3 bars becomes an extruded 3D slab: a front face + back face + connecting side faces (CSS 3D transform 'panels', e.g. 4-6 stacked depth layers per bar per the depth-layers rule, or true front/back/side quad faces if the Builder prefers a proper cuboid) — front face is the flat colored bar, extrusion depth faces get a darker shaded tone of the same bar's hue to sell volume",
+      "tint_ramp": "left-to-right across the 3 bars: bar 1 = #100694 (base/dark), bar 2 = #908EC0 (mid), bar 3 = #C9C9E2 (light) — matches the source SVG exactly",
+      "shading": "glossy/chrome specular highlight — a bright diagonal highlight streak on each bar's front face (light hue near-white, low opacity, positioned along the bar's slant) plus a darker shadow edge on the trailing extrusion side, so each bar reads as a polished chrome-like slab rather than flat color",
+      "entrance": "scale from 0 -> 1 while fading in (motion-vocabulary 'scale_grow' or 'scale_punch': from scale:0, opacity:0, duration ~0.5-0.7s, ease power2.out or back.out for a touch of glossy weight), landing by ~3.6-3.8s within the 3.0-4.5s window",
+      "post_entrance": "once landed, begins a continuous slow Y-axis auto-rotate loop (rotateY 0deg -> 360deg, ~8-12s per full revolution, linear/no-ease, looping) that keeps spinning uninterrupted through the rest of the piece — this is the hero visual anchor and the only element still animating during the final hold",
+      "position": "centered horizontally, positioned below the headline text block, roughly the visual midpoint of the remaining vertical space above the footer row",
+      "size": "scaled to a comfortable hero size for the 1080-wide canvas given the mark's ~2.2:1 aspect ratio (e.g. target width in the ~700-820px range at full canvas width 1080px, leaving side margins) — not full-bleed"
+    },
+    "footer": {
+      "beat": "4.0s - 5.0s",
+      "gap_note": "HAND-AUTHOR — logo-outro's own footer is a single centered tagline+URL pill; this design needs a two-sided split row instead.",
+      "layout": "bottom row, safe margin ~64-80px from the bottom and side edges of the 1080x1920 canvas",
+      "left": {
+        "content": "PFEC logo+wordmark lockup",
+        "asset": "footer-logo-lockup asset (logo_colour_1000.png)",
+        "size": "small — roughly 140-180px rendered width",
+        "position": "bottom-left"
+      },
+      "right": {
+        "content": "CTA line: \"Learn more \u2014 link in bio\"",
+        "color": "#FFC500 or #FFFFFF (Builder's call for best contrast/read against the navy footer zone)",
+        "font": "Poppins, a lighter/regular weight than the headline (footer text is secondary, not another hero moment)",
+        "position": "bottom-right"
+      },
+      "motion_primitive": "slide_bottom + fade_in on both halves together (motion-vocabulary: from y:+150, opacity:0, ease power4.out, duration ~0.5s), landing by ~5.0s"
+    },
+    "hold": {
+      "beat": "5.0s - 6.5s (end)",
+      "description": "resting/loop-able state on the fully-built frame: rule bar static, all 3 headline lines fully typed (cursor settled/hidden), hero 3D mark continuing its auto-rotate loop, footer fully in place. No new elements enter after 5.0s — only the mark's rotation continues, so the tail can loop cleanly back to a near-identical frame."
+    },
+    "no_watermark": "do not render any tool/export watermark (e.g. no 'jitter.video'-style badge) anywhere in the frame at any beat"
+  },
+
+  "content": {
+    "logo": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\logo\\pfec-logo-colour.svg",
+    "tagline": "Learn more \u2014 link in bio",
+    "url": null,
+    "url_note": "No literal URL pill in this design — the footer CTA line ('Learn more \u2014 link in bio') stands in for it per the brief; do not fabricate a URL.",
+    "headline_lines": ["Free Webinar", "[Month Day, Year]", "[time] AEST"],
+    "footer_logo_asset": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\derived\\logo_colour_1000.png"
+  }
+}
