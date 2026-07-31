@@ -28,6 +28,12 @@ Lakemba
 p fec=>PFEC                        # NEEDS REVIEW: letters spelled out separately
 pay feck=>PFEC                     # NEEDS REVIEW: phonetic near-miss
 p fec global=>PFEC Global          # NEEDS REVIEW: letters spelled out + "Global"
+bvcc=>PFEC                         # CONFIRMED against a real transcript: 2026-07-31
+                                    # Shahid Islam Dhaka/Chattogram expo reel, Part2
+                                    # ("CEO of BVCC Global"), ElevenLabs conf 0.39
+bfgc=>PFEC                         # CONFIRMED against a real transcript: 2026-07-31
+                                    # same reel, Part1 ("CEO of BFGC Global"), a
+                                    # different mishearing of the same phrase
 
 # --- corrections: MARN / MARA (registration acronyms, ASR may hear a
 #     similar short real word instead) ---
@@ -50,3 +56,11 @@ sub class 491=>subclass 491        # NEEDS REVIEW: two-word split of "subclass"
 #     a phonetically similar real word/place instead) ---
 la kemba=>Lakemba                  # NEEDS REVIEW: split into two words
 lakemper=>Lakemba                  # NEEDS REVIEW: phonetic near-miss
+
+# --- corrections: visa condition numbers spoken digit-by-digit (ASR may
+#     transcribe them as spelled-out number words instead of digits) ---
+eight two zero two=>8202           # CONFIRMED against a real transcript: 2026-07-30
+                                    # Rajat Atri Condition 8202 reel said "condition
+                                    # 8202" once as digits (Part2, heard correctly)
+                                    # and once spelled out "eight two zero two"
+                                    # (Part3) -- caption should always show 8202.

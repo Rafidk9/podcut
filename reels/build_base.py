@@ -22,7 +22,7 @@ ORDER = ["IMG_6897", "IMG_6900", "IMG_6901", "IMG_6903", "IMG_6904",
 
 
 def load_clips():
-    """Return [(name, ext, keep_or_None, sdr, grade), ...]. Prefers
+    """Return [(name, ext, keep_or_None, sdr, grade, flip), ...]. Prefers
     <reel>/clips.json; falls back to the legacy ORDER with .MOV and edge-trim
     (keep=None).
 
@@ -35,13 +35,18 @@ def load_clips():
     "grade": a key into GRADES (default "normal", i.e. every existing reel's
     untouched look) -- a per-clip colour-grade override for a clip that should
     read as tonally distinct from the rest of the reel (e.g. a dramatized
-    hook moment)."""
+    hook moment).
+
+    "flip": true un-mirrors a clip recorded with a phone's front/selfie
+    camera -- those save the mirrored preview image, so any backdrop text/logo
+    reads backwards unless corrected. Off by default (rear-camera footage is
+    already correct)."""
     cfg = os.path.join(REEL, "clips.json")
     if os.path.isfile(cfg):
         spec = json.load(open(cfg))["clips"]
         return [(c["name"], c.get("ext", ".mov"), c.get("keep"), c.get("sdr", False),
-                 c.get("grade", "normal")) for c in spec]
-    return [(name, ".MOV", None, False, "normal") for name in ORDER]
+                 c.get("grade", "normal"), c.get("flip", False)) for c in spec]
+    return [(name, ".MOV", None, False, "normal", False) for name in ORDER]
 
 # The raw iPhone footage is genuine HDR (yuv420p10le, HLG transfer, BT.2020,
 # confirmed via ffprobe). Converting straight to yuv420p without properly
@@ -76,14 +81,15 @@ GRADES = {
 }
 
 
-def vf_for(sdr, grade):
+def vf_for(sdr, grade, flip=False):
     g = GRADES.get(grade, GRADES["normal"])
     grade_vf = f"eq={g['eq']}{g['extra']}"
+    flip_vf = "hflip," if flip else ""
     if sdr:
-        return (SDR_VF_BASE + f"{grade_vf},setsar=1,fps=30,"
+        return (flip_vf + SDR_VF_BASE + f"{grade_vf},setsar=1,fps=30,"
                 "setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709,"
                 "format=yuv420p")
-    return VF_BASE + f"{grade_vf},setsar=1,fps=30"
+    return flip_vf + VF_BASE + f"{grade_vf},setsar=1,fps=30"
 
 
 def load_zoom():
@@ -175,7 +181,7 @@ def main():
     lines = []
     zoom_amount, zoom_segments, zoom_hits = load_zoom()
 
-    for i, (name, ext, keep, sdr, grade) in enumerate(load_clips()):
+    for i, (name, ext, keep, sdr, grade, flip) in enumerate(load_clips()):
         d = json.load(open(os.path.join(WORK, name + ".transcript.json")))
         words = d["words"]
         if keep:
@@ -213,7 +219,7 @@ def main():
         else:
             direction = zoom_segments[i] if i < len(zoom_segments) else "hold"
             zf = zoom_filter(direction, zoom_amount, dur)
-        vf = vf_for(sdr, grade) + zf
+        vf = vf_for(sdr, grade, flip) + zf
         run(["-ss", f"{k_start:.3f}", "-i", os.path.join(IN, name + ext),
              "-t", f"{dur:.3f}", "-vf", vf, "-r", "30",
              "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "19",

@@ -22,7 +22,7 @@ KNOWN_KEYS = {
     "urgency_chip", "hero_words", "hook_banner", "save_prompt", "flight_map",
     "landmark_sweep",
     "caption_highlight", "music", "sfx", "voice_denoise", "zoom",
-    "thumbnail", "caption_txt", "accent",
+    "thumbnail", "caption_txt", "accent", "pathway",
 }
 
 

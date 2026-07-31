@@ -76,6 +76,12 @@ DEFAULT_CAPTION = {   # Lakemba reel
     # just not in caption.txt. A reel can still opt back in by setting a non-empty
     # caption_txt.music_credit (e.g. DEFAULT_MUSIC_CREDIT) in its content.json.
     "music_credit": "",
+    # The six-office contact block is ON by default (every existing reel keeps
+    # rebuilding unchanged). Set caption_txt.offices: false for a reel where a
+    # single-agent contact line already covers it and the full branch/phone
+    # list would read as unrelated boilerplate (e.g. a compliance/warning
+    # reel with no event or office visit being promoted).
+    "offices": True,
 }
 
 
@@ -95,6 +101,7 @@ def build():
     bullets = "\n".join("✔ " + b for b in c["bullets"])
     # Music credit is opt-in; when empty, drop the line entirely (no dangling gap).
     credit = f"{c['music_credit'].strip()}\n\n" if c.get("music_credit", "").strip() else ""
+    offices = f"{OFFICES}\n\n" if c.get("offices", True) else ""
     text = f"""{bold(c['title'])}
 
 {body}
@@ -106,9 +113,7 @@ def build():
 
 \U0001F4F2 {c['contact']}
 
-{OFFICES}
-
-\U0001F30F {c['website']}
+{offices}\U0001F30F {c['website']}
 
 {c['hashtags']}
 

@@ -15,6 +15,13 @@ CON = os.path.join(ASSETS, "endcards", "consultation-card.mp4")
 DEFAULT_MUSIC = "funky-chunk-kevin-macleod.mp3"   # the Lakemba reel's track
 CAPTIONED = os.path.join(WORK, "captioned.mp4")
 OPENER = os.path.join(WORK, "opener.mp4")     # optional cold open (build_opener.py)
+# Optional closing announcement sting, dropped in by a per-reel build script
+# (e.g. <reel>/sting/ rendered to here). Sits AFTER the content and BEFORE the
+# disclaimer/consultation end cards, so an event announcement lands as the
+# payoff without pushing the hook off the front of the reel. Silent by design:
+# it carries no narration and the music bed already runs across the whole
+# assembled timeline. Delete WORK/sting.mp4 to ship without it.
+STING = os.path.join(WORK, "sting.mp4")
 
 
 def music_config():
@@ -114,20 +121,42 @@ def main():
          "-filter_complex", "[1]scale=432:-1[lg];[0][lg]overlay=(W-w)/2:38[v]",
          "-map", "[v]", "-map", "0:a", *VENC, *AENC, content])
 
-    # 2) normalize + concat: (opener) + content + disclaimer + consultation
+    # 2) normalize + concat: (opener) + content + (sting) + disclaimer + consultation
     segs = []
     if os.path.exists(OPENER):
         print("cold open found -- prepending", OPENER)
         op_norm = os.path.join(WORK, "seg_opener.mp4"); norm_segment(OPENER, op_norm); segs.append(op_norm)
     c_norm = os.path.join(WORK, "seg_content.mp4"); norm_segment(content, c_norm); segs.append(c_norm)
+    if os.path.exists(STING):
+        print("closing sting found -- appending", STING)
+        st_norm = os.path.join(WORK, "seg_sting.mp4"); norm_segment(STING, st_norm, silent=True); segs.append(st_norm)
     d_norm = os.path.join(WORK, "seg_dis.mp4"); norm_segment(DIS, d_norm, silent=True); segs.append(d_norm)
     o_norm = os.path.join(WORK, "seg_con.mp4"); norm_segment(CON, o_norm, silent=True); segs.append(o_norm)
     lst = os.path.join(WORK, "final_concat.txt")
     open(lst, "w").write("\n".join(f"file '{os.path.abspath(s)}'" for s in segs) + "\n")
     assembled = os.path.join(WORK, "assembled_full.mp4")
-    run(["-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", assembled])
+    # Each seg_*.mp4 above is independently re-encoded (own PTS starting at 0),
+    # so a plain "-c copy" concat here just offsets those timestamps by each
+    # segment's own declared duration -- floating-point rounding at the seams
+    # can leave ONE frame with a slightly-off duration, which throws off
+    # ffprobe's r_frame_rate GCD heuristic (e.g. reads 150fps on an otherwise
+    # perfectly-30fps video -- avg_frame_rate stays correct, so this is a
+    # metadata artifact, not a real stutter, but qa_reel.py flags it either
+    # way). Re-encoding once here with explicit -r 30 gives every frame a
+    # uniform 1/30s duration end to end, same VENC every other stage uses.
+    run(["-f", "concat", "-safe", "0", "-i", lst, "-fps_mode", "cfr", *VENC, *AENC, assembled])
 
     total = dur(assembled)
+    # content.json's sfx "at" times (and every other content.json timestamp)
+    # are documented as being on the assembled/CONTENT timeline, same clock
+    # captions/badges/hero_words resolve against -- none of which know an
+    # opener exists, since it's a wholly separate segment prepended here at
+    # the LAST stage. But sfx cues are mixed directly onto the FINAL audio
+    # track (assembled's own audio, which already has the opener concatenated
+    # on) via absolute-second adelay below -- without this offset every cue
+    # would land `opener_dur` seconds too early relative to the badge/word it
+    # was timed against.
+    opener_dur = dur(op_norm) if os.path.exists(OPENER) else 0.0
 
     # 3) music bed with real sidechain ducking: the music sits quiet on its own
     # (volume 0.05, ~-26dB off the raw master) AND automatically dips further
@@ -162,7 +191,7 @@ def main():
     sfx_filters = []
     for i, c in enumerate(cues):
         idx = sfx_base_idx + i
-        delay_ms = round(c["at"] * 1000)
+        delay_ms = round((c["at"] + opener_dur) * 1000)
         sfx_filters.append(
             f"[{idx}:a]adelay={delay_ms}|{delay_ms},volume={c.get('volume', 0.8)}[sfx{i}]")
     if cues:

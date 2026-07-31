@@ -26,7 +26,10 @@ MARA_BADGE_CROP = "1030:920:112:165"   # ffmpeg crop=w:h:x:y -> just the badge
 # "name"'s start/end -- "mara" no longer carries its own timing. MARA badge
 # "mode": "image" = official OMARA sticker PNG in the tile; "styled" = a CSS/SVG
 # recreation of that same sticker (dotted-Australia map + registration number)
-# for agents with no official artwork on file.
+# for agents with no official artwork on file; "none" = no badge tile at all
+# (presenter isn't a registered migration agent, e.g. an education counsellor
+# or team lead -- "marn" is ignored in this mode) -- the info-panel (name/role)
+# fills the full card width instead.
 DEFAULT_CONTENT = {
     "asr_fix": {"pfc": "PFEC", "pfpc": "PFEC", "ils": "IELTS"},
     # {} = this project's usual gold/red lead; see _set_accent() to shift it.
@@ -41,7 +44,11 @@ DEFAULT_CONTENT = {
              "marn": "2117037"},
     "info": {"kicker": "FREE MIGRATION SEMINAR", "line1": "13 JULY", "line1_size": 80,
              "line2": "Lakemba Senior Citizens' Centre", "start": 40.2, "end": 43.5},
-    "cta": {"text": "REGISTER NOW!", "start": 48.75, "end": 50.75},
+    # "subheading" (opt-in, default "" = no subheading, container sits at the
+    # usual y1420): a short line above the pill, e.g. a rhetorical hook --
+    # "Ready to start your Nursing Journey?" -- the container shifts up so
+    # the pill itself still lands at its usual position either way.
+    "cta": {"text": "REGISTER NOW!", "subheading": "", "start": 48.75, "end": 50.75},
     # Document highlights (e.g. redacted visa grant letters): each entry names
     # an anchor_phrase (words as spoken, NOT a timecode) -- resolve_anchor()
     # locates it in the transcript. "image" is a filename under <reel>/documents/
@@ -74,10 +81,25 @@ DEFAULT_CONTENT = {
     #              "title": "WE ASSESS YOUR",
     #              "items": ["Eligibility", "Qualifications", "Visa options"]}]
     "lists": [],
+    # Visa-pathway chain (opt-in): a 3-step "A -> B -> C" flow with an icon per
+    # step and animated arrows drawing between them, sitting under a stylized
+    # Australia map with one city pinned. Use it when the speaker describes a
+    # SEQUENCE (student visa -> 485 -> PR) rather than an unordered list --
+    # "lists" ticks items off, this one shows progression. Like "lists" it owns
+    # its window and suppresses the plain 2-word caption there. e.g.:
+    #   "pathway": {"anchor_phrase": "from student visa to a temporary graduate 485",
+    #     "kicker": "YOUR PATH IN WA", "top": "600px", "city": "PERTH",
+    #     "pad_after": 4.4,
+    #     "steps": [{"label": "Student Visa", "sub": "Subclass 500", "icon": "cap"},
+    #               {"label": "SC485", "sub": "Temporary Graduate", "icon": "brief"},
+    #               {"label": "PR Pathway", "sub": "Permanent Residency", "icon": "flag"}]}
+    # "city" must be a key of _AU_CITY_VB; "icon" is cap | brief | flag | people
+    # | star | check | medical. Exactly 3 steps fit the 960px card -- more will overflow.
+    "pathway": {},
     # Quick emphasis badges (opt-in): a small designed icon+text pill that pops
     # in at a key spoken moment, floats, then leaves -- for punching up the hook
     # and a couple of payoff beats. anchor_phrase-driven (same rule as the rest);
-    # icon: check|star|brief|people|flag, color: navy|cyan|green|gold|red, pos: top|top-left|
+    # icon: check|star|brief|people|flag|medical, color: navy|cyan|green|gold|red, pos: top|top-left|
     # top-right (all sit in the upper zone, clear of the caption band + face).
     # "effect" (opt-in, per-badge, catalog-sourced -- see registry blocks/
     # components explored via `hyperframes catalog`): none/absent = the
@@ -397,6 +419,36 @@ def make_proj(base):
     def _in_list_window(t):
         return any(l["start"] <= t < l["end"] for l in lists)
 
+    # Visa-pathway chain: one per reel, same anchor + own-window + caption
+    # suppression contract as "lists". pad_after is usually generous here --
+    # the speaker typically keeps talking through the steps he just named, and
+    # the chain should stay up for that whole explanation rather than vanish
+    # on the last word of the anchor phrase.
+    pathway = None
+    pw_spec = content.get("pathway") or {}
+    if pw_spec.get("steps"):
+        pstart, pend, score = resolve_anchor(
+            words, pw_spec["anchor_phrase"],
+            pad_before=pw_spec.get("pad_before", 0.15),
+            pad_after=pw_spec.get("pad_after", 0.3))
+        if pstart is None:
+            print(f"  [pathway] SKIPPING: anchor_phrase {pw_spec['anchor_phrase']!r} "
+                  f"not found (best {score:.2f} < 0.8)")
+        elif pw_spec.get("city") and pw_spec["city"].upper() not in _AU_CITY_VB:
+            print(f"  [pathway] SKIPPING: city {pw_spec['city']!r} has no known map "
+                  f"position (known: {', '.join(sorted(_AU_CITY_VB))})")
+        else:
+            pathway = {"kicker": pw_spec.get("kicker", ""),
+                       "top": pw_spec.get("top", "600px"),
+                       "city": (pw_spec.get("city") or "").upper(),
+                       "steps": pw_spec["steps"][:3],
+                       "start": round(pstart, 3), "end": round(pend, 3)}
+            print(f"  [pathway] {[s['label'] for s in pathway['steps']]} -> "
+                  f"{pstart:.2f}s-{pend:.2f}s (anchor match {score:.2f})")
+
+    def _in_pathway_window(t):
+        return bool(pathway) and pathway["start"] <= t < pathway["end"]
+
     # Full-screen hero-word slams: like "lists", each owns its window and
     # suppresses the plain 2-word caption there. Used sparingly (see
     # DEFAULT_CONTENT docstring) for the single strongest hook/payoff line.
@@ -554,6 +606,12 @@ def make_proj(base):
     if mara["mode"] == "image":
         crop_mara_badge(proj, mara["src"])
         badge_class, badge_inner = "has-image", '<img src="mara_badge.png" alt="MARA registration"/>'
+    elif mara["mode"] == "none":
+        # Presenter isn't a registered migration agent (e.g. an education
+        # counsellor/team lead) -- no MARN to show, so drop the badge tile
+        # entirely rather than render a MARA sticker with a blank number.
+        # The info-panel (name/role) naturally fills the full card width.
+        badge_class, badge_inner = "hidden", ""
     else:   # "styled": recreate the OMARA sticker (dot-map + reg-number strip)
         badge_class = ""
         badge_inner = (f'<div class="dotmap">{_dotmap_html()}</div>'
@@ -648,13 +706,23 @@ def make_proj(base):
     def _in_doc_suppress_window(t):
         return any(d.get("suppress_captions") and d["start"] <= t < d["end"] for d in docs)
 
+    # A CTA subheading sits ABOVE the pill, pushing the card up into the
+    # plain caption band's usual vertical range -- the two-word caption's
+    # opaque box would otherwise render on top of (and hide) the subheading
+    # text. Only suppress when a subheading is actually present; the
+    # text-only pill (no subheading) sits low enough to never collide.
+    def _in_cta_sub_window(t):
+        _cta = content.get("cta") or {}
+        return bool(_cta.get("subheading")) and _cta.get("start", 0) <= t < _cta.get("end", 0)
+
     cards = []
     for k, g in enumerate(chunks):
         start = g[0]["start"]
         end = chunks[k + 1][0]["start"] if k + 1 < len(chunks) else g[-1]["end"] + 0.4
         if (_in_list_window(start) or _in_roadshow_window(start) or _in_hero_window(start)
-                or _in_doc_suppress_window(start) or _in_flight_map_window(start)):
-            continue   # the checklist/roadshow/hero-slam/poster-document/flight-map overlay owns this window
+                or _in_doc_suppress_window(start) or _in_flight_map_window(start)
+                or _in_pathway_window(start) or _in_cta_sub_window(start)):
+            continue   # the checklist/roadshow/hero-slam/poster-document/flight-map/pathway/cta-sub overlay owns this window
         spans = []
         for w in g:
             is_gold = norm(w["text"]).upper() in gold
@@ -756,12 +824,15 @@ def make_proj(base):
             .replace("__CTA_START__", str(cta["start"]))
             .replace("__CTA_END__", str(cta["end"]))
             .replace("__CTA_TEXT__", cta["text"])
+            .replace("__CTA_SUB__", cta.get("subheading", ""))
+            .replace("__CTA_CARD_CLASS__", "has-sub" if cta.get("subheading") else "")
             .replace("__NAME_START__", str(nm["start"]))
             .replace("__NAME_END__", str(nm["end"]))
             .replace("__NAME_TEXT__", nm["text"])
             .replace("__NAME_ROLE__", nm["role"])
             .replace("__BADGE_CLASS__", badge_class)
             .replace("__ACCENT_CSS__", _ACCENT_CSS)
+            .replace("__PATHWAY_TOP__", str((content.get("pathway") or {}).get("top", "600px")))
             .replace("__BADGE_INNER__", badge_inner))
     open(os.path.join(proj, "index.html"), "w", encoding="utf-8").write(html)
     json.dump({"id": "pfec-captions", "name": "PFEC captions + overlays"},
@@ -786,7 +857,8 @@ def make_proj(base):
     # build() can render+composite them separately instead.
     cacheable = {
         "cards": cards, "hero_words": hero_words, "badges": badges, "lists": lists,
-        "dm_bubbles": dm_bubbles,
+        "dm_bubbles": dm_bubbles, "pathway": pathway,
+        "accent_word": (content.get("accent") or {}).get("word", "#FFC500"),
         "roadshow": {"kicker": roadshow.get("kicker", ""), "top": roadshow.get("top", "130px"),
                      "scale": roadshow.get("scale", 1.0), "start": roadshow.get("start", 0.0),
                      "end": roadshow.get("end", 0.0), "cities": rs_cities,
@@ -866,7 +938,8 @@ def _badge_element(badge, index):
     star:  '<svg viewBox="0 0 24 24" fill="COL"><path d="M12 2l1.9 7.1L21 11l-7.1 1.9L12 20l-1.9-7.1L3 11l7.1-1.9z"/></svg>',
     brief: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2.4" fill="COL"/><path d="M8.5 8V6.4A2 2 0 0110.5 4.4h3A2 2 0 0115.5 6.4V8" stroke="COL" stroke-width="2.2"/></svg>',
     people: '<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" fill="COL"/><circle cx="16" cy="8" r="3" fill="COL"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="COL" stroke-width="2" stroke-linecap="round"/><path d="M12 20c0-2.6 1.9-4.8 4.4-5.5" stroke="COL" stroke-width="2" stroke-linecap="round"/></svg>',
-    flag: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 21V3" stroke="COL" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4h12l-3.4 4L18 12H6Z" fill="COL"/></svg>'
+    flag: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 21V3" stroke="COL" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4h12l-3.4 4L18 12H6Z" fill="COL"/></svg>',
+    medical: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 3v5a3.5 3.5 0 0 0 7 0V3" stroke="COL" stroke-width="2" stroke-linecap="round"/><path d="M8.5 9.5v2.5a5.5 5.5 0 0 0 11 0v-2" stroke="COL" stroke-width="2" stroke-linecap="round"/><circle cx="19.5" cy="9.5" r="2.3" fill="COL"/><circle cx="5" cy="3" r="1.2" fill="COL"/><circle cx="12" cy="3" r="1.2" fill="COL"/></svg>'
   };
   function mulberry32(seed){
     return function(){
@@ -1025,6 +1098,137 @@ def _list_element(lst, list_top):
     return content, D, body, js
 
 
+# Step icons for the pathway chain. Same flat-vector, no-licence approach as
+# ICONS above; "COL" is substituted with the accent colour at build time.
+_PW_ICONS = {
+    "cap": ('<svg viewBox="0 0 24 24" fill="none"><path d="M12 3 22 8l-10 5L2 8l10-5Z" fill="COL"/>'
+            '<path d="M6 11.2V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.8" stroke="COL" stroke-width="2.1" '
+            'stroke-linecap="round"/></svg>'),
+    "brief": ('<svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="7.5" width="19" height="12.5" rx="2.4" fill="COL"/>'
+              '<path d="M8.5 7.5V6A2 2 0 0110.5 4h3A2 2 0 0115.5 6v1.5" stroke="COL" stroke-width="2.2" '
+              'stroke-linecap="round"/></svg>'),
+    "flag": ('<svg viewBox="0 0 24 24" fill="none"><path d="M5.5 21V3" stroke="COL" stroke-width="2.4" '
+             'stroke-linecap="round"/><path d="M5.5 4h13l-3.6 4.2L18.5 12.6h-13Z" fill="COL"/></svg>'),
+    "people": ('<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" fill="COL"/>'
+               '<circle cx="16" cy="8" r="3" fill="COL"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6" '
+               'stroke="COL" stroke-width="2" stroke-linecap="round"/>'
+               '<path d="M12 20c0-2.6 1.9-4.8 4.4-5.5" stroke="COL" stroke-width="2" stroke-linecap="round"/></svg>'),
+    "star": '<svg viewBox="0 0 24 24" fill="COL"><path d="M12 2l1.9 7.1L21 11l-7.1 1.9L12 20l-1.9-7.1L3 11l7.1-1.9z"/></svg>',
+    "check": ('<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.6l4.4 4.4L19 7" stroke="COL" '
+              'stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'),
+    "medical": ('<svg viewBox="0 0 24 24" fill="none"><path d="M5 3v5a3.5 3.5 0 0 0 7 0V3" stroke="COL" '
+                'stroke-width="2" stroke-linecap="round"/><path d="M8.5 9.5v2.5a5.5 5.5 0 0 0 11 0v-2" '
+                'stroke="COL" stroke-width="2" stroke-linecap="round"/>'
+                '<circle cx="19.5" cy="9.5" r="2.3" fill="COL"/>'
+                '<circle cx="5" cy="3" r="1.2" fill="COL"/><circle cx="12" cy="3" r="1.2" fill="COL"/></svg>'),
+}
+
+# Curly (wavy, hand-drawn feel) connector between pathway steps, replacing a
+# plain straight bar + triangular arrowhead. "curl-path" is a 1.5-hump wave
+# drawn in with a stroke-dashoffset animation (pathLength="100" normalizes
+# the dash math regardless of true SVG path length); "tip-path" is a small
+# curved hook (not a triangle) that pops in once the wave finishes drawing.
+_PW_ARROW_SVG = (
+    '<svg viewBox="0 0 70 24" fill="none">'
+    '<path class="curl-path" pathLength="100" d="M3,13 Q13,2 23,13 T43,13 T61,13" '
+    'stroke="COL" stroke-width="3.4" stroke-linecap="round"/>'
+    '<path class="tip-path" d="M54,6 Q65,13 54,20" '
+    'stroke="COL" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    '</svg>')
+
+# The same stylized Australia silhouette build_opener.py's cold-open uses, so
+# the two read as the same map. viewBox 0 0 100 86; _AU_CITY_VB is calibrated
+# against exactly this path.
+_AU_MAP_SVG = (
+    '<svg viewBox="0 0 100 86">'
+    '<path d="M 68 2 L 72 10 L 78 22 L 80 32 L 76 44 L 70 52 L 60 58 L 48 54 L 36 56'
+    ' L 20 58 L 12 50 L 8 38 L 10 24 L 16 14 L 26 8 L 34 12 L 40 6 L 48 4'
+    ' L 52 14 L 58 12 L 62 2 Z" fill="rgba(255,255,255,.10)" stroke="ACC" stroke-width="1.6"/>'
+    '<ellipse cx="66" cy="70" rx="5" ry="4" fill="rgba(255,255,255,.10)" stroke="ACC" stroke-width="1.4"/>'
+    '</svg>')
+
+_PW_MAP_W, _PW_MAP_H = 132, 113
+
+
+def _pathway_element(pw, accent):
+    """3-step visa-pathway chain with icons + animated arrows, under a stylized
+    Australia map with the reel's city pinned. Steps and arrows land one after
+    another so the sequence reads as a progression, not a static diagram."""
+    D = round(pw["end"] - pw["start"], 3)
+    kicker = (f'<div class="pw-kicker">{pw["kicker"]}</div>' if pw["kicker"] else "")
+
+    pin = ""
+    if pw["city"]:
+        vx, vy = _AU_CITY_VB[pw["city"]]
+        px = round(vx / 100.0 * _PW_MAP_W, 1)
+        py = round(vy / 86.0 * _PW_MAP_H, 1)
+        pin = (f'<div class="pw-pulse" style="left:{px}px;top:{py}px"></div>'
+               f'<div class="pw-pin" style="left:{px}px;top:{py}px"></div>'
+               f'<div class="pw-pinlbl" style="left:{px}px;top:{py}px">{pw["city"]}</div>')
+    map_html = (f'<div class="pw-map">{_AU_MAP_SVG.replace("ACC", accent)}{pin}</div>')
+
+    chain = ""
+    for i, st in enumerate(pw["steps"]):
+        if i:
+            chain += (f'<div class="pw-arrow">{_PW_ARROW_SVG.replace("COL", accent)}</div>')
+        ico = _PW_ICONS.get(st.get("icon", "check"), _PW_ICONS["check"]).replace("COL", accent)
+        final = " final" if i == len(pw["steps"]) - 1 else ""
+        sub = f'<div class="pw-sub">{st["sub"]}</div>' if st.get("sub") else ""
+        chain += (f'<div class="pw-step{final}"><span class="pw-ico">{ico}</span>'
+                  f'<div class="pw-lbl">{st["label"]}</div>{sub}</div>')
+
+    scoped = f'<style>#pathwayHost{{--pw-acc:{accent}}}</style>'
+    body = (f'{scoped}<div id="pathwayHost"><div class="pw-card" id="elPathway">'
+            f'{kicker}{map_html}<div class="pw-chain">{chain}</div></div></div>')
+
+    js = ("""
+  var card = document.getElementById("elPathway");
+  tl.set(card, {visibility:"visible"}, 0);
+  tl.fromTo(card, {opacity:0, y:30, scale:0.93},
+    {opacity:1, y:0, scale:1, duration:0.34, ease:"back.out(1.7)"}, 0);
+
+  var svg = card.querySelector(".pw-map svg");
+  if (svg) tl.fromTo(svg, {opacity:0}, {opacity:1, duration:0.30, ease:"power2.out"}, 0.14);
+  var pin = card.querySelector(".pw-pin");
+  var pulse = card.querySelector(".pw-pulse");
+  var pinlbl = card.querySelector(".pw-pinlbl");
+  if (pin) {
+    tl.fromTo(pin, {opacity:0, scale:0}, {opacity:1, scale:1, duration:0.26, ease:"back.out(3)"}, 0.44);
+    tl.fromTo(pulse, {opacity:0.85, scale:1}, {opacity:0, scale:3.4, duration:0.9, ease:"power2.out"}, 0.50);
+    tl.fromTo(pinlbl, {opacity:0, y:6}, {opacity:1, y:0, duration:0.22, ease:"power2.out"}, 0.56);
+  }
+
+  // steps land in order, each arrow drawing into the next step
+  var steps = card.querySelectorAll(".pw-step");
+  var arrows = card.querySelectorAll(".pw-arrow");
+  var t0 = 0.72, gap = 0.55;
+  steps.forEach(function(s, i){
+    var at = t0 + i * gap;
+    tl.fromTo(s, {opacity:0, y:22, scale:0.86},
+      {opacity:1, y:0, scale:1, duration:0.30, ease:"back.out(2.4)"}, at);
+    var a = arrows[i];
+    if (a) {
+      var curl = a.querySelector(".curl-path"), tip = a.querySelector(".tip-path");
+      if (curl) tl.fromTo(curl, {strokeDashoffset:100},
+        {strokeDashoffset:0, duration:0.30, ease:"power2.out"}, at + 0.24);
+      if (tip) tl.fromTo(tip, {opacity:0, scale:0.4},
+        {opacity:1, scale:1, duration:0.18, ease:"back.out(2.6)"}, at + 0.54);
+    }
+  });
+  // final step gets one confirming pop once the chain is complete
+  var last = steps[steps.length - 1];
+  if (last) tl.to(last, {scale:1.06, duration:0.16, yoyo:true, repeat:1,
+                         ease:"sine.inOut"}, t0 + steps.length * gap);
+
+  tl.to(card, {opacity:0, y:-20, scale:0.96, duration:0.28, ease:"power2.in"}, __D__ - 0.28);
+  tl.set(card, {visibility:"hidden"}, __D__);
+""").replace("__D__", f"{D:.3f}")
+
+    content = {"kicker": pw["kicker"], "city": pw["city"], "steps": pw["steps"],
+               "top": pw["top"], "accent": accent}
+    return content, D, body, js
+
+
 def _roadshow_element(rs):
     D = round(rs["end"] - rs["start"], 3)
     body = '<div id="roadshowCard"></div><div id="urgencyChip"><span></span></div>'
@@ -1098,6 +1302,7 @@ def _render_cacheable(element_type, content, duration, body_html, js_body, cache
            .replace("__ROADSHOW_TOP__", str(content.get("top", "130px")))
            .replace("__ROADSHOW_SCALE__", str(content.get("scale", 1.0)))
            .replace("__ACCENT_CSS__", _ACCENT_CSS)
+           .replace("__PATHWAY_TOP__", str(content.get("top", "600px")))
            .replace("__INFO_L1_SIZE__", "80"))
     path, hit = caption_cache.render_element(
         element_type, content, duration, css, body_html, js_body,
@@ -1160,6 +1365,13 @@ def build(no_cache=False, clear_cache=False):
         layers.append((path, dm["start"], dm["start"] + D))
         hits += hit; misses += not hit
 
+    pw = cacheable.get("pathway")
+    if pw:
+        content, D, body, js = _pathway_element(pw, cacheable.get("accent_word", "#FFC500"))
+        path, hit = _render_cacheable("pathway", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, pw["start"], pw["start"] + D))
+        hits += hit; misses += not hit
+
     rs = cacheable["roadshow"]
     if rs["cities"]:
         content, D, body, js = _roadshow_element(rs)
@@ -1176,25 +1388,57 @@ def build(no_cache=False, clear_cache=False):
     # Composite: base footage -> base composition overlay -> each cached
     # element at its own -itsoffset (mirrors insert_broll.py's overlay_wipes()).
     out = os.path.join(WORK, "captioned.mp4")
-    cmd = ["-i", base, "-c:v", "libvpx-vp9", "-i", overlay]
-    for path, start, _end in layers:
-        cmd += ["-itsoffset", f"{max(0.0, start):.3f}", "-c:v", "libvpx-vp9", "-i", path]
+    # Composite in batches of BATCH_SIZE layers per ffmpeg invocation, each
+    # pass's output becoming the next pass's base -- rather than one giant
+    # command with every layer's "-itsoffset ... -i <path>" plus the whole
+    # filter_complex chain. A single-command build works fine for the usual
+    # 30-45s reel's few dozen elements, but a much longer reel (this one:
+    # 163s, 265 cache-eligible elements) pushes the ffmpeg argv well past
+    # Windows' CreateProcess command-line ceiling -- hit for the first time
+    # on the 2026-07-31 Shahid Dhaka/Chattogram reel (FileNotFoundError
+    # [WinError 206] "filename or extension is too long"). Batching produces
+    # an identical final composite; it only bounds each individual command's
+    # length so this scales to any reel length. crf=18 on every intermediate
+    # pass costs a little generational quality vs. one pass, but crf=18 is
+    # visually near-transparent and the pipeline already re-encodes several
+    # times downstream (wipe overlay, broll splice, final composite), so a
+    # few extra generations on an unusually long reel is an acceptable
+    # trade-off against a build that can't complete at all.
+    BATCH_SIZE = 40
+    cur_base = base
+    cur_has_overlay = True
+    n_batches = max(1, -(-len(layers) // BATCH_SIZE)) if layers else 1
+    for batch_num, start_i in enumerate(range(0, max(len(layers), 1), BATCH_SIZE), start=1):
+        chunk = layers[start_i:start_i + BATCH_SIZE]
+        is_last = start_i + BATCH_SIZE >= len(layers)
+        pass_out = out if is_last else os.path.join(WORK, f"captioned_pass{batch_num}.mp4")
 
-    filt = ["[0:v][1:v]overlay=0:0:format=auto[v0]"]
-    prev = "v0"
-    for i, (_path, start, end) in enumerate(layers):
-        idx = i + 2
-        nxt = f"v{i + 1}"
-        filt.append(f"[{idx}:v]format=yuva420p[w{idx}]")
-        filt.append(f"[{prev}][w{idx}]overlay=0:0:format=auto:"
-                    f"enable='between(t,{start:.3f},{end:.3f})'[{nxt}]")
-        prev = nxt
-    filt.append(f"[{prev}]format=yuv420p[vout]")
+        cmd = ["-i", cur_base]
+        if cur_has_overlay:
+            cmd += ["-c:v", "libvpx-vp9", "-i", overlay]
+            filt = ["[0:v][1:v]overlay=0:0:format=auto[v0]"]
+            prev, layer_start_idx = "v0", 2
+        else:
+            filt, prev, layer_start_idx = [], "0:v", 1
+        for path, start, _end in chunk:
+            cmd += ["-itsoffset", f"{max(0.0, start):.3f}", "-c:v", "libvpx-vp9", "-i", path]
 
-    cmd += ["-filter_complex", ";".join(filt), "-map", "[vout]", "-map", "0:a",
-            "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", *COLOR_TAGS, "-c:a", "copy",
-            "-video_track_timescale", "90000", out]
-    run(cmd)
+        for i, (_path, start, end) in enumerate(chunk):
+            idx = layer_start_idx + i
+            nxt = f"v{i + 1}"
+            filt.append(f"[{idx}:v]format=yuva420p[w{idx}]")
+            filt.append(f"[{prev}][w{idx}]overlay=0:0:format=auto:"
+                        f"enable='between(t,{start:.3f},{end:.3f})'[{nxt}]")
+            prev = nxt
+        filt.append(f"[{prev}]format=yuv420p[vout]")
+
+        cmd += ["-filter_complex", ";".join(filt), "-map", "[vout]", "-map", "0:a",
+                "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", *COLOR_TAGS, "-c:a", "copy",
+                "-video_track_timescale", "90000", pass_out]
+        run(cmd)
+        print(f"  [captions] batch {batch_num}/{n_batches}: {len(chunk)} layer(s) "
+              f"-> {os.path.basename(pass_out)}")
+        cur_base, cur_has_overlay = pass_out, False
     print("rendered:", out)
 
 
@@ -1374,8 +1618,16 @@ _CAP_BLOCK = """<!doctype html>
   #landmarkSweep .ls-date{font-family:"Poppins",sans-serif;font-weight:700;font-size:22px;
      color:#FFC500;letter-spacing:.03em;margin-top:2px}
 
-  /* Overlay card: CTA red pill (bottom, y ~1420 per spec) */
+  /* Overlay card: optional subheading + CTA red pill (bottom, pill lands
+     ~y1420 per spec whether or not a subheading is present -- the container
+     top shifts up by the subheading's own rendered height so the pill's
+     final position stays put). */
   #ctaCard{position:absolute;left:0;right:0;top:1420px;text-align:center;opacity:0;visibility:hidden}
+  #ctaCard.has-sub{top:1348px}
+  #ctaCard .sub{display:none;font-family:"Poppins",sans-serif;font-weight:800;font-size:32px;
+     color:#fff;letter-spacing:.01em;line-height:1.15;margin:0 40px 16px;
+     text-shadow:0 4px 14px rgba(0,0,0,.55)}
+  #ctaCard.has-sub .sub{display:block}
   #ctaCard .pill{display:inline-block;background:#E84B37;color:#fff;font-family:"Poppins",sans-serif;
      font-weight:800;font-size:42px;letter-spacing:.03em;padding:26px 56px;border-radius:999px;
      box-shadow:0 14px 34px rgba(0,0,0,.4)}
@@ -1395,6 +1647,7 @@ _CAP_BLOCK = """<!doctype html>
      display:flex;flex-direction:column;align-items:center;justify-content:center;
      text-align:center;padding:12px 8px;gap:3px;overflow:hidden}
   #introCard .badge-tile.has-image{padding:0}
+  #introCard .badge-tile.hidden{display:none}
   #introCard .badge-tile.has-image img{display:block;width:100%;height:100%;object-fit:cover}
   #introCard .dotmap{display:grid;grid-template-columns:repeat(9,4.2px);
      grid-auto-rows:4.2px;gap:1.6px}
@@ -1538,6 +1791,44 @@ _CAP_BLOCK = """<!doctype html>
      display:flex;align-items:center;justify-content:center;font-size:38px;
      box-shadow:0 8px 22px rgba(0,0,0,.45)}
 
+  /* Visa-pathway chain (content.json "pathway"): a navy card holding a small
+     stylized Australia map with one city pinned, above a 3-step icon chain
+     joined by arrows that draw in sequence. Widths are fixed rather than
+     fluid so the row can never reflow mid-animation: 3x250 + 2x70 = 890 into
+     908px of inner width. The arrow bar scales while its head is a separate
+     absolutely-positioned element -- scaling a border-triangle pseudo-element
+     would distort the arrowhead, and animating width would reflow the row. */
+  #pathwayHost{position:absolute;left:0;right:0;top:__PATHWAY_TOP__;text-align:center}
+  .pw-card{position:relative;display:inline-block;width:960px;padding:24px 24px 28px;
+     border-radius:24px;background:linear-gradient(135deg,#100796 0%,#1c1099 60%,#2a0f8f 100%);
+     box-shadow:0 18px 40px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.14);
+     opacity:0;visibility:hidden}
+  .pw-kicker{display:inline-block;background:var(--pw-acc,#FFC500);color:#0a2e17;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:23px;letter-spacing:.05em;
+     padding:8px 22px;border-radius:999px;margin-bottom:12px}
+  .pw-map{position:relative;width:132px;height:113px;margin:0 auto 8px}
+  .pw-map svg{position:absolute;left:0;top:0;width:132px;height:113px;opacity:0}
+  .pw-pin{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+     background:var(--pw-acc,#FFC500);border:3px solid #fff;opacity:0}
+  .pw-pulse{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+     border:3px solid var(--pw-acc,#FFC500);opacity:0}
+  .pw-pinlbl{position:absolute;transform:translate(-50%,-200%);opacity:0;white-space:nowrap;
+     font-family:"Poppins",sans-serif;font-weight:800;font-size:17px;color:#fff;
+     background:rgba(16,7,150,.92);border:1px solid var(--pw-acc,#FFC500);
+     border-radius:999px;padding:3px 12px}
+  .pw-chain{display:flex;align-items:stretch;justify-content:center}
+  .pw-step{width:250px;flex:0 0 250px;background:rgba(255,255,255,.07);
+     border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:11px 8px 13px;opacity:0}
+  .pw-step.final{background:rgba(255,255,255,.15);border-color:var(--pw-acc,#FFC500)}
+  .pw-ico{width:50px;height:50px;margin:0 auto 8px;display:block}
+  .pw-ico svg{width:50px;height:50px;display:block}
+  .pw-lbl{font-family:"Poppins",sans-serif;font-weight:900;font-size:25px;color:#fff;line-height:1.12}
+  .pw-sub{font-family:"Poppins",sans-serif;font-weight:600;font-size:16px;color:#C9C9E2;margin-top:4px}
+  .pw-arrow{width:70px;flex:0 0 70px;position:relative;align-self:center;height:24px}
+  .pw-arrow svg{width:100%;height:100%;display:block;overflow:visible}
+  .pw-arrow .curl-path{stroke-dasharray:100;stroke-dashoffset:100}
+  .pw-arrow .tip-path{opacity:0;transform-origin:54px 13px}
+
   /* Per-reel accent override (content.json "accent") -- emitted LAST so it
      wins on equal specificity. Empty for every reel that doesn't opt in, so
      existing reels keep rendering byte-identically. See _accent_css(). */
@@ -1561,7 +1852,7 @@ _CAP_BLOCK = """<!doctype html>
   <div id="roadshowCard"></div>
   <div id="flightMap"></div>
   <div id="landmarkSweep"></div>
-  <div id="ctaCard"><div class="pill">__CTA_TEXT__</div></div>
+  <div id="ctaCard" class="__CTA_CARD_CLASS__"><div class="sub">__CTA_SUB__</div><div class="pill">__CTA_TEXT__</div></div>
   <div id="introCard">
     <div class="badge-tile __BADGE_CLASS__">__BADGE_INNER__</div>
     <div class="info-panel"><div class="nm">__NAME_TEXT__</div><div class="role">__NAME_ROLE__</div></div>
@@ -1969,7 +2260,8 @@ _CAP_BLOCK = """<!doctype html>
     star:  '<svg viewBox="0 0 24 24" fill="COL"><path d="M12 2l1.9 7.1L21 11l-7.1 1.9L12 20l-1.9-7.1L3 11l7.1-1.9z"/></svg>',
     brief: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="12" rx="2.4" fill="COL"/><path d="M8.5 8V6.4A2 2 0 0110.5 4.4h3A2 2 0 0115.5 6.4V8" stroke="COL" stroke-width="2.2"/></svg>',
     people: '<svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="3" fill="COL"/><circle cx="16" cy="8" r="3" fill="COL"/><path d="M2 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="COL" stroke-width="2" stroke-linecap="round"/><path d="M12 20c0-2.6 1.9-4.8 4.4-5.5" stroke="COL" stroke-width="2" stroke-linecap="round"/></svg>',
-    flag: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 21V3" stroke="COL" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4h12l-3.4 4L18 12H6Z" fill="COL"/></svg>'
+    flag: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 21V3" stroke="COL" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 4h12l-3.4 4L18 12H6Z" fill="COL"/></svg>',
+    medical: '<svg viewBox="0 0 24 24" fill="none"><path d="M5 3v5a3.5 3.5 0 0 0 7 0V3" stroke="COL" stroke-width="2" stroke-linecap="round"/><path d="M8.5 9.5v2.5a5.5 5.5 0 0 0 11 0v-2" stroke="COL" stroke-width="2" stroke-linecap="round"/><circle cx="19.5" cy="9.5" r="2.3" fill="COL"/><circle cx="5" cy="3" r="1.2" fill="COL"/><circle cx="12" cy="3" r="1.2" fill="COL"/></svg>'
   };
   // Seeded PRNG (mulberry32, adapted from the catalog's caption-particle-burst
   // component) -- NOT Math.random(): HyperFrames re-seeks/re-renders frames,
