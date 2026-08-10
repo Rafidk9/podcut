@@ -14,6 +14,10 @@ engine/.podcut_jobs/
 node_modules/
 web/.next/
 web/out/
+cloud/.next/
+cloud/out/
+# Cloudflare Pages / Wrangler scratch
+.wrangler/
 
 # Secrets -- any .env anywhere, not just engine/.env (e.g. nested tool checkouts
 # under sample/work dirs can carry their own)

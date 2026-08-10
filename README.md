@@ -47,7 +47,30 @@ podcut/
   engine/          Python pipeline (the core)
     podcut/        library + CLI
     tests/         unit tests for the switching engine (no media/keys needed)
-  web/             Next.js UI (upload, configure, run, preview)
+  web/             Next.js UI (upload, configure, run, preview) -- runs locally
+  reels/           branded vertical-reel pipeline (see reels/README.md)
+  cloud/           hosted UI for queueing renders from anywhere
+  worker/          the daemon that runs those renders on your machine
+  supabase/        schema for the cloud/worker pair
+```
+
+## Rendering from anywhere
+
+`cloud/` + `worker/` let you queue and watch a reel build from your phone while
+this machine does the actual work. The cloud side is a static page on Cloudflare
+Pages plus a free Supabase project; the laptop runs a small daemon that polls for
+jobs and streams logs back.
+
+**Raw footage never leaves the machine.** Only reel names, file sizes, log lines
+and the three finished deliverables (`reel_final.mp4`, `thumbnail.jpg`,
+`caption.txt`) go to the cloud. Footage arrives via a Drive link the laptop
+fetches itself.
+
+Setup is in [`worker/README.md`](worker/README.md) (laptop) and
+[`cloud/README.md`](cloud/README.md) (hosting). Both free, no card.
+
+```bash
+python worker/podcut_worker.py --dry-run   # check it sees your reels; no network
 ```
 
 ## Quick start
