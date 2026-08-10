@@ -132,12 +132,11 @@ export default function ReelDetail({ reel, worker, jobs, onBack, onOpenJob }) {
           Re-run QA
         </button>
       </div>
-      {busy && (
-        <div className="meta" style={{ marginTop: 9 }}>
-          A job is already running. Only one builds at a time — two would collide
-          in the same <code>work/</code> folder.
-        </div>
-      )}
+      <div className="meta" style={{ marginTop: 9 }}>
+        {busy
+          ? <>A job is already running. Only one builds at a time — two would collide in the same <code>work/</code> folder.</>
+          : <>A draft preview is fast and stays on the laptop; only a full build gets mirrored here.</>}
+      </div>
 
       <div className="section">Fetch footage from Drive</div>
       <div className="meta" style={{ marginBottom: 9 }}>

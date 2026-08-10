@@ -195,7 +195,19 @@ def now_iso() -> str:
 _probe_cache: dict = {}
 
 
+_size_cache: dict = {}
+SIZE_TTL_S = 300
+
+
 def _dir_bytes(path: str) -> int:
+    """Total size of a directory tree, cached for SIZE_TTL_S.
+
+    work/ runs to ~2 GB across thousands of files; walking it on every catalog
+    scan would have the worker doing more I/O idling than rendering.
+    """
+    hit = _size_cache.get(path)
+    if hit and time.monotonic() - hit[0] < SIZE_TTL_S:
+        return hit[1]
     total = 0
     for root, _dirs, files in os.walk(path):
         for f in files:
@@ -203,6 +215,7 @@ def _dir_bytes(path: str) -> int:
                 total += os.path.getsize(os.path.join(root, f))
             except OSError:
                 pass
+    _size_cache[path] = (time.monotonic(), total)
     return total
 
 
@@ -748,17 +761,21 @@ def handle_job(cfg: Config, sb: Supabase, job: dict) -> None:
         code, error = 1, f"{type(e).__name__}: {e}"
         log.add(error, stream="worker")
 
+    # Full builds only. A preview writes reel_final_preview.mp4 and leaves
+    # reel_final.mp4 alone, so uploading here would mirror the PREVIOUS full
+    # build's output and present it as this job's result.
     deliverables = []
-    if kind in ("build", "preview") and code == 0:
+    if kind == "build" and code == 0:
         deliverables = upload_deliverables(cfg, sb, reel, log)
+    elif kind == "preview" and code == 0:
+        log.add("preview built -- watch it on the laptop at "
+                "output/reel_final_preview.mp4 (previews are never mirrored "
+                "here; they are not deliverables)", stream="worker")
 
+    # build_all.py already translates "QA refused the preview as a deliverable"
+    # into exit 0 itself, so a non-zero exit from a preview means something
+    # actually broke. Do not second-guess it here.
     status = "done" if code == 0 else ("cancelled" if code == 130 else "failed")
-    if kind == "preview" and code != 0 and not error:
-        # qa_reel.py is supposed to refuse a preview build as a deliverable.
-        # That is the check working, not the build failing.
-        log.add("preview finished -- QA correctly refused it as a deliverable",
-                stream="worker")
-        status = "done"
 
     log.flush()
     sb.update("jobs", {"id": f"eq.{job_id}"}, {

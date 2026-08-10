@@ -100,8 +100,12 @@ reel. It refuses when:
   and cannot be changed mid-process.
 - **Transcripts always go to `work/`**, never `work_preview/`. A preview build
   copies them forward itself (`reel_paths.py`).
-- **A preview build failing QA is success.** `qa_reel.py` is designed to refuse
-  anything marked preview as a deliverable; the worker reports that as done.
+- **Previews are never mirrored to the cloud.** A preview writes
+  `output/reel_final_preview.mp4` and leaves `reel_final.mp4` untouched, so
+  uploading after one would mirror the *previous* full build and present it as
+  the preview's result. Watch previews on the laptop. (`build_all.py` already
+  turns "QA refused the preview as a deliverable" into exit 0 by itself, so a
+  non-zero exit from a preview means something genuinely broke.)
 - **Cancelling kills the whole process tree.** ffmpeg and headless Chromium are
   grandchildren; terminating only the Python parent would leave them holding
   `work/` open.
