@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Anton";
+        src: url("assets/fonts/anton.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "Exo 2";
+        src: url("assets/fonts/exo2.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: transparent;
+      }
+
+      /* ---- demo backdrop -------------------------------------------------
+         Not part of the style. The source template renders on alpha; this
+         coral field only exists so the MP4 matches the reference stills.
+         Delete this clip (or set data-hidden) and render --format webm for
+         the transparent overlay variant.                                    */
+      #bg {
+        position: absolute;
+        inset: 0;
+        background: #fa5f6e;
+      }
+
+      #stage {
+        position: absolute;
+        inset: 0;
+      }
+      #scene {
+        position: absolute;
+        inset: 0;
+      }
+      #persp {
+        position: absolute;
+        left: 260px;
+        top: 260px;
+        width: 1400px;
+        height: 560px;
+        perspective: 1700px;
+      }
+      #group {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1400px;
+        height: 560px;
+        transform-style: preserve-3d;
+      }
+
+      /* one vertical slice of the artwork */
+      .strip {
+        position: absolute;
+        top: 0;
+        height: 560px;
+        overflow: hidden;
+        will-change: transform;
+      }
+      .art {
+        position: absolute;
+        top: 0;
+        width: 1400px;
+        height: 560px;
+      }
+      /* per-slice fold shading, driven by the unfurl */
+      .shade {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          100deg,
+          rgba(0, 0, 0, 0.44) 0%,
+          rgba(0, 0, 0, 0.06) 38%,
+          rgba(255, 255, 255, 0.34) 62%,
+          rgba(0, 0, 0, 0.3) 100%
+        );
+      }
+
+      /* ---- the paper scrap ---- */
+      .scrap {
+        position: absolute;
+        left: 70px;
+        top: 120px;
+        width: 1260px;
+        height: 430px;
+      }
+      .paper {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            120% 150% at 22% 18%,
+            #ffffff 0%,
+            #f6f6f4 46%,
+            #e2e2df 78%,
+            #cfcfcb 100%
+          );
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.5;
+        mix-blend-mode: multiply;
+      }
+      .creases,
+      .doodle,
+      .border {
+        position: absolute;
+        inset: 0;
+        overflow: visible;
+      }
+
+      /* ---- collage elements (sit outside the torn clip so they overhang) ---- */
+      .hl {
+        position: absolute;
+        left: 0px;
+        top: 362px;
+        width: 344px;
+        height: 148px;
+        background: #fe96eb;
+        transform-origin: left center;
+      }
+      .tape {
+        position: absolute;
+        left: 10px;
+        /* roughly a third of the strip sits on the paper, the rest
+           overhangs the torn top edge — contained inside the scrap it
+           stops reading as tape and becomes a printed yellow box */
+        top: 45px;
+        width: 404px;
+        height: 122px;
+        background: linear-gradient(
+          172deg,
+          #f2f684 0%,
+          #ecf167 30%,
+          #d8de4e 58%,
+          #eef373 78%,
+          #c9cf42 100%
+        );
+        opacity: 0.94;
+      }
+      .accent {
+        position: absolute;
+        left: 806px;
+        top: 434px;
+        width: 462px;
+        height: 32px;
+        transform-origin: left center;
+        overflow: visible;
+      }
+
+      .h1 {
+        position: absolute;
+        left: 110px;
+        top: 158px;
+        font-family: "Anton", sans-serif;
+        font-size: 186px;
+        line-height: 1;
+        color: #000;
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+      .h2 {
+        position: absolute;
+        left: 106px;
+        top: 352px;
+        font-family: "Exo 2", sans-serif;
+        font-size: 127px;
+        line-height: 1;
+        color: #000;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="7"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- For the transparent overlay: add data-hidden to this element, then
+           `npx hyperframes render . --format webm -o ./renders/overlay-alpha.webm` -->
+      <div id="bg" class="clip" data-start="0" data-duration="7" data-track-index="0"></div>
+
+      <div id="stage" class="clip" data-start="0" data-duration="7" data-track-index="1">
+        <!-- shared filter defs; one instance, referenced by every slice -->
+        <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+          <defs>
+            <filter id="fx-grain" x="0%" y="0%" width="100%" height="100%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.9"
+                numOctaves="4"
+                seed="7"
+                result="n"
+              />
+              <feColorMatrix
+                in="n"
+                type="matrix"
+                values="0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.30 0"
+              />
+            </filter>
+            <filter id="fx-rough" x="-8%" y="-25%" width="116%" height="150%">
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.028"
+                numOctaves="4"
+                seed="19"
+                result="t"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="t"
+                scale="9"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+          </defs>
+        </svg>
+
+        <div id="scene">
+          <div id="persp">
+            <div id="group"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ------------------------------------------------------------------
+         Deterministic pseudo-randomness.
+         Everything irregular in this piece — the torn silhouette, the paper
+         creases, the biro doodle, the per-slice crumple pose — comes from
+         this fixed-seed generator, so every load and every render frame is
+         byte-identical. No unseeded Math.random anywhere.
+      ------------------------------------------------------------------ */
+      function mulberry32(seed) {
+        let a = seed >>> 0;
+        return function () {
+          a = (a + 0x6d2b79f5) >>> 0;
+          let t = a;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      const rnd = mulberry32(20260812);
+      const rng = (lo, hi) => lo + rnd() * (hi - lo);
+
+      const ART_W = 1400,
+        ART_H = 560;
+      const SCRAP_X = 70,
+        SCRAP_Y = 120,
+        SCRAP_W = 1260,
+        SCRAP_H = 430;
+      const STRIPS = 20;
+      const STRIP_W = ART_W / STRIPS;
+
+      /* ---- torn silhouette: walk the rect perimeter, jitter every step ---- */
+      function tornPolygon(w, h, step, amp) {
+        const pts = [];
+        const push = (x, y) => pts.push(`${x.toFixed(1)}px ${y.toFixed(1)}px`);
+        for (let x = 0; x < w; x += step) push(x, rng(-amp, amp * 0.5));
+        for (let y = 0; y < h; y += step) push(w + rng(-amp * 0.5, amp), y);
+        for (let x = w; x > 0; x -= step) push(x, h + rng(-amp * 0.5, amp));
+        for (let y = h; y > 0; y -= step) push(rng(-amp, amp * 0.5), y);
+        return `polygon(${pts.join(",")})`;
+      }
+      const scrapClip = tornPolygon(SCRAP_W, SCRAP_H, 17, 13);
+      const tapeClip = tornPolygon(404, 122, 26, 7);
+      // A marker swipe is uneven along its whole length, not just the ends —
+      // a big step with a big amplitude reads as a brush, a small one reads
+      // as a torn rectangle.
+      const hlClip = tornPolygon(344, 148, 46, 17);
+
+      /* ---- paper creases: faint fold lines left over from the crumple ---- */
+      let creases = "";
+      for (let i = 0; i < 13; i++) {
+        const x1 = rng(0, SCRAP_W),
+          y1 = rng(0, SCRAP_H);
+        const x2 = x1 + rng(-330, 330),
+          y2 = y1 + rng(-190, 190);
+        const mx = (x1 + x2) / 2 + rng(-30, 30),
+          my = (y1 + y2) / 2 + rng(-30, 30);
+        creases +=
+          `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ` +
+          `${x2.toFixed(1)} ${y2.toFixed(1)}" fill="none" stroke="#4f4f4f" ` +
+          `stroke-width="${rng(1, 2.4).toFixed(2)}" opacity="${rng(0.05, 0.16).toFixed(3)}"/>`;
+      }
+
+      /* ---- biro doodle: one loose continuous loop behind the text ---- */
+      /* A scribble has to double back on itself — a strictly left-to-right
+         walk produces a tidy sine wave, which reads as a decorative squiggle
+         rather than someone idly looping a biro over the page. Every third
+         step goes backwards so the path crosses itself. */
+      let dx = 70,
+        dy = 260;
+      let doodle = `M ${dx} ${dy}`;
+      for (let i = 0; i < 14; i++) {
+        const back = i % 3 === 2;
+        const nx = dx + (back ? rng(-105, -55) : rng(95, 165));
+        const ny = rng(60, 375);
+        doodle +=
+          ` C ${(dx + rng(40, 95)).toFixed(1)} ${(dy - rng(70, 190)).toFixed(1)},` +
+          ` ${(nx - rng(40, 95)).toFixed(1)} ${(ny + rng(70, 190)).toFixed(1)},` +
+          ` ${nx.toFixed(1)} ${ny.toFixed(1)}`;
+        dx = nx;
+        dy = ny;
+      }
+
+      /* ---- hand-drawn inner border: wobbly, deliberately not closed ---- */
+      function wobbleRect(x, y, w, h, step, amp) {
+        const p = [];
+        for (let i = x; i < x + w; i += step) p.push([i, y + rng(-amp, amp)]);
+        for (let i = y; i < y + h; i += step) p.push([x + w + rng(-amp, amp), i]);
+        for (let i = x + w; i > x; i -= step) p.push([i, y + h + rng(-amp, amp)]);
+        for (let i = y + h; i > y + h * 0.22; i -= step) p.push([x + rng(-amp, amp), i]);
+        return "M" + p.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(" L ");
+      }
+      const borderPath = wobbleRect(20, 18, SCRAP_W - 40, SCRAP_H - 36, 46, 3.4);
+
+      /* ---- the artwork, authored once and sliced 20 ways ---- */
+      /* Layout waivers, applied only after snapshots confirmed the frames
+         render correctly (per the CLI's escape-hatch guidance):
+         - allow-overflow: .art is deliberately 20x wider than the .strip
+           that crops it — that IS the slicing mechanism.
+         - allow-overlap: there are 20 copies of .h1/.h2 stacked at the same
+           page coordinates. The audit sees overlapping text; on screen each
+           copy is cropped to its own slice and none of them ever coincide. */
+      const ART = `
+        <div class="art" data-layout-allow-overflow>
+          <div class="scrap" style="clip-path:${scrapClip}">
+            <div class="paper"></div>
+            <div class="grain" style="filter:url(#fx-grain)"></div>
+            <svg class="creases" viewBox="0 0 ${SCRAP_W} ${SCRAP_H}">${creases}</svg>
+            <svg class="doodle" viewBox="0 0 ${SCRAP_W} ${SCRAP_H}">
+              <path d="${doodle}" fill="none" stroke="#3a3a3a" stroke-width="2.4"
+                    opacity="0.22" stroke-linecap="round"/>
+            </svg>
+            <svg class="border" viewBox="0 0 ${SCRAP_W} ${SCRAP_H}">
+              <path d="${borderPath}" fill="none" stroke="#1a1a1a" stroke-width="2.6"
+                    opacity="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <!-- Fold shading lives INSIDE the torn clip. Outside it, the
+                 shade's own box (the full 1400x560 art frame) paints over
+                 the empty margin around the scrap and tints the backdrop —
+                 which reads as coloured bands washing across the frame
+                 during the unfurl. -->
+            <div class="shade"></div>
+          </div>
+
+          <div class="hl" style="clip-path:${hlClip}"></div>
+          <div class="h1" data-layout-allow-overlap>PAPER TITLES</div>
+          <div class="h2" data-layout-allow-overlap>cool style</div>
+          <svg class="accent" viewBox="0 0 462 32">
+            <path d="M0 20 L214 12 L462 2 L462 22 L214 29 L0 30 Z" fill="#000"/>
+          </svg>
+          <div class="tape" style="clip-path:${tapeClip}"></div>
+        </div>`;
+
+      /* ---- build the 20 slices ---- */
+      const group = document.getElementById("group");
+      const strips = [];
+      for (let i = 0; i < STRIPS; i++) {
+        const s = document.createElement("div");
+        s.className = "strip";
+        s.style.left = i * STRIP_W + "px";
+        // +2px so neighbours overlap by a hair: the extra sliver repeats the
+        // next slice's pixels exactly, so it hides sub-pixel seams invisibly.
+        s.style.width = STRIP_W + 4 + "px";
+        s.innerHTML = ART;
+        s.querySelector(".art").style.left = -i * STRIP_W + "px";
+        group.appendChild(s);
+        strips.push(s);
+      }
+
+      /* ---- per-slice crumpled pose (the ball) -------------------------
+         Deliberately rotateX-dominant. rotateY on a vertical slice shrinks
+         its horizontal footprint, so neighbours pull apart and the backdrop
+         stripes through — the sheet reads as venetian blinds instead of
+         paper. Tilting about X keeps every slice horizontally adjacent, so
+         the surface stays continuous however hard it folds.
+         The curl also grows left-to-right (a rolled tube), which is what
+         lets the unfurl stagger read as unrolling rather than as 20
+         independent flaps.                                                */
+      const POSE = strips.map((_, i) => {
+        const t = i / (STRIPS - 1);
+        return {
+          // Anything that moves a slice HORIZONTALLY relative to its
+          // neighbour opens a gap: ry (foreshortens the footprint), rz,
+          // x, and — less obviously — z, which parallaxes sideways under
+          // perspective. All four stay small on purpose. rx and y are free
+          // because they displace the slice along axes where neighbours
+          // stay touching.
+          ry: rng(-6, 6),
+          rx: -(10 + 64 * Math.pow(t, 1.2)) + rng(-15, 15),
+          rz: rng(-3, 3),
+          // z stays near zero: under perspective, a slice offset from the
+          // vanishing point parallaxes sideways as z changes, which is a
+          // gap source disguised as depth. The rx curl already carries it.
+          z: rng(-5, 5),
+          y: rng(-18, 18),
+          x: rng(-2, 2),
+        };
+      });
+
+      const shades = Array.from(document.querySelectorAll(".shade"));
+      const tapes = Array.from(document.querySelectorAll(".tape"));
+      const hls = Array.from(document.querySelectorAll(".hl"));
+      const accents = Array.from(document.querySelectorAll(".accent"));
+
+      /* ==================================================================
+         Timeline. 7s: ball -> inflate -> unfurl -> settle -> hold -> crumple.
+         The exit is deliberately ~3x faster than the entrance; a symmetric
+         outro reads wrong for this style.
+      ================================================================== */
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // --- the crumpled ball, and its slow inflate ---
+      tl.fromTo(
+        group,
+        { scale: 0.055, rotation: -16, xPercent: -2, yPercent: 12 },
+        { scale: 0.075, rotation: -15, yPercent: 10, duration: 0.18, ease: "sine.out" },
+        0
+      );
+      tl.fromTo(
+        strips,
+        {
+          rotateY: (i) => POSE[i].ry,
+          rotateX: (i) => POSE[i].rx,
+          rotateZ: (i) => POSE[i].rz,
+          z: (i) => POSE[i].z,
+          y: (i) => POSE[i].y,
+          x: (i) => POSE[i].x,
+        },
+        {
+          rotateY: (i) => POSE[i].ry * 0.92,
+          rotateX: (i) => POSE[i].rx * 0.92,
+          duration: 0.18,
+          ease: "none",
+        },
+        0
+      );
+      tl.fromTo(shades, { opacity: 0.92 }, { opacity: 0.88, duration: 0.18 }, 0);
+      tl.fromTo(tapes, { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+      tl.fromTo(hls, { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
+      tl.fromTo(accents, { scaleX: 0 }, { scaleX: 0, duration: 0.01 }, 0);
+
+      // --- inflate: the ball swells and loosens ---
+      tl.to(group, { scale: 0.42, rotation: -9, yPercent: 5, duration: 0.39, ease: "power1.out" }, 0.18);
+      tl.to(
+        strips,
+        {
+          rotateY: (i) => POSE[i].ry * 0.62,
+          rotateX: (i) => POSE[i].rx * 0.5,
+          rotateZ: (i) => POSE[i].rz * 0.6,
+          z: (i) => POSE[i].z * 0.7,
+          duration: 0.4,
+          ease: "power1.out",
+          stagger: { each: 0.006, from: "center" },
+        },
+        0.18
+      );
+
+      // --- unfurl: slices sweep flat left to right, text flattening with them ---
+      tl.to(group, { scale: 1.03, rotation: -1, yPercent: -1, duration: 0.63, ease: "power2.out" }, 0.58);
+      tl.to(
+        strips,
+        {
+          rotateY: 0,
+          rotateX: 0,
+          rotateZ: 0,
+          z: 0,
+          y: 0,
+          x: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: { each: 0.019, from: "start" },
+        },
+        0.56
+      );
+      tl.to(shades, { opacity: 0, duration: 0.66, ease: "power2.out", stagger: { each: 0.016, from: "start" } }, 0.6);
+
+      // --- settle ---
+      tl.to(group, { scale: 1, rotation: -2.2, duration: 0.26, ease: "power2.inOut" }, 1.22);
+
+      // --- collage accents land after the text is already readable ---
+      tl.fromTo(tapes, { opacity: 0, y: -70, rotation: -13 },
+        { opacity: 0.94, y: 0, rotation: 0, duration: 0.3, ease: "back.out(2.1)" }, 1.12);
+      tl.to(hls, { scaleX: 1, duration: 0.3, ease: "power2.out" }, 1.28);
+      tl.to(accents, { scaleX: 1, duration: 0.26, ease: "power2.out" }, 1.4);
+
+      // --- hold: never fully frozen ---
+      tl.to(group, { rotation: -1.4, yPercent: -0.5, duration: 2.45, ease: "sine.inOut" }, 1.5);
+      tl.to(group, { rotation: -2.6, yPercent: 0.2, duration: 2.42, ease: "sine.inOut" }, 3.96);
+
+      // --- crumple out, fast ---
+      /* The whole exit has to LAND inside the 7s, not merely be in progress
+         when the clock runs out — otherwise the last frame is a half-size
+         legible title rather than a vanished ball. Everything below is timed
+         so the stagger's last slice finishes before the fade completes. */
+      tl.to([tapes, hls, accents].flat(), { opacity: 0, duration: 0.12, ease: "power1.in" }, 6.36);
+      tl.to(shades, { opacity: 0.9, duration: 0.34, ease: "power2.in" }, 6.42);
+      tl.to(
+        strips,
+        {
+          rotateY: (i) => POSE[i].ry * 0.95,
+          rotateX: (i) => POSE[i].rx * 0.95,
+          rotateZ: (i) => POSE[i].rz,
+          z: (i) => POSE[i].z,
+          y: (i) => POSE[i].y,
+          x: (i) => POSE[i].x,
+          duration: 0.34,
+          ease: "power2.in",
+          stagger: { each: 0.005, from: "end" },
+        },
+        6.4
+      );
+      tl.to(group, { scale: 0.05, rotation: -21, yPercent: 11, duration: 0.38, ease: "power2.in" }, 6.4);
+      tl.to("#scene", { opacity: 0, duration: 0.14, ease: "power1.in" }, 6.74);
+
+      tl.seek(0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

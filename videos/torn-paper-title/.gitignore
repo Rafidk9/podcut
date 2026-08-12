@@ -1,0 +1,11 @@
+node_modules/
+
+# Renders are reproducible from index.html — `npm run render` (MP4), or add
+# data-hidden to #bg and render --format webm for the transparent overlay.
+# The repo already ignores *.mp4 globally; this covers the alpha webm too.
+renders/
+
+# Keep contact-sheet.jpg (the at-a-glance proof of the whole arc), drop the
+# full-resolution frames — they're ~2MB per snapshot pass and regenerate with
+# `npx hyperframes snapshot --at <times>`.
+snapshots/frame-*.png
