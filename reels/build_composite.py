@@ -4,7 +4,7 @@
   loudnorm to -14 LUFS / -1 dBTP. B-roll is a later pass."""
 import os, json, subprocess
 
-from reel_paths import WORK, OUT, REEL, ASSETS_ROOT  # noqa: E402 -- per-reel folders
+from reel_paths import WORK, OUT, REEL, ASSETS_ROOT, PREVIEW, X264_PRESET  # noqa: E402 -- per-reel folders
 from ffmpeg_util import FF, COLOR_TAGS, run, dur  # noqa: E402 -- shared ffmpeg wrappers
 ASSETS = ASSETS_ROOT
 os.makedirs(OUT, exist_ok=True)
@@ -91,7 +91,7 @@ def voice_denoise_model():
 # forwards whatever ambiguous/wrong tags rode in on the input (this is how the
 # HDR-tagged raw iPhone footage's colour metadata ended up stamped onto the
 # ENTIRE final file, including the plain-SDR end cards concatenated on here).
-VENC = (["-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30"]
+VENC = (["-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30"]
         + COLOR_TAGS + ["-video_track_timescale", "90000"])
 AENC = ["-c:a", "aac", "-ar", "48000", "-ac", "2"]
 
@@ -184,22 +184,38 @@ def main():
          "-filter_complex", filter_complex,
          "-map", "0:v", "-map", "[a]", "-c:v", "copy", *AENC, mixed])
 
-    # 4) two-pass loudnorm to -14 LUFS / -1 dBTP
+    # 4) loudnorm to -14 LUFS / -1 dBTP
     ln = "loudnorm=I=-14:TP=-1:LRA=11"
-    p1 = subprocess.run([FF, "-hide_banner", "-i", mixed, "-af", ln + ":print_format=json",
-                         "-f", "null", "-"], capture_output=True, text=True)
-    txt = p1.stderr
-    js = json.loads(txt[txt.rfind("{"): txt.rfind("}") + 1])
-    final = os.path.join(OUT, "reel_final.mp4")
-    run(["-i", mixed, "-af",
-         f"{ln}:measured_I={js['input_i']}:measured_TP={js['input_tp']}:"
-         f"measured_LRA={js['input_lra']}:measured_thresh={js['input_thresh']}:"
-         f"offset={js['target_offset']}:linear=true,"
-         # loudnorm's linear correction is a single static gain -- it can
-         # still leave short percussive transients (SFX hits) a shade above
-         # the -1 dBTP target; this hard ceiling is the safety net.
-         "alimiter=limit=0.79:level=disabled",
-         "-c:v", "copy", *AENC, final])
+    final = os.path.join(OUT, "reel_final_preview.mp4" if PREVIEW else "reel_final.mp4")
+
+    if PREVIEW:
+        # --preview: single-pass only (skip the measurement pass + the
+        # limiter safety net) -- approximate loudness is fine for a draft
+        # that's never a deliverable, and skipping the extra ffmpeg pass over
+        # the whole mix is a real chunk of this stage's runtime. Also where
+        # the actual resolution drop happens: preview builds run the entire
+        # pipeline at full 1080x1920 (every absolute-pixel caption/badge/card
+        # position depends on that canvas), so 540p is applied here, once, on
+        # the final encode only -- never mid-pipeline. -metadata preview_build
+        # is a second, filename-independent signal qa_reel.py checks for.
+        run(["-i", mixed, "-vf", "scale=540:-2", "-af", ln,
+             "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "23", "-pix_fmt", "yuv420p",
+             *COLOR_TAGS, *AENC, "-metadata", "preview_build=1", final])
+    else:
+        # two-pass: measure, then apply with the linear correction + limiter
+        p1 = subprocess.run([FF, "-hide_banner", "-i", mixed, "-af", ln + ":print_format=json",
+                             "-f", "null", "-"], capture_output=True, text=True)
+        txt = p1.stderr
+        js = json.loads(txt[txt.rfind("{"): txt.rfind("}") + 1])
+        run(["-i", mixed, "-af",
+             f"{ln}:measured_I={js['input_i']}:measured_TP={js['input_tp']}:"
+             f"measured_LRA={js['input_lra']}:measured_thresh={js['input_thresh']}:"
+             f"offset={js['target_offset']}:linear=true,"
+             # loudnorm's linear correction is a single static gain -- it can
+             # still leave short percussive transients (SFX hits) a shade above
+             # the -1 dBTP target; this hard ceiling is the safety net.
+             "alimiter=limit=0.79:level=disabled",
+             "-c:v", "copy", *AENC, final])
     print("FINAL REEL:", final, f"({total:.2f}s)")
 
 

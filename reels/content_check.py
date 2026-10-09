@@ -19,7 +19,8 @@ import os
 KNOWN_KEYS = {
     "asr_fix", "gold", "name", "mara", "info", "cta", "documents",
     "cap_top", "list_top", "decor", "lists", "badges", "roadshow",
-    "urgency_chip", "hero_words", "hook_banner", "save_prompt",
+    "urgency_chip", "hero_words", "hook_banner", "save_prompt", "flight_map",
+    "landmark_sweep",
     "caption_highlight", "music", "sfx", "voice_denoise", "zoom",
     "thumbnail", "caption_txt",
 }

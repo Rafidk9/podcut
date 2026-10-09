@@ -5,7 +5,10 @@ Exact match preferred; fuzzy match (>=0.8) as a fallback; otherwise the spot
 is unresolved and MUST be flagged for human placement, never guessed."""
 import difflib
 
+from dictionary import load_dictionary, correct_words, normalize_text  # noqa: E402 -- per-reel folders
+
 FUZZY_THRESHOLD = 0.8
+_, _CORRECTIONS = load_dictionary()
 
 
 def _norm(s):
@@ -17,9 +20,24 @@ def resolve_anchor(words, phrase, pad_before=0.15, pad_after=0.6):
     assembled.transcript.json). phrase: the words this B-roll/document/card
     ties to, as spoken (not necessarily verbatim-cased).
 
+    Both `words` and `phrase` are run through the SAME domain-term dictionary
+    (reels/dictionary.py) before matching -- a defense-in-depth pass
+    independent of build_base.py's own correction step, so a domain term
+    (e.g. "MARN number" ASR-flattens redundant phrasing) can't sink a fuzzy match
+    below FUZZY_THRESHOLD just because it landed here uncorrected, or because
+    an anchor_phrase was written using the correct spelling while an
+    uncorrected transcript still has the split/mangled ASR version. Word-
+    MERGING (not just text substitution) is used on `words` specifically so a
+    2-token mishearing collapses to the same single token the phrase-side
+    correction produces -- otherwise the two sides could still disagree on
+    word COUNT even after their text matches.
+
     Returns (start, end, score). start/end are None if no candidate window
     clears FUZZY_THRESHOLD -- the caller must flag this for human placement
     rather than fall back to a guessed number."""
+    words, _log = correct_words(words, _CORRECTIONS)
+    phrase = normalize_text(phrase, _CORRECTIONS)
+
     target = [_norm(w) for w in phrase.split() if _norm(w)]
     n = len(target)
     if n == 0 or len(words) < n:
