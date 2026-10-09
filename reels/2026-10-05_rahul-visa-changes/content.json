@@ -1,0 +1,118 @@
+{
+  "_comment": "Rahul Dhanda -- Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640 (MARN given by the user in chat and matches the supplied seminar poster, which prints 'RAHUL DHANDA / DIRECTOR & REGISTERED MIGRATION AGENT / MARN: 2418640'). Topic: in-person 'Navigating Visa Changes' seminar for international students, 06-16 Oct, Mon-Fri, 1:00-2:00 PM, PFEC Global Sydney + Parramatta offices. Output timeline cuts at 8.63 / 17.29 / 24.93 / 30.00 (see broll_plan.json); total ~34.5s before end cards.",
+
+  "gold": ["VISA", "CHANGES", "WORRIED", "OCTOBER", "SYDNEY", "PARRAMATTA",
+           "OPTIONS", "NEXT", "WAIT", "LATE", "CLARITY", "QUESTIONS"],
+
+  "name": { "text": "Rahul Dhanda", "role": "Director & Registered Migration Agent",
+            "start": 0.4, "end": 4.2 },
+  "mara": { "mode": "styled", "marn": "2418640" },
+
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+
+  "hook_banner": { "text": "STUDENT VISA CHANGES? 😟", "start": 0.0, "end": 1.7 },
+
+  "_hero_note": "One slam on WORRIED -- the emotional hook of the script ('many of you may be feeling worried'). Sits wholly inside segment 0, clear of the 8.63 cut.",
+  "hero_words": [
+    { "anchor_phrase": "may be feeling worried", "text": "WORRIED?",
+      "pad_after": 0.25, "hold": 0.2 }
+  ],
+
+  "_highlights_note": "Segment 1 is pure logistics, so the three facts a viewer must retain are marker-swiped into the top corners (alternating) while his face stays visible: dates (poster wording 06-16 Oct), days+time, and the two offices.",
+  "highlights": [
+    { "anchor_phrase": "sixth of october", "text": "6–16 OCTOBER", "pos": "top-left", "color": "gold" },
+    { "anchor_phrase": "between 1 pm and 2 pm", "text": "MON–FRI · 1–2 PM", "pos": "top-right", "color": "cyan" },
+    { "anchor_phrase": "sydney and parramatta office", "text": "SYDNEY + PARRAMATTA", "pos": "top-left", "color": "green" }
+  ],
+
+  "_badges_note": "Four badges, four different entrances: shimmer (informational 'what it means'), pixelate (next steps), particles (options reveal), default pop for the urgency beat. Corners alternate.",
+  "badges": [
+    { "anchor_phrase": "how these changes may affect you",
+      "text": "HOW IT AFFECTS YOU 💡", "icon": "star", "color": "cyan",
+      "pos": "top-right", "effect": "shimmer" },
+    { "anchor_phrase": "what you should do next",
+      "text": "YOUR NEXT STEPS ✅", "icon": "check", "color": "green",
+      "pos": "top-left", "effect": "pixelate" },
+    { "anchor_phrase": "what options may currently be available",
+      "text": "YOUR OPTIONS 🧭", "icon": "people", "color": "gold",
+      "pos": "top-right", "effect": "particles" },
+    { "anchor_phrase": "don't wait until it's too late",
+      "text": "DON'T WAIT ⏳", "icon": "star", "color": "red",
+      "pos": "top-left" }
+  ],
+
+  "cta": { "text": "COME IN & ASK 🙋", "start": 27.2, "end": 29.85 },
+
+  "_documents_note": "The supplied 'Navigating Visa Changes' seminar poster closes the reel over his sign-off 'looking forward to meeting you all at our Sydney and Parramatta office' -- the poster carries exactly that information (both office addresses, dates, time) plus all four speakers including Rahul, so it lands as the takeaway card right before the end cards. Captions suppressed under it.",
+  "documents": [
+    { "image": "visa-changes-seminar-poster.png",
+      "anchor_phrase": "we are looking forward to meeting you all at our sydney and parramatta office",
+      "label": "", "poster": true, "width": 860, "top": "330px",
+      "pad_before": 0.1, "pad_after": 0.3, "suppress_captions": true }
+  ],
+
+  "_decor_note": "Plain white wall with lots of empty margin either side of him -- exactly the case the decor layer is for, so sparkles + handle are on. Orbs (accents) removed at user request 2026-10-05.",
+  "decor": { "sparkles": true },
+
+  "_end_cards_note": "User asked (2026-10-05) to drop the book-a-consultation card for this reel; disclaimer card kept (compliance).",
+  "end_cards": { "disclaimer": true, "consultation": false },
+
+  "_asr_fix_note": "User asked for the time to read as numerals: 'one PM and two PM' -> '1 PM and 2 PM' (positional phrase fix keeps per-word timing).",
+  "asr_fix": { "one pm and two pm": "1 PM and 2 PM" },
+
+  "_zoom_note": "One punch per clip max (hits keyed by clip index); at = RAW clip-local seconds of IMG_0284. The closing clip has no hit -- the poster card covers it.",
+  "zoom": {
+    "amount": 0.08,
+    "segments": ["in", "out", "in", "in", "out"],
+    "hits": [
+      { "clip": 0, "at": [5.90, 6.60], "amount": 0.14 },
+      { "clip": 1, "at": [16.40, 17.95], "amount": 0.12 },
+      { "clip": 2, "at": [23.40, 24.30], "amount": 0.13 },
+      { "clip": 3, "at": [26.20, 27.00], "amount": 0.16 }
+    ]
+  },
+
+  "voice_denoise": true,
+
+  "music": { "track": "inspired-kevin-macleod.mp3", "volume": 0.05 },
+
+  "_sfx_note": "7 cues -- under the ~8-cue true-peak threshold, so stock levels are kept. Whooshes 0.12s before each wipe cut; whoosh-impact offset by its 165ms attack before the WORRIED slam (re-check against build_captions' resolved hero start); pop on the poster reveal; chime under the CTA.",
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 8.51, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 17.17, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 24.81, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 29.88, "volume": 0.45 },
+      { "file": "whoosh-impact.mp3", "at": 4.30, "volume": 0.8 },
+      { "file": "pop.mp3", "at": 30.15, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 27.30, "volume": 0.7 }
+    ]
+  },
+
+  "_thumbnail_note": "at 12.5 is inside segment 1 (8.63-17.29), >3s from either wipe.",
+  "thumbnail": {
+    "at": 12.5,
+    "kicker": "🎓 IN-PERSON SEMINAR · 6–16 OCT",
+    "headline": "STUDENT VISA **CHANGES?**"
+  },
+
+  "caption_txt": {
+    "title": "Worried About the Student Visa Changes? Come In and Ask — 6–16 October",
+    "body": [
+      "With the recent student visa changes, many of you may be feeling worried — especially if your student visa is expiring soon.",
+      "From 6 to 16 October, Monday to Friday between 1 and 2 PM, come and speak with us in person at our Sydney and Parramatta offices. Rahul Dhanda, Director & Registered Migration Agent at PFEC Global Parramatta (MARN 2418640), and our team will walk you through how these changes may affect you, what you should do next, and what options may currently be available to you."
+    ],
+    "bullets": [
+      "📅 6–16 October, Monday to Friday, 1:00–2:00 PM",
+      "📍 PFEC Global Sydney — Ste 402, Level 4/447 Kent St, Sydney NSW 2000",
+      "📍 PFEC Global Parramatta — Ground Floor, 1/21 George Street, Parramatta NSW 2150",
+      "💬 How the changes affect you · your next steps · your current options"
+    ],
+    "urgency": "Don't wait until it's too late — come in, ask your questions and get clarity.",
+    "contact": "Speak with Rahul Dhanda, Director & Registered Migration Agent, PFEC Global Parramatta (MARN 2418640).",
+    "offices": false,
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#PFECGlobal #StudentVisa #VisaChanges #InternationalStudents #StudyInAustralia #MigrationAdvice #MigrationAgent #SydneyStudents #Parramatta #AustralianVisa",
+    "music_credit": "Music: \"Inspired\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "_comment": "Tushar Chopra / 'Choose Your Fighter'. ONE cutaway -- the fighter-select grid -- and it opens the reel rather than covering a mid-script connector. Rationale for that exception is in broll.py's module docstring and EDIT_PROMPT.md section 1: the B-roll rule exists so graphics never obscure a spoken fact, and here the graphic IS the fact ('Pick one' is meaningless without the four cards on screen).",
+
+  "_boundaries_note": "DELIBERATELY EMPTY, and this is the one non-obvious thing in this file. `plan` and `boundaries` are read by two different parts of insert_broll.py: main() iterates PLAN to decide what gets spliced (using broll_durs), while BOUNDARIES is used ONLY to build wipe_specs. They are independent dicts despite the docstring implying boundaries tracks plan. Listing segment 0 here would emit a wipe at t=0.00, which overlay_wipes clamps to start=max(0, -0.25)=0 -- i.e. a half-second grid wipe playing over the first 0.5s of the reel, smothering the card build exactly when the viewer is reading the four options. Segment 0 opens the reel and has no incoming cut to mask, so it needs no wipe. Leaving this empty is intentional; do not 'fix' it by adding {\"0\": 0.0}.",
+
+  "_exit_cut_note": "REVISED: the splice EXIT at 2.20 is now deliberately placed so the 2.25 wipe covers it. insert_broll only ever places a wipe at the times named here, never at a splice's end. The speed wipe centred on 2.25 runs 2.00-2.50 and reaches full coverage at 2.25, so the 1-2 frames of him after the splice ends at 2.20 sit under 80-100% coverage and are not readable. The X slam still gets 1.609-2.00 completely clean (~0.39s, about 12 frames) before the wipe starts eating it, which is ample for a full-frame graphic.",
+
+  "_wipes_note": "Three real cuts, three different wipe styles, none adjacent-identical: speed(2.25) -> grid(7.05) -> flash(9.37). This reel is dense and carries only one cutaway, so the wipes are doing all of the transition variety on their own -- keeping three distinct styles matters more here than on a reel with several B-roll breaks. All three are plain segment-to-segment cuts with no B-roll on either side, so they belong in extra_wipes rather than boundary_wipes.",
+
+  "_timing_note": "Segment durations 2.25 / 4.80 / 2.32 / 3.50 give openings at 0.00 / 2.25 / 7.05 / 9.37. The three extra_wipes times are those openings minus the first. These are content-timeline seconds and match content.json's sfx cue times exactly.",
+
+  "n_segments": 4,
+  "broll_dur": 1.3,
+  "plan": { "0": "fighter_grid" },
+  "boundaries": {},
+  "broll_durs": { "0": 2.20 },
+  "extra_wipes": [
+    { "at": 2.25, "style": "speed" },
+    { "at": 7.05, "style": "grid" },
+    { "at": 9.37, "style": "flash" }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "_comment": "Salman Farsi (PFEC Education Counsellor -- NOT a registered migration agent, so mara.mode:none) promoting the PFEC Global 'Just Ask' Education & Migration Expo: 25 August 2026, 2-5PM, Melbourne/Sydney/Adelaide offices. Script = 'The One Event You Can't Skip' from the Sydney Video Scripts doc. User brief: fast-paced, punchy and catchy, quick transitions and animations, key dates/times in BIG fonts done as text-behind-subject, the Just Ask Expo banner, one B-roll, a background track not used before on this project, and zoom ins/outs.",
+  "_asr_note": "Transcripts came back clean -- 'Just Ask Expo' and 'PFEC Global' both resolved correctly this time (unlike the 2026-08-07 Maheesha reel, which needed a 'just us expo' fix). Only correction needed is the US spelling 'counselor' -> Australian 'counsellor' for on-screen text; that is a spelling normalisation of the word he actually says, not a change of wording. His 'which course is suit for you' is non-standard grammar but it IS what he says, and captions are verbatim -- deliberately left alone.",
+  "asr_fix": { "counselor": "counsellor" },
+  "_accent_note": "Left on the default gold/red lead. This is the same standalone Just Ask Expo campaign as the 2026-08-07 Maheesha reel, which also stayed on default -- keeping the campaign visually consistent across counsellors matters more than differentiating this cut, and there is no roadshow city-accent collision to avoid.",
+  "gold": ["JUST", "ASK", "EXPO", "PFEC", "FREE", "EVENT", "ANSWER", "ANSWERS",
+           "AUGUST", "25TH", "SYDNEY", "MELBOURNE", "ADELAIDE", "STUCK"],
+  "name": { "text": "Salman Farsi", "role": "Education Counsellor",
+            "start": 0.6, "end": 4.0 },
+  "_mara_note": "Salman is an Education Counsellor, not a Registered Migration Agent -- no MARN exists for him, so mara.mode is 'none' (same as the Maheesha reel). Never invent one; see the pfec-presenters note. The reel's own script does separately mention that migration agents will be AT the expo, which is a statement about the event, not a claim about him.",
+  "mara": { "mode": "none" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "hook_banner": { "text": "STUCK ON YOUR COURSE? 🤔", "start": 0.0, "end": 1.5 },
+  "cta": { "text": "REGISTER NOW! 🎉", "start": 23.55, "end": 25.0 },
+  "caption_highlight": true,
+  "_cap_top_note": "Set after measuring the assembled base, not guessed -- see the frame check in check/. P1 and P3 frame him small with his face high (~39% of frame height); P2 is a walk-toward-camera where he finishes much closer with his face around 54%. 62% (the default) is the tightest common clearance, so it stays at default.",
+  "_hero_note": "The single 'silent' entry carries NO text of its own -- it exists only to suppress the plain 2-word caption cards across the date/time window, because date_behind.py bakes the real graphic (a giant '25 AUG' + '2-5 PM' behind him) straight into segment 2's footage. Same pattern as the Maheesha reel's silent 'three reasons' entry. The anchor_phrase deliberately STARTS AT 'on', one word earlier than the date itself: build_captions.py suppresses a caption card only when the card's START time falls inside the window, and the 2-word chunker pairs these words as ['on','25th'] starting at 12.199s. Anchored on '25th...' the window resolved to 12.41s, which missed that card by 0.2s and put a red/navy 'ON 25TH' caption on screen at the same moment as the giant '25 AUG' plate -- the date rendered twice, which is exactly what this entry exists to prevent (caught on the first full build, see check/cap_leak.jpg). Including 'on' moves the window start to ~12.05s and the card falls inside it.",
+  "_hero_note3": "The THIRD silent entry covers the searchmg B-roll window (9.10-10.70), for the same reason as the second: the search-bar graphic is itself full of type, so the plain 2-word cards ('IS THE' / 'JUST ASK') would sit on top of a mockup already showing that query being typed. Window resolves to ~9.19-10.73; pad_after 0.25 pushes the end just past the card starting at 10.539 so nothing pops up in the last fifth of a second of the cutaway. The next card (11.319) is outside it and renders normally over him.",
+  "_hero_note2": "The SECOND silent entry covers the B-roll window (18.65-23.10). Captions are composited over base_broll, so the plain 2-word cards kept playing on top of the 'WHO'S IN THE ROOM' stinger and printed the same three roles a second time in smaller type -- at 22.6s the red 'EDUCATION COUNSELLOR.' caption box sat directly on the stinger's own EDUCATION COUNSELLORS card and hid it (caught on the second full build, see check/final_r2.jpg). pad_after/hold are both 0 so the window ends at 23.099 and the closing line's captions ('There will be a real conversation', first card starts 23.159) still render normally over him.",
+  "hero_words": [
+    { "anchor_phrase": "on 25th of August from 2 p.m. to 5 p.m.", "text": "",
+      "pad_after": 0.2, "hold": 0.35, "silent": true },
+    { "anchor_phrase": "There will be university representative, migration agent, and education counsellor",
+      "text": "", "pad_after": 0.0, "hold": 0.0, "silent": true },
+    { "anchor_phrase": "Is the Just Ask", "text": "",
+      "pad_after": 0.25, "hold": 0.0, "silent": true }
+  ],
+  "_badges_note": "Two badges (was three), each on a DIFFERENT entrance effect per the standing preference -- shimmer for the 'every answer' payoff, particles for the FREE ENTRY attention beat, pixelate on the cities beat to echo the wipes' own technique. Positions alternate right/left/right so no two consecutive badges stack in the same corner. The FREE ENTRY badge was MOVED off its first anchor ('There will be a real conversation'): that resolved to 23.01s, which is 0.09s BEFORE the B-roll splice returns to camera at 23.10 -- so it would have popped in on top of the B-roll stinger's own navy card frame and then survived a hard cut. Re-anchored to the campaign name instead, where it sits on clean footage in segment 2 and reads as a fact about the expo he is naming. Then re-anchored a SECOND time, from 'the Just Ask Expo by PFEC Global' (resolved 9.41s) to just 'by PFEC Global' (resolves ~10.97s), when the searchmg cutaway was added over 9.10-10.70 -- 9.41 fell inside that window and would have popped the badge on top of the search-bar graphic. A third badge (3 CITIES, on the cities line) was DROPPED when cities_behind.py took that beat: three real city photos say '3 cities' far better than a pill does, and the badge row sits at y~232, i.e. inside the new photo band. Re-pointing it at the closing line was not an option either -- 'There will be a real conversation' resolves to 23.01s, which is again inside the B-roll, and the only later anchor puts it 0.14s ahead of the CTA. Two badges is the right count for a reel this dense.",
+  "badges": [
+    {
+      "anchor_phrase": "one event, one afternoon and every answer",
+      "text": "EVERY ANSWER ✨",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top-right",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "by PFEC Global",
+      "text": "FREE ENTRY 💯",
+      "icon": "check",
+      "color": "green",
+      "pos": "top-left",
+      "effect": "particles"
+    }
+  ],
+  "_documents_note": "Shrunk to width 620 / top:1150px (from 860/880) when cities_behind.py put real city photos across the top half of this same segment. At full size the two fought: the banner ran 1000-1800 directly under a 0-960 photo band, so the frame was wall-to-wall graphic with only his head and shoulders showing between them, AND the banner artwork carries its own little Melbourne/Sydney/Adelaide ovals, which duplicated the big photos right above it. At 620 wide starting at 1150 it reads as a secondary flyer card: the photo band (feathered out by 960) owns the top half as the brief asked, his chest and hands are visible in the gap, and the banner sits clearly below as supporting detail rather than a competing headline. The Just Ask Expo campaign banner the user asked for (the same 600x600 artwork already used on the 2026-08-07 Maheesha and 2026-08-11 Tushar reels -- it is the Sydney/Melbourne/Adelaide campaign banner, and the only Aug-2026 expo artwork that exists; a Drive sweep for a Sydney-only variant turned up nothing newer than 2025). Deliberately anchored to the CITIES line, not the date line: the banner itself shows the three city photos, so it lands on the words it illustrates, AND it keeps the banner in a different segment from the date/time text-behind-subject treatment so the two big graphics are sequential rather than fighting each other. top:880px measured against his chin in this segment's own footage.",
+  "documents": [
+    {
+      "image": "just-ask-expo-poster.jpg",
+      "anchor_phrase": "in our Melbourne, Sydney, and Adelaide office",
+      "label": "",
+      "poster": true,
+      "width": 620,
+      "top": "1150px",
+      "pad_before": 0.15,
+      "pad_after": 0.1,
+      "suppress_captions": true
+    }
+  ],
+  "_decor_note": "Orbs and sparkles only -- the @PFECGlobal handle pill was removed on request. Opted in because all three setups frame him small against big empty sky/wall margins (a hedge line, an open sky under a glass awning, a flat louvred facade), which is exactly the dead-space case this layer exists for.",
+  "decor": { "accents": true, "sparkles": true },
+  "_zoom_note": "hits[] entries are keyed by clip index and 'at' is RAW clip-local time, NOT the output timeline (clip index = position in clips.json: 0:P1 1:P2 2:P3a 3:P3b 4:P3c). Only ONE hit per clip index is honoured -- build_base.py's load_zoom() builds a dict keyed on clip, so a second entry for the same index silently overwrites the first. A clip with a hit ignores its segments[] direction, hence 'hold' in those slots. Pattern across the five cuts is in / punch / out / in / punch, which gives the brief its zoom ins AND outs without any two adjacent segments moving the same way. Base amount 0.10 (vs the usual 0.06) to match the fast-paced brief. Segment 2 is deliberately a slow pull-OUT rather than a punch: it is the text-behind-subject window, and pulling back gradually reveals the full '25 AUG / 2-5 PM' plate behind him instead of fighting it.",
+  "zoom": {
+    "amount": 0.1,
+    "segments": ["in", "hold", "out", "in", "hold"],
+    "hits": [
+      { "clip": 1, "at": [4.259, 4.960], "amount": 0.15 },
+      { "clip": 4, "at": [14.819, 15.720], "amount": 0.15 }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "'Cloud Dancer' (Kevin MacLeod, CC BY 4.0) -- genuinely new to this project. Every one of the 11 tracks already in assets/music/ has been used at least once, so this was sourced fresh from the incompetech catalogue JSON and filtered on genre 7 + bpm >= 118 + bright/bouncy/driving feel. Catalogue description: 'Upbeat EDM track with a fast tempo and modern vibe... joyful, optimistic and playful. Good for dynamic, high-energy sequences' -- a direct match for the fast-paced/punchy/catchy brief. Instrumentation is synths ONLY, which is the practical reason it was picked over District Four or Cipher: no horns, guitar or organ competing in his vocal range. Licence block added to assets/music/CREDIT.txt before this reel referenced it.",
+  "_ducking_note": "duck_ratio 8 / duck_threshold 0.05 is REAL ducking, not the near-disabled 1.3/0.4 this reel started with (copied from the Maheesha reel). That change is what fixed the true peak, and the diagnosis is worth keeping because the obvious lever was the wrong one: the reel first measured -0.1 dBTP, and LOWERING the SFX cue volumes -- the standard fix per the SFX-density note -- made it WORSE (+0.4 dBTP), because quieter cues drop the mix's integrated loudness and the two-pass loudnorm then applies MORE static gain, lifting his voice peaks with it. A per-3s peak profile of work/mixed.mp4 showed peaks flat at -3.2 to -6.9 dB right across the spoken body, i.e. his VOICE was the peak source, not any transient; the voice bus has no compression of its own, so a music bed sitting at a near-constant level was simply stacking on top of it. Ratio 8 pulls the bed down under every phrase so the two stop summing: -1.3 dBTP at an unchanged -14.3 LUFS. Trying a gentler 6/0.07 on the same cues blew straight back out to +2.1 dBTP, so the aggressive setting is doing real work and should not be softened without re-measuring. Cue volumes in the 0.17-0.32 range are NOT finely tuned -- across three trials the measured peak moved non-monotonically (-1.3 / -0.8 / -0.2 dBTP), which is a coincidence of one transient landing on a voice peak after limiting and AAC overshoot, not a level trend; these are simply the values that measured cleanest. Bed level ended at 0.38 rather than 0.34: adding the searchmg cutaway put an extra AAC generation on segment 2's audio, which was enough to drift the peak back to -0.8 dBTP, and raising the bed is the reliable lever in the other direction -- with ratio-8 ducking the extra level lands almost entirely in the GAPS between phrases, so it lifts integrated loudness (and therefore cuts the static loudnorm gain) without adding anything at the moments his voice peaks. Result -1.1 dBTP at -14.2 LUFS. The tradeoff is LRA 1.7, i.e. a deliberately constant level: the limiter is not working hard (sample peak -1.4 dB) so this is consistency rather than crushing, which is what a 25s social reel wants, but it is worth an ears pass.",
+  "music": { "track": "cloud-dancer-kevin-macleod.mp3", "volume": 0.38, "duck_ratio": 8, "duck_threshold": 0.05 },
+  "_sfx_note": "Tier-1 pass sized to the brief: a transition-whoosh on each of the 4 cuts (5.80 / 9.10 / 15.55 / 18.65, taken straight off broll_plan.json's boundaries, which are already exact final-timeline seconds), pop.mp3 on the two date/time plate slams, tick.mp3 on each of the 3 city names, and a success-chime under the CTA. pop.mp3 and tick.mp3 both attack at sample 0 (see assets/sfx/README.md), so those cues sit ON the beat with no offset -- only whoosh-impact.mp3, which this reel doesn't use, needs the -0.165 lead. The pop cues are the plate entrances from date_behind.py converted to the output timeline (segment 2 starts at 9.10, so local 3.30 -> 12.40 and local 4.90 -> 14.00); a first pass had them at 12.60/13.80, which drifted off both slams. The third tick likewise moved 17.64 -> 17.88 to land on 'Adelaide' (17.879) rather than the silence before it. Cue volumes kept deliberately low -- past roughly 8 cues the stacked transients push loudnorm's true-peak over target (the standing SFX-density note), and this reel runs 10 cues in 25s.",
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 5.80, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 9.10, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 15.55, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 18.65, "volume": 0.20 },
+      { "file": "pop.mp3", "at": 12.40, "volume": 0.22 },
+      { "file": "pop.mp3", "at": 14.00, "volume": 0.22 },
+      { "file": "tick.mp3", "at": 16.22, "volume": 0.17 },
+      { "file": "tick.mp3", "at": 16.98, "volume": 0.17 },
+      { "file": "tick.mp3", "at": 17.88, "volume": 0.17 },
+      { "file": "success-chime.mp3", "at": 23.55, "volume": 0.32 }
+    ]
+  },
+  "thumbnail": {
+    "at": 3.2,
+    "kicker": "🎯 JUST ASK EXPO · 25 AUG",
+    "headline": "ONE EVENT. EVERY **ANSWER**"
+  },
+  "caption_txt": {
+    "title": "The One Event You Can't Skip — Just Ask Expo, 25 August",
+    "body": [
+      "Still stuck on which course actually suits you? Still not sure which institution fits your goals? Stop guessing — just ask.",
+      "The PFEC Global Just Ask Expo is on 25 August, 2 to 5 PM, at our Melbourne, Sydney and Adelaide offices. University representatives, migration agents and education counsellors, all in one room, all afternoon. One event, one afternoon, every answer."
+    ],
+    "bullets": [
+      "📅 25 August 2026, 2–5 PM",
+      "📍 PFEC Global Melbourne, Sydney & Adelaide offices",
+      "🎓 University representatives — ask them directly, no waiting on emails",
+      "🛂 Migration agents on site for a free migration consultation",
+      "💬 Education counsellors for real, one-on-one conversations",
+      "✅ Free entry — 1 afternoon, 3 cities, 0 cost"
+    ],
+    "urgency": "One afternoon. Every answer. Register now — link in bio.",
+    "contact": "Come and meet Salman and the PFEC Global team at the Just Ask Expo — no appointment needed, just bring your questions.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #JustAskExpo #EducationExpo #StudyInAustralia #InternationalStudents #SydneyEvents #MelbourneEvents #AdelaideEvents #FreeEntry #UniversityPathway #MigrationAdvice #StudentLife",
+    "music_credit": "Music: \"Cloud Dancer\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nMelbourne skyline: Jorge Láscar, via Wikimedia Commons — CC BY 2.0\nAdelaide riverbank: Ikhwan Zailani Yuslim, via Wikimedia Commons — CC BY 2.0\nSydney Opera House: Ypsilon from Finland, via Wikimedia Commons — CC0"
+  }
+}

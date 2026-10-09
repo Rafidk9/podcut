@@ -1,0 +1,11 @@
+{
+  "_comment": "No B-roll splice this reel -- segments are already very short (3.7-13.0s) for a 26.6s total; a 1.3s motion-graphic cutaway would eat 25-35% of the shorter segments and fight the countdown's own pacing (hero number slams + badges + zoom hits already carry the 'energetic motion graphics' brief). All 3 cuts still get an energetic brand wipe instead of a flat cut, each a different style for variety across such a short runtime.",
+  "n_segments": 4,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 3.7, "style": "flash" },
+    { "at": 8.9, "style": "grid" },
+    { "at": 13.6, "style": "speed" }
+  ]
+}

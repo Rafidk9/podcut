@@ -1,0 +1,14 @@
+{
+  "_comment": "Salman Farsi (PFEC Education Counsellor, NOT a registered migration agent -- mara.mode:none) promoting the PFEC Global 'Just Ask' Education & Migration Expo (25 Aug 2026, 2-5PM, Melbourne/Sydney/Adelaide offices). Script = 'The One Event You Can't Skip' from the Sydney Video Scripts doc. Three source takes, each a different outdoor setup at the Sydney office: P1 standing at the hedge, P2 walking toward camera under the glass awning, P3 standing at the louvred wall by the handrail.",
+  "_order_note": "Narrative order = filename order: P1 hook ('are you also stuck?') -> P2 punch ('one event, one afternoon, every answer') -> P3 all the detail. P2's walk-toward-camera is deliberately kept for the punch line -- he starts mid-distance and arrives close on 'every answer', which does the work of a push-in for free.",
+  "_split_note": "P3 is a single 16.5s take entered THREE times with non-overlapping keep spans. Left whole it would be one flat 15.9s segment -- fatal for the fast-paced brief. Split at the two genuine pauses in the take: after '...5 p.m.' (words end 6.459, next word 'in' starts 6.859 -> cut at 6.65) and after '...office.' (ends 9.659, 'There' starts 9.840 -> cut at 9.75). Each split buys a real cut, a wipe, and its own zoom direction. build_base.py keys segments by list index and only uses `name` to find the input file + transcript, so the repeated name is safe (same trick as the 2026-08-11 Tushar reel's IMG_8066).",
+  "_trim_note": "Every keep start/end taken from that clip's own work/<name>.transcript.json word timings with ~0.2-0.4s of breathing room. P1 starts 1.35 (first word 'Oh,' at 1.779; at 1.0 he is still bending down adjusting the mic, settled and facing camera by 1.4 -- verified on a frame grab). P2 ends 5.25 to drop a trailing self-cue 'Okay' at 6.059. P3 ends 16.10, just past 'conversation' (15.720).",
+  "_hdr_note": "All three takes are genuine iPhone HDR (yuv420p10le / arib-std-b67 / BT.2020, confirmed via ffprobe) and rotate to 1080x1920 portrait, so they take the default tone-map path -- no \"sdr\": true, no \"flip\": true (rear-camera footage, the building signage behind him reads correctly).",
+  "clips": [
+    { "name": "P1", "ext": ".MOV", "keep": [1.35, 7.15] },
+    { "name": "P2", "ext": ".MOV", "keep": [1.95, 5.25] },
+    { "name": "P3", "ext": ".MOV", "keep": [0.20, 6.65] },
+    { "name": "P3", "ext": ".MOV", "keep": [6.65, 9.75] },
+    { "name": "P3", "ext": ".MOV", "keep": [9.75, 16.10] }
+  ]
+}

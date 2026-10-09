@@ -1,0 +1,9 @@
+{
+  "_comment": "Recording order was P1(hook)->P3(number3)->P2(number2)->P4(number1) per file creation timestamps (15:22:48/15:24:38/15:25:11/15:27:18), matching the countdown script order. Playback order below follows that, not alphabetical filename order. P1 and P3 each open with a crew 'And go.'/'And good' cue caught on mic (2 speakers detected) -- keep starts are trimmed past that bleed.",
+  "clips": [
+    { "name": "P1", "ext": ".mp4", "keep": [2.0, 5.7] },
+    { "name": "P3", "ext": ".mp4", "keep": [1.9, 7.1] },
+    { "name": "P2", "ext": ".mp4", "keep": [0.8, 5.5] },
+    { "name": "P4", "ext": ".mp4", "keep": [1.1, 14.1] }
+  ]
+}

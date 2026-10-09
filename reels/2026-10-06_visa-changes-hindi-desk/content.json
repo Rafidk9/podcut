@@ -1,0 +1,96 @@
+{
+  "_comment": "Desk re-shoot of the Hinglish 'Navigating Visa Changes' seminar script (06-16 Oct, Mon-Fri, 1-2 PM, Sydney + Parramatta), English captions. Two takes -> 5 segments; output cuts 10.15 / 14.45 / 18.40 / 25.37, total 28.80s. Presenter: Rahul Dhanda, Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640 -- confirmed by the user 2026-10-06 when asked (different setup/grooming from his 2026-10-05 takes).",
+  "_language_note": "Captioned in English. make_en_transcript.py keeps ElevenLabs' originals as work/<clip>.transcript.hi.json and rewrites work/<clip>.transcript.json: English words keep exact timing, Hindi phrases are translated over their own audio windows. anchor_phrases below match that English.",
+  "_face_note": "USER BRIEF: no word may land on his face. Measured on work/base_broll.mp4 across all 5 segments: hair top ~38%, chin 56-60% of frame height (seated at a desk, lots of headroom). So every element is placed OUTSIDE 37-62%: captions at 23% (two-line box ends ~31%), badges/highlights ~13-16%, hook banner 235px, poster card ends at ~36%, name card + CTA pill low over the desk (74-85%). The centre-screen hero slam is deliberately NOT used -- it renders at top:50%, i.e. straight across his face. Zoom kept to 4% so the head barely moves up into the caption zone.",
+
+  "gold": ["VISA", "CHANGES", "STRESSED", "EXPIRE", "OCTOBER", "SYDNEY",
+           "PARRAMATTA", "QUESTIONS", "OPTIONS", "SCENARIO"],
+
+  "_accent_note": "Third palette, distinct from both earlier cuts of this script (gold/red English, cyan/navy Hindi): green leads, on navy boxes.",
+  "accent": { "word": "#31EB7C", "highlight_bg": "#100796",
+              "highlight_word_bg": "#31EB7C", "highlight_word_fg": "#100796",
+              "hero": "#31EB7C" },
+  "caption_highlight": true,
+  "cap_top": "23%",
+
+  "name": { "text": "Rahul Dhanda", "role": "Director & Registered Migration Agent",
+            "start": 0.3, "end": 4.0 },
+  "mara": { "mode": "styled", "marn": "2418640" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+
+  "hook_banner": { "text": "STUDENT VISA CHANGES? 📢", "start": 0.0, "end": 2.0 },
+
+  "highlights": [
+    { "anchor_phrase": "6th of october", "text": "6–16 OCTOBER", "pos": "top-left", "color": "gold" },
+    { "anchor_phrase": "in between 1 pm and 2 pm", "text": "MON–FRI · 1–2 PM", "pos": "top-right", "color": "cyan" },
+    { "anchor_phrase": "meet us at our sydney", "text": "SYDNEY + PARRAMATTA", "pos": "top-left", "color": "green" }
+  ],
+
+  "badges": [
+    { "anchor_phrase": "is about to expire very soon",
+      "text": "EXPIRING SOON? ⏳", "icon": "star", "color": "red",
+      "pos": "top-right", "effect": "pixelate" },
+    { "anchor_phrase": "understand the current scenario",
+      "text": "YOUR SITUATION 🔍", "icon": "check", "color": "cyan",
+      "pos": "top-right", "effect": "shimmer" },
+    { "anchor_phrase": "the options available to you",
+      "text": "YOUR OPTIONS 🧭", "icon": "people", "color": "gold",
+      "pos": "top-left", "effect": "particles" }
+  ],
+
+  "cta": { "text": "COME IN & ASK 🙋", "start": 18.7, "end": 21.2 },
+
+  "_documents_note": "Poster closes the reel over 'Please visit us at our Sydney and Parramatta office' -- but as a SMALL card in the headroom (450px wide, top 140px -> bottom ~700px = 36%) so his face stays fully visible, unlike the English cut where it covered him. Captions suppressed under it (the band would otherwise sit on the card).",
+  "documents": [
+    { "image": "visa-changes-seminar-poster.png",
+      "anchor_phrase": "please visit us at our sydney and parramatta office",
+      "label": "", "poster": true, "width": 450, "top": "140px",
+      "pad_before": 0.1, "pad_after": 0.2, "suppress_captions": true }
+  ],
+
+  "end_cards": { "disclaimer": true, "consultation": false },
+
+  "zoom": { "amount": 0.04, "segments": ["in", "out", "in", "out", "in"] },
+
+  "voice_denoise": true,
+
+  "_limiter_note": "QA measured -0.5 then -0.9 dBTP at the default 0.79 ceiling: sample peaks sat at the ceiling throughout (dense voice riding the limiter), so AAC inter-sample overshoot pushed true peak over -1. Lowered SFX alone did not fix it.",
+  "limiter": { "limit": 0.72 },
+
+  "music": { "track": "presenterator-kevin-macleod.mp3", "volume": 0.05 },
+
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 10.03, "volume": 0.30 },
+      { "file": "transition-whoosh.mp3", "at": 18.28, "volume": 0.30 },
+      { "file": "success-chime.mp3", "at": 18.8, "volume": 0.45 },
+      { "file": "pop.mp3", "at": 25.5, "volume": 0.30 }
+    ]
+  },
+
+  "thumbnail": {
+    "at": 6.0,
+    "kicker": "🎓 IN-PERSON SEMINAR · 6–16 OCT",
+    "headline": "STUDENT VISA **EXPIRING SOON?**"
+  },
+
+  "caption_txt": {
+    "title": "Student Visa Expiring Soon? Come In and Ask — 6–16 October",
+    "body": [
+      "We know many of you have been affected by the recent student visa changes and are feeling stressed — especially if your student visa is about to expire very soon.",
+      "From 6 to 16 October, Monday to Friday between 1 PM and 2 PM, come and meet Rahul Dhanda, Director & Registered Migration Agent at PFEC Global Parramatta (MARN 2418640), and our team at our Sydney and Parramatta offices. Ask your questions and we'll help you understand your current situation and the options that may be available to you."
+    ],
+    "bullets": [
+      "📅 6–16 October, Monday to Friday, 1:00–2:00 PM",
+      "📍 PFEC Global Sydney — Ste 402, Level 4/447 Kent St, Sydney NSW 2000",
+      "📍 PFEC Global Parramatta — Ground Floor, 1/21 George Street, Parramatta NSW 2150",
+      "💬 Your current situation · the options that may be available to you"
+    ],
+    "urgency": "Don't wait — come in, ask your questions and get clarity.",
+    "contact": "Speak with Rahul Dhanda, Director & Registered Migration Agent, PFEC Global Parramatta (MARN 2418640).",
+    "offices": false,
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#PFECGlobal #StudentVisa #VisaChanges #InternationalStudents #IndianStudentsInAustralia #StudyInAustralia #MigrationAdvice #MigrationAgent #Sydney #Parramatta",
+    "music_credit": "Music: \"Presenterator\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  }
+}

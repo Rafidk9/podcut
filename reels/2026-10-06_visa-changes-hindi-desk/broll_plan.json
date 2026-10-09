@@ -1,0 +1,10 @@
+{
+  "_comment": "No B-roll (every line is information). Two wipes only: 'speed' at 10.15 (worry hook -> logistics beat) and 'grid' at 18.40 (the change between the two takes, where his position shifts slightly); the 14.45 and 25.37 cuts are hard cuts inside a take.",
+  "n_segments": 5,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 10.15, "style": "speed" },
+    { "at": 18.40, "style": "grid" }
+  ]
+}

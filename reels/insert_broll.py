@@ -41,22 +41,36 @@ def load_plan():
     plan = {int(k): v for k, v in j["plan"].items()}
     boundaries = {int(k): float(v) for k, v in j["boundaries"].items()}
     extra_wipes = [(float(w["at"]), w.get("style", "grid")) for w in j.get("extra_wipes", [])]
-    return plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3)), extra_wipes
+    # "broll_durs" (optional): per-segment splice length overriding the reel-wide
+    # "broll_dur". A reel can mix cutaway lengths -- e.g. a 1.0s motion-graphic
+    # beat over a short connecting phrase and a 2.5s supplied clip over a longer
+    # one -- which a single global value can't express. Absent -> every planned
+    # segment uses "broll_dur" exactly as before.
+    broll_durs = {int(k): float(v) for k, v in (j.get("broll_durs") or {}).items()}
+    # "boundary_wipes" (optional): style override for the wipe at a B-ROLL
+    # boundary. These were previously hardcoded to the grid wipe, so a reel with
+    # two adjacent B-roll cutaways was forced to repeat the same transition.
+    # Absent -> "grid", exactly as before.
+    boundary_wipes = {int(k): v for k, v in (j.get("boundary_wipes") or {}).items()}
+    return (plan, boundaries, int(j["n_segments"]), float(j.get("broll_dur", 1.3)),
+            extra_wipes, broll_durs, boundary_wipes)
 
 
-PLAN, BOUNDARIES, N_SEGMENTS, BROLL_DUR, EXTRA_WIPES = load_plan()
+PLAN, BOUNDARIES, N_SEGMENTS, BROLL_DUR, EXTRA_WIPES, BROLL_DURS, BOUNDARY_WIPES = load_plan()
 
 VF = "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=30"
 
 
-def splice_broll_into_segment(seg_path, broll_path, out_path):
-    """out video = broll[0:BROLL_DUR] + seg_video[BROLL_DUR:end]; out audio =
-    seg's ORIGINAL audio, full duration, untouched."""
+def splice_broll_into_segment(seg_path, broll_path, out_path, dur=None):
+    """out video = broll[0:dur] + seg_video[dur:end]; out audio = seg's ORIGINAL
+    audio, full duration, untouched. `dur` defaults to the reel-wide BROLL_DUR;
+    pass a per-segment value (broll_plan.json "broll_durs") to mix lengths."""
+    d = BROLL_DUR if dur is None else float(dur)
     run([
         "-i", broll_path, "-i", seg_path,
         "-filter_complex",
-        f"[0:v]{VF},trim=0:{BROLL_DUR},setpts=PTS-STARTPTS[b];"
-        f"[1:v]{VF},trim=start={BROLL_DUR},setpts=PTS-STARTPTS[rest];"
+        f"[0:v]{VF},trim=0:{d},setpts=PTS-STARTPTS[b];"
+        f"[1:v]{VF},trim=start={d},setpts=PTS-STARTPTS[rest];"
         f"[b][rest]concat=n=2:v=1:a=0[vout]",
         "-map", "[vout]", "-map", "1:a",
         "-c:v", "libx264", "-preset", X264_PRESET, "-crf", "18", "-pix_fmt", "yuv420p",
@@ -106,9 +120,10 @@ def main():
         if i in PLAN:
             broll = os.path.join(WORK, PLAN[i] + ".mp4")
             out = os.path.join(seg_dir, f"seg_{i:02d}_broll.mp4")
-            splice_broll_into_segment(seg, broll, out)
+            dur = BROLL_DURS.get(i, BROLL_DUR)
+            splice_broll_into_segment(seg, broll, out, dur)
             new_list.append(out)
-            print(f"seg_{i:02d}: {PLAN[i]} spliced in, audio untouched")
+            print(f"seg_{i:02d}: {PLAN[i]} spliced in ({dur:g}s), audio untouched")
         else:
             new_list.append(seg)
 
@@ -121,7 +136,7 @@ def main():
     def _wipe_file(style):
         return "wipe.webm" if style == "grid" else f"wipe_{style}.webm"
     wipe_specs = sorted(
-        [(t, "wipe.webm") for t in BOUNDARIES.values()] +
+        [(t, _wipe_file(BOUNDARY_WIPES.get(i, "grid"))) for i, t in BOUNDARIES.items()] +
         [(t, _wipe_file(style)) for t, style in EXTRA_WIPES],
         key=lambda p: p[0])
     if wipe_specs:

@@ -1,0 +1,18 @@
+{
+  "_comment": "TWO B-roll cutaways plus a wipe over every one of the four cuts, so nothing in this reel is a flat hard cut -- that is what carries the 'quick transitions' half of the brief. broll_1 is this reel's own rendered motion-graphic stinger (see broll.py); searchmg is the user-supplied zlabz.io AI-search-bar clip, retimed and cleaned by prep_searchmg.py.",
+  "_searchmg_note": "The search-bar graphic goes at the top of segment 2, 9.10-10.70s, because that is where Salman actually says the campaign name ('Just' 9.779, 'Ask' 10.159, 'Expo' 10.539-11.080) -- the query typing itself out on screen lands on the same words in the audio. Like the 2026-08-11 Tushar reel's match cut, this is a deliberate exception to broll.py's connecting-phrase-only rule: the rule exists to stop graphics obscuring spoken facts, and here the graphic IS the fact being spoken. The splice can only start at a segment opening, so it begins 0.68s before the phrase (over 'Is the'), same as that reel's match cut did. Length is 1.6s as requested; the asset is exactly 1.6s because its trim point is a content constraint, not a pacing one -- see prep_searchmg.py for the typo in the source that fixes where it has to end.",
+  "_seg2_note": "Segment 2 also carries date_behind.py's baked-in text-behind-subject plate, but the two do not collide: insert_broll replaces only the FIRST 1.6s of the segment's video (out = broll[0:dur] + seg_video[dur:]) and the plate runs from segment-local 3.30s. Segment-local timing is preserved through the splice, so the plate still lands at 12.40s on the output timeline.",
+  "_boundaries_note": "boundaries/extra_wipes are ABSOLUTE times on the output timeline. Segment durations are 5.80 / 3.30 / 6.45 / 3.10 / 6.35 = 25.00, so the segment openings are 0.00 / 5.80 / 9.10 / 15.55 / 18.65. B-roll splices into the START of a segment, which is why those times are both the boundary and the splice start.",
+  "_dur_note": "broll_durs overrides the reel-wide 1.3s default for both planned segments: 1.6s for searchmg (the requested cutaway length) and 4.45s for segment 4. The latter covers 18.65-23.10 -- the connecting phrase 'There will be' plus the whole three-role list it introduces -- returning to camera in the 0.06s gap before 'There will be a real conversation' (23.159) so he closes on screen.",
+  "_wipes_note": "Four cuts, four wipes, no two adjacent the same style: flash(5.80) -> speed(9.10) -> grid(15.55) -> flash(18.65). 9.10 and 18.65 are now BOTH B-roll boundaries, and boundary wipes default to grid -- which would have put grid at 9.10 next to grid at 15.55, and repeated it again at 18.65 -- so boundary_wipes names speed and flash explicitly. 9.10 was MOVED out of extra_wipes when searchmg was added to the plan: the boundary already emits its own wipe there, and leaving it in extra_wipes as well would stack two wipes on the same frame. 5.80 and 15.55 are plain cuts with no splice, so they stay in extra_wipes.",
+  "n_segments": 5,
+  "broll_dur": 1.3,
+  "plan": { "2": "searchmg", "4": "broll_1" },
+  "boundaries": { "2": 9.10, "4": 18.65 },
+  "broll_durs": { "2": 1.6, "4": 4.45 },
+  "boundary_wipes": { "2": "speed", "4": "flash" },
+  "extra_wipes": [
+    { "at": 5.80, "style": "flash" },
+    { "at": 15.55, "style": "grid" }
+  ]
+}

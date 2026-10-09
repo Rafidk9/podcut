@@ -1,0 +1,12 @@
+{
+  "_comment": "No B-roll: seven short takes, every line carries information. Boundaries = cumulative keep durations (8.30 / 14.40 / 21.40 / 23.40 / 28.82 / 32.73). The four larger beat changes get brand wipes; the two cuts that bracket the 2s 'don't wait' line (23.40) and the 1.5s closer (32.73) stay hard cuts so those short segments aren't eaten by wipes.",
+  "n_segments": 7,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 8.30, "style": "speed" },
+    { "at": 14.40, "style": "grid" },
+    { "at": 21.40, "style": "flash" },
+    { "at": 28.82, "style": "speed" }
+  ]
+}

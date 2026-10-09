@@ -1,0 +1,14 @@
+{
+  "_comment": "Rahul Dhanda (Director & RMA, PFEC Global Parramatta, MARN 2418640) -- HINDI/Hinglish version of the 2026-10-05_rahul-visa-changes reel. One source take IMG_0293 (47.9s, iPhone HLG, stored landscape with -90 rotation -> 1080x1920 after autorotate). Speech starts 6.98s so 0-6.80 is trimmed. The rest is cut into 9 CONTIGUOUS beats at measured word gaps (12.52/13.10, 17.86/18.44, 23.50/24.04, 27.56/28.40, 30.06/30.78, 33.74/34.50, 37.30/37.60, 40.92/41.42) so every hard cut lands in a pause. Style differs from the English reel on purpose: content.json zoom alternates wide / 'tight:0.16' per clip so each hard cut reads as a second camera angle (jump-cut style) instead of brand wipes.",
+  "clips": [
+    { "name": "IMG_0293", "ext": ".mov", "keep": [6.80, 12.80] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [12.80, 18.15] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [18.15, 23.75] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [23.75, 27.95] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [27.95, 30.45] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [30.45, 34.15] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [34.15, 37.45] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [37.45, 41.20] },
+    { "name": "IMG_0293", "ext": ".mov", "keep": [41.20, 47.50] }
+  ]
+}

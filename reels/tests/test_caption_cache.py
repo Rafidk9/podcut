@@ -73,7 +73,10 @@ def test_badge_element_json_escapes_apostrophes_in_text():
     # raw apostrophe-containing text directly into a JS string literal
     innerHTML_line = next(l for l in js.splitlines() if "innerHTML" in l)
     assert "DON'T RISK IT" not in innerHTML_line
-    assert "+ TXT +" in innerHTML_line
+    # words are split out of TXT for the word-by-word reveal, so the badge
+    # HTML is still built from the JSON-escaped variable
+    assert "TXT.split(" in js
+    assert "DON'T RISK IT" not in js.replace(json.dumps("DON'T RISK IT"), "")
 
 
 def test_badge_element_json_escapes_double_quotes_in_text():

@@ -1,0 +1,125 @@
+{
+  "_comment": "Maheesha Samaraweera (PFEC Education Counsellor, NOT a registered migration agent -- mara.mode:none, see build_captions.py) -- 'Countdown Hook: 3 Reasons You're Coming' promo for the Just Ask Expo (25 Aug, 2-5PM, Melbourne/Sydney/Adelaide offices). 4 segments in countdown order (P1 hook, P3 'number three', P2 'number two', P4 'number one') -- see clips.json for why playback order isn't alphabetical. User asked for fast-paced/energetic/motion-graphics-heavy -- the 3-2-1 structure itself drives big hero-word number slams; bg_swap.py adds a rapid Melbourne->Sydney->Adelaide background-behind-subject flash on the one line that names all three cities; documents shows the actual Just Ask Expo flyer the user supplied.",
+  "_perf_note": "build_captions.py's main overlay needed ~20 retries to get past its encode phase (always completed capture ~45s, then died mid-encode within the 600s tool ceiling). Tested and RULED OUT emoji-rendering cost as the cause -- temporarily stripped hook_banner/cta's emoji and the exact same failure point recurred, so it's genuine system-wide memory pressure (confirmed via Memory Compression climbing to 1.6GB+ over the session), not a content issue. Emoji restored since removing them didn't help.",
+  "_asr_note": "asr_fix needed: 'Just Ask Expo' was misheard as 'Just Us Expo' ('Ask'->'Us', 0.99 confidence but clearly wrong given the campaign name is established across every other script/doc found for this campaign). P1 and P3 both open with a crew cue ('And go.' / 'And good') on a second detected speaker -- not asr error, just crew chatter caught on mic before she starts; trimmed via clips.json keep ranges, not asr_fix.",
+  "asr_fix": { "just us expo": "Just Ask Expo" },
+  "_accent_note": "Left on default gold/red -- this is a standalone campaign reel (Just Ask Expo), not part of the Migration 360 roadshow city set that owns cyan/green as per-city accents, so there's no collision to avoid and no reason to opt in to a different lead colour.",
+  "gold": ["JUST", "ASK", "EXPO", "FREE", "REGISTER", "MELBOURNE", "SYDNEY", "ADELAIDE",
+           "AUGUST", "CLARITY"],
+  "name": { "text": "Maheesha Samaraweera", "role": "Education Counsellor",
+            "start": 0.6, "end": 4.0 },
+  "mara": { "mode": "none" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "hook_banner": { "text": "3 REASONS TO GO 🎯", "start": 0.0, "end": 1.4 },
+  "cta": { "text": "REGISTER NOW! 🎉", "start": 23.9, "end": 24.9 },
+  "caption_highlight": true,
+  "_cap_top_note": "Default 62% -- single consistent framing across all 4 clips (same setup, same session, unlike the multi-backdrop Melbourne reel), no per-reel override needed. Verified against a frame grab before committing.",
+  "hero_words": [
+    { "anchor_phrase": "three reasons", "text": "", "pad_after": 0.85, "hold": 0.25, "silent": true },
+    { "anchor_phrase": "number three", "text": "3", "pad_after": 0.1, "hold": 0.05 },
+    { "anchor_phrase": "number two", "text": "2", "pad_after": 0.1, "hold": 0.05 },
+    { "anchor_phrase": "number one", "text": "1", "pad_after": 0.1, "hold": 0.05 }
+  ],
+  "badges": [
+    {
+      "anchor_phrase": "meet university reps face to face",
+      "text": "FACE TO FACE 🤝",
+      "icon": "people",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "get real clarity on your next course and pathway",
+      "text": "REAL CLARITY ✨",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top-left",
+      "effect": "particles"
+    },
+    {
+      "anchor_phrase": "it's completely free",
+      "text": "100% FREE 💯",
+      "icon": "check",
+      "color": "green",
+      "pos": "top-right",
+      "effect": "pixelate"
+    }
+  ],
+  "highlights": [
+    { "anchor_phrase": "25th august", "text": "25 AUGUST", "pos": "top-left", "color": "gold" },
+    { "anchor_phrase": "2:00 pm to 5:00 pm", "text": "2–5 PM", "pos": "top-right", "color": "cyan" }
+  ],
+  "documents": [
+    {
+      "image": "just-ask-expo-poster.jpg",
+      "anchor_phrase": "it's happening on this 25th august from",
+      "label": "",
+      "poster": true,
+      "width": 900,
+      "top": "850px",
+      "pad_before": 0.2,
+      "pad_after": 1.4,
+      "suppress_captions": true
+    }
+  ],
+  "decor": {},
+  "_zoom_note": "hits[].at is RAW clip-local time, NOT output timeline -- clip index = position in clips.json (0:P1 1:P3 2:P2 3:P4). amount 0.15-0.16, punchier than a normal reel to match the fast-paced/energetic brief -- one hit per number reveal plus the opening 'Just Ask Expo' and closing 'completely free' beats. Deliberately NO hit during the Melbourne/Sydney/Adelaide window (P4, ~9.3-10.7 raw) -- that's bg_swap.py's compositing window and a simultaneous zoom would fight the background snap-cuts rather than support them.",
+  "zoom": {
+    "amount": 0.1,
+    "segments": ["in", "out", "in", "in"],
+    "hits": [
+      { "clip": 0, "at": [4.239, 5.359], "amount": 0.15 },
+      { "clip": 1, "at": [2.220, 2.759], "amount": 0.16 },
+      { "clip": 2, "at": [1.139, 1.679], "amount": 0.16 },
+      { "clip": 3, "at": [1.5, 1.979], "amount": 0.16 },
+      { "clip": 3, "at": [2.639, 3.480], "amount": 0.14 }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "Reused Upbeat Forever (164bpm, Bass/Guitar/Drums/Horns) -- already sourced/licensed this project and its fast tempo directly matches the 'energetic, fast-paced' brief without needing a fresh search. Ducking settings carried over from the last reel's proven-safe config as a starting point (not yet re-measured against THIS presenter's specific voice level) -- re-check qa_reel's true-peak/loudness and listen back before final delivery.",
+  "music": { "track": "upbeat-forever-kevin-macleod.mp3", "volume": 0.32, "duck_ratio": 1.3, "duck_threshold": 0.4 },
+  "_sfx_note": "Denser Tier-1+ pass matching the 'full of energetic transitions' brief: transition-whoosh on each of the 3 cuts, pop.mp3 on each of the 3 number-reveal hero slams (crisp UI pop suits a countdown better than the heavier whoosh-impact), tick.mp3 on each of the 3 city background snap-cuts (Melbourne/Sydney/Adelaide), success-chime on the closing 'Register' CTA. 10 cues in a 26.6s reel -- denser per-second than prior reels; cue volumes kept low (0.22-0.32) since it's a short, already-busy edit -- re-check qa_reel's true-peak carefully.",
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 3.7, "volume": 0.32 },
+      { "file": "transition-whoosh.mp3", "at": 8.9, "volume": 0.32 },
+      { "file": "transition-whoosh.mp3", "at": 13.6, "volume": 0.32 },
+      { "file": "pop.mp3", "at": 3.85, "volume": 0.35 },
+      { "file": "pop.mp3", "at": 9.05, "volume": 0.35 },
+      { "file": "pop.mp3", "at": 13.85, "volume": 0.35 },
+      { "file": "tick.mp3", "at": 21.85, "volume": 0.28 },
+      { "file": "tick.mp3", "at": 22.30, "volume": 0.28 },
+      { "file": "tick.mp3", "at": 22.70, "volume": 0.28 },
+      { "file": "success-chime.mp3", "at": 23.9, "volume": 0.5 }
+    ]
+  },
+  "thumbnail": {
+    "at": 4.3,
+    "kicker": "🎯 JUST ASK EXPO · 25 AUG",
+    "headline": "3 REASONS TO **GO**"
+  },
+  "caption_txt": {
+    "title": "3 Reasons You Need to Be at the Just Ask Expo",
+    "body": [
+      "Confused about your next course, your pathway, or what happens after your diploma? Stop guessing — Just Ask.",
+      "The PFEC Global Just Ask Expo is completely free and happening this 25 August, 2 to 5 PM, at our Melbourne, Sydney, and Adelaide offices. Meet real university reps and Registered Migration Agents face to face — no waiting on emails, no appointment needed, just real answers to your questions."
+    ],
+    "bullets": [
+      "Number 3 — Meet university reps face to face, no waiting on emails",
+      "Number 2 — Get real clarity on your next course and pathway",
+      "Number 1 — It's completely free",
+      "📅 25 August, 2–5 PM — PFEC Global Melbourne, Sydney & Adelaide offices",
+      "University reps + Registered Migration Agents, live and in person"
+    ],
+    "urgency": "Free entry, zero pressure — just come and ask. Register now, link in bio.",
+    "contact": "Meet our team at the Just Ask Expo — no appointment needed, just real answers from university reps and Registered Migration Agents.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #JustAskExpo #EducationExpo #StudyInAustralia #InternationalStudents #MelbourneEvents #SydneyEvents #AdelaideEvents #FreeEntry #UniversityPathway #MigrationAdvice",
+    "music_credit": "Music: \"Upbeat Forever\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nMelbourne skyline: Jorge Láscar, via Wikimedia Commons — CC BY 2.0\nAdelaide riverbank: Ikhwan Zailani Yuslim, via Wikimedia Commons — CC BY 2.0\nSydney Opera House: Ypsilon from Finland, via Wikimedia Commons — CC0"
+  },
+  "_documents_note": "The actual Just Ask Expo flyer the user supplied (documents/just-ask-expo-poster.jpg, 600x600 native -- displayed at 900px wide, some softening from the upscale but acceptable for a ~1.6s flash card), shown while she announces the date/time -- 'it's happening on this 25th August from 2 to 5 PM'. pad_after stops before 'at our Melbourne' so the banner clears the frame before the city background-swap sequence begins -- the two effects are sequential, not simultaneous, so each reads clearly. top moved 480px -> 850px per user report that it was covering her face -- measured her chin at ~800px (42%) in this segment's own footage (work/base_broll.mp4 pre-fix) and the banner was starting well above that, covering her whole face down to just her hairline peeking out the top. 850px clears her chin with margin; the tradeoff is her clasped hands (~1150-1350px) are now behind the banner instead, which reads far better than covering her face.",
+  "_highlights_note": "Per user request: while she says the date and time, show them as marker-swipe highlighter text (a colour bar sweeps in left-to-right, revealing the text in sync) in the top-left/top-right corners, alongside the existing Just Ask Expo poster (not replacing it) -- new 'highlights' element type in build_captions.py's cacheable-elements system (see _highlight_element()), same anchor_phrase/pos/color pattern as badges but a swipe-reveal instead of a pop-in pill. anchor_phrase '25th august' is a substring of the documents entry's already-verified 'it's happening on this 25th august from' match, so it resolves against the same P4 clip without needing separate verification. The time phrase needed its own exact wording though -- ASR transcript has the times as '2:00 PM to 5:00 PM' (not 'from 2 to 5' as loosely assumed at first), confirmed via work/P4.transcript.json's word tokens; 'anchor_phrase: 2 to 5' silently SKIPPED (best match 0.62 < 0.8 threshold) until corrected to '2:00 pm to 5:00 pm'. Positioned at the same top:232px row badges use (clear of both the logo chip above and the poster's own top:850px start well below) -- the 100% FREE badge earlier in this same clip fades out well before she reaches 'the 25th', so there's no visual collision despite sharing that row.",
+  "_bg_swap_note": "bg_swap.py (run after build_base.py, before insert_broll.py) composites real photos of Melbourne, Sydney, and Adelaide behind her, snap-cutting between the three in sync with her saying each name -- see that script's own docstring for exact timing and assets/cities/CREDITS.txt for image sourcing/licences. This is one of the reel's 'text/image behind subject' moments per podcut/CLAUDE.md.",
+  "_hero_3reasons_note": "Per user request: at the opening 'Three reasons...' line, replaced the plain 2-word caption cards with a custom text-behind-subject treatment -- a giant gold '3' whose two lobes wrap around her head and torso, plus 'REASONS' reading vertically on the right. Built by hero_3reasons.py (run after build_base.py, before insert_broll.py, same convention as bg_swap.py) on segment 0 (P1). The silent hero_words entry above ('three reasons', text:'') exists ONLY to suppress the plain 2-word captions in that window via build_captions.py's new 'silent' flag -- it renders nothing of its own, since the real graphic is already baked into the footage by hero_3reasons.py."
+}

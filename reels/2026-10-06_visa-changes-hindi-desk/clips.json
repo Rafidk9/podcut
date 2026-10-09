@@ -1,0 +1,10 @@
+{
+  "_comment": "Same Hinglish visa-changes seminar script as 2026-10-05_rahul-visa-changes-hindi, re-shot seated at a desk in two takes (IMG_3002: hook -> dates -> offices; IMG_3007: 'come and ask your questions' -> sign-off). Both iPhone HLG 4K60, stored landscape with -90 rotation. 3002 opens with a crew 'Start?' (1.10) and a filler 'a' (3.08) -- trimmed by starting at 3.20. Splits sit in measured word gaps: 13.06/13.64 and 17.40/17.92 in 3002, 7.30/7.74 in 3007. Output cuts: 10.15, 14.45, 18.40 (take change), 25.37; total 28.80s.",
+  "clips": [
+    { "name": "IMG_3002", "ext": ".mov", "keep": [3.20, 13.35] },
+    { "name": "IMG_3002", "ext": ".mov", "keep": [13.35, 17.65] },
+    { "name": "IMG_3002", "ext": ".mov", "keep": [17.65, 21.60] },
+    { "name": "IMG_3007", "ext": ".mov", "keep": [0.55, 7.52] },
+    { "name": "IMG_3007", "ext": ".mov", "keep": [7.52, 10.95] }
+  ]
+}

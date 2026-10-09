@@ -1,0 +1,106 @@
+{
+  "_comment": "Tushar Chopra -- Registered Migration Agent, MARN 2418420 (on the supplied 'Navigating Visa Changes' poster: 'Tushar Chopra / Registered Migration Agent / MARN 2418420'; matches pfec-presenters). Seminar: daily from 6 Oct 2026, 12:00-1:00 PM, PFEC Global Melbourne Office. Output cuts at 8.30 / 14.40 / 21.40 / 23.40 / 28.82 / 32.73, total ~34.2s before end cards.",
+
+  "asr_fix": { "pfvc": "PFEC" },
+
+  "gold": ["VISA", "CHANGES", "WORRIED", "ANXIOUS", "OCTOBER", "MELBOURNE",
+           "SOLUTIONS", "WAIT", "LATE", "CLARITY", "REGISTER", "NEXT"],
+
+  "name": { "text": "Tushar Chopra", "role": "Registered Migration Agent",
+            "start": 0.4, "end": 4.2 },
+  "mara": { "mode": "styled", "marn": "2418420" },
+
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+
+  "hook_banner": { "text": "STUDENT VISA CHANGES? 😟", "start": 0.0, "end": 1.7 },
+
+  "hero_words": [
+    { "anchor_phrase": "probably are worried", "text": "WORRIED?",
+      "pad_after": 0.25, "hold": 0.2 }
+  ],
+
+  "highlights": [
+    { "anchor_phrase": "october tomorrow", "text": "FROM 6 OCTOBER", "pos": "top-left", "color": "gold" },
+    { "anchor_phrase": "tomorrow onwards from", "text": "EVERYDAY · 12–1 PM", "pos": "top-right", "color": "cyan" },
+    { "anchor_phrase": "pfec melbourne office", "text": "MELBOURNE OFFICE", "pos": "top-left", "color": "green" }
+  ],
+
+  "badges": [
+    { "anchor_phrase": "whether these changes affect you",
+      "text": "HOW IT AFFECTS YOU 💡", "icon": "star", "color": "cyan",
+      "pos": "top-right", "effect": "shimmer" },
+    { "anchor_phrase": "what you should do next",
+      "text": "YOUR NEXT STEPS ✅", "icon": "check", "color": "green",
+      "pos": "top-left", "effect": "pixelate" },
+    { "anchor_phrase": "solutions that are currently available",
+      "text": "YOUR OPTIONS 🧭", "icon": "people", "color": "gold",
+      "pos": "top-right", "effect": "particles" },
+    { "anchor_phrase": "don't wait until it's too late",
+      "text": "DON'T WAIT ⏳", "icon": "star", "color": "red",
+      "pos": "top-left" }
+  ],
+
+  "cta": { "text": "REGISTER NOW 👉", "start": 32.0, "end": 34.1 },
+
+  "documents": [
+    { "image": "visa-changes-seminar-poster.png",
+      "anchor_phrase": "next steps so register right now",
+      "label": "", "poster": true, "width": 860, "top": "330px",
+      "pad_before": 0.1, "pad_after": 0.3, "suppress_captions": true }
+  ],
+
+  "decor": { "accents": true, "sparkles": true, "handle": "@PFECGlobal" },
+
+  "zoom": {
+    "amount": 0.08,
+    "segments": ["in", "out", "in", "in", "out", "in", "out"],
+    "hits": [
+      { "clip": 0, "at": [4.00, 4.70], "amount": 0.14 },
+      { "clip": 2, "at": [13.55, 14.30], "amount": 0.12 },
+      { "clip": 3, "at": [2.40, 3.00], "amount": 0.16 },
+      { "clip": 5, "at": [4.20, 4.80], "amount": 0.12 }
+    ]
+  },
+
+  "voice_denoise": true,
+
+  "music": { "track": "beauty-flow-kevin-macleod.mp3", "volume": 0.05 },
+
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 8.18, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 14.28, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 21.28, "volume": 0.45 },
+      { "file": "transition-whoosh.mp3", "at": 28.70, "volume": 0.45 },
+      { "file": "whoosh-impact.mp3", "at": 2.0, "volume": 0.8 },
+      { "file": "pop.mp3", "at": 31.4, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 32.1, "volume": 0.7 }
+    ]
+  },
+
+  "thumbnail": {
+    "at": 11.3,
+    "kicker": "🎓 FROM 6 OCTOBER · MELBOURNE",
+    "headline": "STUDENT VISA **CHANGES?**"
+  },
+
+  "caption_txt": {
+    "offices": false,
+    "title": "Worried About the Student Visa Changes? Come In and Ask — From 6 October, Melbourne",
+    "body": [
+      "A lot of you are probably worried and anxious about the recent student visa changes — especially if your visa is expiring very soon.",
+      "From 6 October 2026, come and speak with Tushar Chopra (Registered Migration Agent, MARN 2418420) and our other Registered Migration Agents at the PFEC Global Melbourne office. We'll discuss whether these changes affect you, what you should do next, and the solutions currently available to you."
+    ],
+    "bullets": [
+      "📅 From 6 October 2026, every day",
+      "🕛 12:00 PM – 1:00 PM",
+      "📍 PFEC Global Melbourne Office",
+      "💬 How the changes affect you · your next steps · the solutions available"
+    ],
+    "urgency": "Don't wait until it's too late — come in, ask your questions and get clarity on your next steps. Register now!",
+    "contact": "Speak with Tushar Chopra, Registered Migration Agent, PFEC Global (MARN 2418420).",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#PFECGlobal #StudentVisa #VisaChanges #InternationalStudents #StudyInAustralia #MigrationAdvice #MigrationAgent #MelbourneStudents #Melbourne #AustralianVisa",
+    "music_credit": "Music: \"Beauty Flow\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  }
+}

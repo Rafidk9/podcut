@@ -1,0 +1,12 @@
+{
+  "_comment": "No B-roll stinger splices: this is a 34.5s single take where every sentence carries information (who it's for, dates, time, both offices, what the session covers, the CTA) -- there is no connecting/filler span to cut away over. The four cuts between beats get brand wipes instead, no two neighbours the same style. Boundaries = cumulative keep-span durations from clips.json (8.63 / 8.66 / 7.64 / 5.07). The 'flash' sits on the beat change into 'So don't wait'.",
+  "n_segments": 5,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 8.63, "style": "speed" },
+    { "at": 17.29, "style": "grid" },
+    { "at": 24.93, "style": "flash" },
+    { "at": 30.00, "style": "speed" }
+  ]
+}

@@ -365,10 +365,39 @@ def load_words(content):
         if n in FILLERS:
             continue
         text = w["text"]
-        if n in asr_fix:
+        if n in asr_fix and " " not in n:
             trail = text[len(text.rstrip(".,!?;:")):]
             text = asr_fix[n] + trail
         out.append({"text": text, "start": w["start"], "end": w["end"]})
+
+    # Multi-word asr_fix entries (e.g. "just us expo" -> "Just Ask Expo", for
+    # a 3-word mishear) need a sliding-window PHRASE match across the word
+    # list above -- a dict key with a space in it can never equal any single
+    # word's norm() text, so the single-word lookup above always skips them
+    # (bug caught 2026-08-07: this reel's phrase fix silently never applied
+    # despite being in content.json since the reel was first built -- the
+    # caption read "Just Us Expo" the whole time). Replace positionally
+    # (word-for-word, same count required on both sides) so each token keeps
+    # its own original timing -- downstream caption chunking/anchor_phrase
+    # resolution only ever sees per-word start/end, never a merged span.
+    for src, dst in asr_fix.items():
+        src_words, dst_words = src.split(), dst.split()
+        if len(src_words) < 2:
+            continue
+        if len(src_words) != len(dst_words):
+            print(f"  [asr_fix] SKIPPING phrase fix {src!r} -> {dst!r}: word count "
+                  f"must match on both sides for positional replace")
+            continue
+        i = 0
+        while i <= len(out) - len(src_words):
+            if [norm(out[i + k]["text"]) for k in range(len(src_words))] == src_words:
+                for k in range(len(src_words)):
+                    trail = out[i + k]["text"][len(out[i + k]["text"].rstrip(".,!?;:")):]
+                    out[i + k]["text"] = dst_words[k] + trail
+                print(f"  [asr_fix] phrase {src!r} -> {dst!r} @ {out[i]['start']:.2f}s")
+                i += len(src_words)
+            else:
+                i += 1
     return out
 
 
@@ -471,8 +500,18 @@ def make_proj(base):
             print(f"  [hero] SKIPPING {spec.get('text')!r}: anchor_phrase "
                   f"{spec['anchor_phrase']!r} not found (best {score:.2f} < 0.8)")
             continue
+        # "silent" (opt-in, default False): suppress the plain 2-word caption
+        # in this window the same as any hero word, but render NOTHING of
+        # its own -- for a reel that bakes a fully custom graphic (e.g. a
+        # text-behind-subject treatment via a per-reel matting script) into
+        # the footage directly and just needs the normal captions out of the
+        # way for that window, not another overlay layered on top of it.
         hero_words.append({"text": spec["text"], "start": round(hstart, 3),
-                           "end": round(hend + hold, 3)})
+                           "end": round(hend + hold, 3),
+                           "silent": bool(spec.get("silent", False)),
+                           # "size" (opt-in, px): override the 150px slam font
+                           # for a long word that would overflow 1080px wide.
+                           "size": spec.get("size")})
         print(f"  [hero] {spec['text']!r} -> {hstart:.2f}s-{hend + hold:.2f}s (anchor match {score:.2f})")
 
     def _in_hero_window(t):
@@ -501,6 +540,27 @@ def make_proj(base):
                        "effect": spec.get("effect"),
                        "start": round(bstart, 3), "end": round(bend + 0.6, 3)})
         print(f"  [badges] {spec['text']!r} -> {bstart:.2f}s (anchor match {score:.2f})")
+
+    # Marker-swipe highlighter text (content.json "highlights"): same anchor/
+    # pos/color resolution as badges above, but a distinct visual -- a colour
+    # bar sweeps in left-to-right and the text reveals in lockstep, like
+    # marking it with a highlighter pen, instead of badges' pop-in pill. See
+    # _highlight_element(). Reuses BADGE_COLORS/BADGE_POS since the palette
+    # and corner-anchoring are identical.
+    highlights = []
+    for spec in content.get("highlights", []):
+        hlstart, hlend, score = resolve_anchor(words, spec["anchor_phrase"])
+        if hlstart is None:
+            print(f"  [highlights] SKIPPING {spec.get('text')!r}: anchor_phrase "
+                  f"{spec['anchor_phrase']!r} not found (best {score:.2f} < 0.8)")
+            continue
+        bg, fg = BADGE_COLORS.get(spec.get("color", "gold"), BADGE_COLORS["gold"])
+        pos = BADGE_POS.get(spec.get("pos", "top-left"), BADGE_POS["top-left"])
+        highlights.append({"text": spec["text"], "bg": bg, "fg": fg,
+                           "center": pos.get("center", False), "left": pos.get("left"),
+                           "right": pos.get("right"), "top": 232,
+                           "start": round(hlstart, 3), "end": round(hlend + 0.8, 3)})
+        print(f"  [highlights] {spec['text']!r} -> {hlstart:.2f}s (anchor match {score:.2f})")
 
     # DM/notification mockup: resolves the same way as badges (anchor_phrase ->
     # spoken moment), pops in, holds through the message, exits. See
@@ -856,7 +916,8 @@ def make_proj(base):
     # badges/lists were emptied out of the base HTML above specifically so
     # build() can render+composite them separately instead.
     cacheable = {
-        "cards": cards, "hero_words": hero_words, "badges": badges, "lists": lists,
+        "cards": cards, "hero_words": [h for h in hero_words if not h.get("silent")],
+        "badges": badges, "highlights": highlights, "lists": lists,
         "dm_bubbles": dm_bubbles, "pathway": pathway,
         "accent_word": (content.get("accent") or {}).get("word", "#FFC500"),
         "roadshow": {"kicker": roadshow.get("kicker", ""), "top": roadshow.get("top", "130px"),
@@ -909,7 +970,9 @@ def _card_element(card, cap_top, highlight_class):
 
 def _hero_element(hero):
     D = round(hero["end"] - hero["start"], 3)
-    body = f'<div id="heroHost"><div class="hero-slam" id="elHero"><span>{hero["text"]}</span></div></div>'
+    size_style = f' style="font-size:{int(hero["size"])}px"' if hero.get("size") else ""
+    body = (f'<div id="heroHost"><div class="hero-slam" id="elHero">'
+            f'<span{size_style}>{hero["text"]}</span></div></div>')
     js = ("""
   var el = document.getElementById("elHero");
   tl.set(el, {visibility:"visible"}, 0);
@@ -918,7 +981,7 @@ def _hero_element(hero):
   tl.to(el, {opacity:0, scale:1.15, duration:0.2, ease:"power2.in"}, __D__ - 0.2);
   tl.set(el, {visibility:"hidden"}, __D__);
 """).replace("__D__", f"{D:.3f}")
-    content = {"text": hero["text"]}
+    content = {"text": hero["text"], "size": hero.get("size")}
     return content, D, body, js
 
 
@@ -952,16 +1015,29 @@ def _badge_element(badge, index):
   var el = document.getElementById("elBadge");
   var FG = "__FG__", BG = "__BG__", EFFECT = "__EFFECT__", BI = __BI__, TXT = __TEXT_JSON__;
   var ico = (BICONS["__ICON__"] || BICONS.star).replace(/COL/g, FG);
-  el.innerHTML = '<span class="bp-ico">' + ico + '</span><span class="bp-txt">' + TXT + '</span>';
+  // Each space-separated token (words + any trailing emoji) gets its own
+  // span so the text can reveal word-by-word instead of the whole pill
+  // popping in as one block -- per user feedback on the first cut
+  // (2026-08-07): "make each word animate and come to the screen".
+  var words = TXT.split(" ");
+  var wordsHtml = words.map(function(w){ return '<span class="bp-word">' + w + '</span>'; }).join(" ");
+  el.innerHTML = '<span class="bp-ico">' + ico + '</span><span class="bp-txt">' + wordsHtml + '</span>';
   if (el.style.left === "50%") gsap.set(el, {xPercent:-50});
+
+  var wordEls = el.querySelectorAll(".bp-word");
 
   tl.set(el, {visibility:"visible"}, 0);
   if (EFFECT === "pixelate") {
     tl.fromTo(el, {opacity:0}, {opacity:1, duration:0.1}, 0);
   } else {
-    tl.fromTo(el, {opacity:0, scale:0.6, y:-16},
-      {opacity:1, scale:1, y:0, duration:0.34, ease:"back.out(2.4)"}, 0);
+    // Pill (background + icon) materializes fast; the text itself stays
+    // hidden at this point -- each word pops in separately just below.
+    tl.fromTo(el, {opacity:0, scale:0.85, y:-10},
+      {opacity:1, scale:1, y:0, duration:0.22, ease:"power2.out"}, 0);
   }
+  tl.set(wordEls, {opacity:0, y:10, scale:0.5}, 0);
+  tl.to(wordEls, {opacity:1, y:0, scale:1, duration:0.28, ease:"back.out(2.6)",
+    stagger:0.09}, 0.08);
   tl.to(el, {y:8, duration:0.9, ease:"sine.inOut", repeat:1, yoyo:true}, 0.4);
   tl.to(el, {opacity:0, scale:0.9, y:-14, duration:0.24, ease:"power2.in"}, __D__ - 0.24);
   tl.set(el, {visibility:"hidden"}, __D__);
@@ -1017,6 +1093,46 @@ def _badge_element(badge, index):
                "fg": badge["fg"], "center": badge.get("center", False), "left": badge.get("left"),
                "right": badge.get("right"), "top": badge["top"], "effect": badge.get("effect"),
                "index": index}
+    return content, D, body, js
+
+
+def _highlight_element(hl):
+    """Marker-swipe highlighter text (content.json "highlights"): a colour
+    bar sweeps in left-to-right and the text reveals in lockstep via a
+    matching clip-path, like marking the words with a highlighter pen --
+    per user request for the date/time line. Distinct from _badge_element()'s
+    pop-in pill: no icon, rectangular (not pill-rounded), and the reveal IS
+    the entrance rather than a separate effect layered on top of one."""
+    D = round(hl["end"] - hl["start"], 3)
+    style = f'top:{hl["top"]}px;'
+    if hl.get("left") is not None:
+        style += f'left:{hl["left"]}px;'
+    if hl.get("right") is not None:
+        style += f'right:{hl["right"]}px;'
+    if hl.get("center"):
+        style += 'left:50%;'
+    body = f'<div id="hlHost"><div class="hl-mark" id="elHl" style="{style}"></div></div>'
+    js = ("""
+  var el = document.getElementById("elHl");
+  var FG = "__FG__", BG = "__BG__", TXT = __TEXT_JSON__;
+  el.innerHTML = '<span class="hl-inner"><span class="hl-bar" style="background:' + BG +
+    '"></span><span class="hl-txt" style="color:' + FG + '">' + TXT + '</span></span>';
+  if (el.style.left === "50%") gsap.set(el, {xPercent:-50});
+  var bar = el.querySelector(".hl-bar"), txt = el.querySelector(".hl-txt");
+
+  tl.set(el, {visibility:"visible"}, 0);
+  // Bar sweeps left-to-right; text reveals in lockstep via a matching
+  // clip-path -- the two together read as a highlighter marking the words.
+  tl.fromTo(el, {scale:0.9}, {scale:1, duration:0.3, ease:"back.out(2)"}, 0);
+  tl.fromTo(bar, {scaleX:0}, {scaleX:1, duration:0.32, ease:"power2.out"}, 0.05);
+  tl.fromTo(txt, {clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0% 0 0)",
+    duration:0.32, ease:"power2.out"}, 0.05);
+  tl.to(el, {opacity:0, y:-10, duration:0.22, ease:"power2.in"}, __D__ - 0.22);
+  tl.set(el, {visibility:"hidden"}, __D__);
+""").replace("__FG__", hl["fg"]).replace("__BG__", hl["bg"]) \
+    .replace("__TEXT_JSON__", json.dumps(hl["text"])).replace("__D__", f"{D:.3f}")
+    content = {"text": hl["text"], "bg": hl["bg"], "fg": hl["fg"], "center": hl.get("center", False),
+               "left": hl.get("left"), "right": hl.get("right"), "top": hl["top"]}
     return content, D, body, js
 
 
@@ -1351,6 +1467,12 @@ def build(no_cache=False, clear_cache=False):
         content, D, body, js = _badge_element(badge, i)
         path, hit = _render_cacheable("badge", content, D, body, js, cache_dir, no_cache)
         layers.append((path, badge["start"], badge["start"] + D))
+        hits += hit; misses += not hit
+
+    for hl in cacheable["highlights"]:
+        content, D, body, js = _highlight_element(hl)
+        path, hit = _render_cacheable("highlight", content, D, body, js, cache_dir, no_cache)
+        layers.append((path, hl["start"], hl["start"] + D))
         hits += hit; misses += not hit
 
     for lst in cacheable["lists"]:
@@ -1751,6 +1873,9 @@ _CAP_BLOCK = """<!doctype html>
   .badge-pop .bp-ico svg{width:42px;height:42px}
   .badge-pop .bp-txt{font-family:"Poppins",sans-serif;font-weight:800;font-size:42px;
      letter-spacing:.02em}
+  /* Each word is its own inline-block so GSAP can transform (scale/y) it
+     independently for the word-by-word reveal -- see the entrance tween. */
+  .badge-pop .bp-word{display:inline-block}
   /* Badge effect: "shimmer" -- a light sweep masked over the pill, position
      driven by a GSAP-tweened CSS custom property (catalog: shimmer-sweep). */
   .badge-pop .bp-shimmer{position:absolute;inset:0;pointer-events:none;border-radius:inherit;
@@ -1767,6 +1892,19 @@ _CAP_BLOCK = """<!doctype html>
   .badge-pop .bp-pixel-overlay{position:absolute;inset:0;pointer-events:none;display:grid;
      border-radius:inherit;overflow:hidden}
   .badge-pop .bp-pixel-overlay .bp-cell{transform:scale(1);transform-origin:center center}
+
+  /* Marker-swipe highlighter text (content.json "highlights"): a colour bar
+     sweeps in behind the text like a highlighter pen, text revealing in
+     lockstep -- see _highlight_element(). Rectangular (not pill-rounded)
+     and no icon, unlike .badge-pop, to read distinctly as "highlighted
+     text" rather than another quick-emphasis badge. */
+  #hlHost{position:absolute;inset:0;pointer-events:none}
+  .hl-mark{position:absolute;visibility:hidden;transform-origin:center center}
+  .hl-mark .hl-inner{position:relative;display:inline-block;padding:12px 22px}
+  .hl-mark .hl-bar{position:absolute;inset:0;border-radius:8px;
+     transform-origin:left center;box-shadow:0 10px 26px rgba(0,0,0,.38)}
+  .hl-mark .hl-txt{position:relative;font-family:"Poppins",sans-serif;font-weight:800;
+     font-size:44px;letter-spacing:.02em;white-space:nowrap}
 
   /* DM/notification mockup (content.json "dm_bubbles"): a phone-style incoming-
      message card for a beat where the speaker describes someone messaging them.

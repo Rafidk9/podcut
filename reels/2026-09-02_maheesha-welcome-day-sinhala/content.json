@@ -1,0 +1,246 @@
+{
+  "_comment": "Maheesha Samaraweera (PFEC Education Counsellor, NOT a registered migration agent -- mara.mode:none) promoting the PFEC Global International Student Welcome Day: Saturday 19 September 2026, 12-3PM, a three-hour private river cruise run out of the Brisbane, Melbourne, Perth, Adelaide and Sydney branches. Every fact here comes from what she actually says on camera (work/*.transcript.si.json) -- date, time, the five branches, the three-hour private cruise, free food and drinks, meet the team and new friends. Nothing about ticket price is claimed anywhere: she only says food and drinks are free, so the reel and caption.txt say exactly that and no more.",
+  "_trim_note": "The six-month qualifier is CUT at the user's request. Sinhala is verb-final, so \"pahugiya maasa haya ethulathadi\" (within the last six months) sits in the MIDDLE of the hook sentence rather than at either end -- P1.transcript.si.json words 1-4, 2.40-3.98s. Removing it by an interior splice would have meant a jump cut on a talking head 1.5s into the reel; trimming P1's HEAD to 3.89s instead drops the same clause and leaves \"Australiavalata aapu kenekda?\" (did you come to Australia?), which stands on its own as a complete question. So there is no new cut in the reel at all -- P1 simply starts later, 3.90s -> 1.86s, and everything downstream shifts 2.04s earlier: the four wipes, all eight SFX cues, the CTA pill, the thumbnail grab and the name lower-third (which no longer fits inside P1 and now plays over P2). bg_swap.py is untouched: its cuts are seg_03-local and P4's keep never changed. The cut point 3.89 is the measured inter-word energy trough, not the ASR word start of 4.00, which is ~0.075s late. Note what still carries recency: the hook_banner reads JUST LANDED IN AUSTRALIA? -- an implication of a recent arrival, but no stated window -- and caption_txt no longer gates on six months either.",
+  "_language_note": "SPOKEN ENTIRELY IN SINHALA, SUBTITLED IN ENGLISH -- the user's brief. ElevenLabs scribe_v1 transcribed the Sinhala (kept verbatim as work/<clip>.transcript.si.json), and make_en_transcript.py rewrites work/<clip>.transcript.json into English carrying those same word timings, so the caption band, anchor_phrase matching and build_caption_txt all run in English while the audio stays Sinhala. Consequence for anchors: every anchor_phrase below is English and must match the ENGLISH text in that file, not anything ElevenLabs produced. Because English and Sinhala order clauses differently (Sinhala is verb-final), a caption lands within its clause rather than word-for-word on top of the matching Sinhala word -- except the five branch names and the date/time, which were deliberately given their own alignment chunks so they hit exactly on the spoken word (which is also what bg_swap.py's city cuts are keyed to).",
+  "_accent_note": "Shifted the lead colour from the house gold/red to brand cyan #00B3E3 -- the whole reel is water: a river cruise, five waterfront plates, open sky in four of the five city photos. Gold stays in the palette on the badges so the date/CTA beats still read warm against it. This is the lead-colour switch documented in reels/README.md, not a new colour.",
+  "accent": {
+    "word": "#00B3E3",
+    "highlight_bg": "#100796",
+    "highlight_word_bg": "#00B3E3",
+    "highlight_word_fg": "#100796",
+    "hero": "#00B3E3"
+  },
+  "gold": [
+    "WELCOME",
+    "DAY",
+    "FREE",
+    "CRUISE",
+    "SEPTEMBER",
+    "PFEC",
+    "GLOBAL",
+    "BRISBANE",
+    "MELBOURNE",
+    "PERTH",
+    "ADELAIDE",
+    "SYDNEY",
+    "REGISTER",
+    "AUSTRALIA",
+    "FRIENDS",
+    "PRIVATE"
+  ],
+  "name": {
+    "text": "Maheesha Samaraweera",
+    "role": "Education Counsellor",
+    "start": 2.5,
+    "end": 5.7
+  },
+  "mara": {
+    "mode": "none"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "hook_banner": {
+    "text": "JUST LANDED IN AUSTRALIA?",
+    "start": 0.0,
+    "end": 1.5
+  },
+  "cta": {
+    "text": "REGISTER NOW! 🎉",
+    "start": 32.46,
+    "end": 33.56
+  },
+  "_hook_banner_note": "No emoji on this one. The first pass used a flag emoji here and it rendered as the literal letters \"AU\" -- Windows ships no regional-indicator flag glyphs, so the headless Chrome that HyperFrames renders through falls back to the two letter codes. Pictorial emoji (the ship, party popper and handshake on the badges) render fine; flags never will on this machine.",
+  "_end_cards_note": "Both trailing cards dropped for this reel, per the user's instruction to remove the disclaimer and all office locations. The disclaimer card is the compliance notice; the CONSULTATION card is not just a CTA -- it is a full six-branch address-and-phone board (Melbourne, Sydney, Perth, Brisbane, Adelaide, Lakemba), so leaving it in would have kept exactly the office locations that were asked to go, on screen, for three seconds. Dropping the disclaimer is defensible on its own terms too: this is a social-event announcement -- a river cruise, free entry, meet the team -- making no visa, eligibility or outcome claim anywhere in the script or copy, which is the case the build_composite.py opt-out exists for. The reel now ends on her own closing line with the REGISTER NOW pill still up at 34.5s, so it does not end without a call to action.",
+  "end_cards": {
+    "disclaimer": false,
+    "consultation": false
+  },
+  "caption_highlight": true,
+  "_cap_top_note": "Left at the 62% default. Checked a frame from all five takes: her face sits between 22% and 58% of frame height in every one, so a band centred at 62% clears it throughout. It does cross her clasped hands in P4 (61-69%), which is the right thing to cover of the two.",
+  "_hero_note": "One hero slam only, on the line that names the event for the first time. anchor_phrase is the full clause rather than just 'welcome day' because that phrase recurs verbatim in the closing P5 line -- the longer anchor is unique to P2 and can't drift to the wrong clip.",
+  "hero_words": [
+    {
+      "anchor_phrase": "it's the pfec global welcome day",
+      "text": "WELCOME DAY",
+      "pad_after": 0.15,
+      "hold": 0.2
+    }
+  ],
+  "_badges_note": "Three badges, three different entrance effects per the standing preference that no two badges in a reel share an animation -- shimmer for the cruise reveal (a bright, positive beat), particles for the free food and drinks (the celebratory one), pixelate on the closing 'new friends' line so it echoes the grid wipes' own technique on the way out.",
+  "badges": [
+    {
+      "anchor_phrase": "a three hour private cruise",
+      "text": "3-HOUR CRUISE 🚢",
+      "icon": "star",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "food and drinks free",
+      "text": "FOOD & DRINKS FREE 🎉",
+      "icon": "check",
+      "color": "green",
+      "pos": "top-right",
+      "effect": "particles"
+    },
+    {
+      "anchor_phrase": "meet our team and make new friends",
+      "text": "MEET NEW FRIENDS 🤝",
+      "icon": "people",
+      "color": "gold",
+      "pos": "top-right",
+      "effect": "pixelate"
+    }
+  ],
+  "_highlights_note": "One marker-swipe highlight now, not two. There WAS a \"12-3 PM\" one on the time she says, but the office designs that now snap in behind her carry each branch's own hours on the artwork, and those hours differ -- Brisbane 11:30-2:30, Melbourne and Adelaide 12-3, Perth and Sydney 12-4. A single 12-3 PM stamp would have been contradicted on screen by three of the five designs a second later. The spoken subtitle still says what she says; only the graphic that generalised it is gone. The date is safe to stamp: all five designs say 19 SEP 2026.",
+  "highlights": [
+    {
+      "anchor_phrase": "on september 19",
+      "text": "SAT 19 SEPT",
+      "pos": "top-left",
+      "color": "gold"
+    }
+  ],
+  "_documents_note": "Two real photographs from the March 2026 Welcome Day cruise -- the boat's window tables with the river outside, and the buffet -- flashed as a staggered fan while she describes enjoying it with friends. Uses the \"images\" LIST form on purpose, not \"image\": the single-card form is centre-docked, and measured against a frame from THIS take (check/p3_card_zone.jpg) her head starts at only 25% of frame height here, so any centred card wide enough to read lands on her face. The fan variant is docked top-left at 340px wide, which clears her entirely -- she sits from about 42% of frame width rightward in this take. Knock-on change: the FOOD & DRINKS FREE badge fires at 16.85s while the fan is still up, so that badge moved from top-left to top-right to get out of its way.",
+  "documents": [
+    {
+      "images": [
+        "cruise-deck.jpg",
+        "food-drinks.jpg"
+      ],
+      "anchor_phrase": "to enjoy with your friends",
+      "label": "",
+      "pad_before": 0.1,
+      "pad_after": 0.45
+    }
+  ],
+  "decor": {},
+  "_zoom_note": "hits[].at is RAW clip-local time; clip index = position in clips.json (0:P1 1:P2 2:P3 3:P4 4:P5). Punch hits on the event-name reveal, the cruise reveal and the CTA. There WAS a hit on the hook question (clip 0, raw 4.00-5.44); it came out when the six-month qualifier was trimmed off P1's head, because the clip is now only 1.86s and that hit spanned essentially all of it -- a punch that starts on frame 1 and never releases is not a punch, it is a botched framing. segments[0]=\"in\" carries the hook instead: one smooth 10% push across the whole 1.86s. Deliberately NO hit anywhere in P4's 6.7-9.9s raw window: that is bg_swap.py's compositing window, and a simultaneous camera push would fight the five background snap-cuts instead of supporting them.",
+  "zoom": {
+    "amount": 0.1,
+    "segments": [
+      "in",
+      "out",
+      "in",
+      "in",
+      "out"
+    ],
+    "hits": [
+      {
+        "clip": 1,
+        "at": [
+          6.1,
+          8.4
+        ],
+        "amount": 0.16
+      },
+      {
+        "clip": 2,
+        "at": [
+          2.54,
+          4.16
+        ],
+        "amount": 0.15
+      },
+      {
+        "clip": 4,
+        "at": [
+          3.32,
+          4.08
+        ],
+        "amount": 0.16
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "\"Miami Viceroy\" -- the one track in assets/music/ that has never been used on any reel in this project and actually fits: a breezy, sunny groove for a river-cruise promo, where the previously-used upbeat tracks all read as seminar/expo energy. Already licensed and credited in assets/music/CREDIT.txt (CC BY 4.0), so no new sourcing was needed.",
+  "music": {
+    "track": "miami-viceroy-kevin-macleod.mp3",
+    "volume": 0.3,
+    "duck_ratio": 1.3,
+    "duck_threshold": 0.4
+  },
+  "_sfx_note": "Eight cues in a 37s reel, held to eight on purpose: past roughly that density the stacked transients start eating the true-peak headroom (verify in qa_reel.py before delivery). A transition whoosh on each of the four cuts, then ticks on the first, third and fifth of the five city snap-cuts -- a tick on every one turned the sequence into a machine-gun, three across five reads as rhythm -- and the success chime on 'and register'. The three tick times are the bg_swap.py CUT times (its local 4.70 / 5.90 / 7.05 plus segment 4's 16.31s offset), not the spoken-word times -- the tick has to land on the picture change, which sits slightly ahead of the word.",
+  "sfx": {
+    "cues": [
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 1.86,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 9.21,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 16.31,
+        "volume": 0.3
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 30.26,
+        "volume": 0.3
+      },
+      {
+        "file": "tick.mp3",
+        "at": 21.01,
+        "volume": 0.26
+      },
+      {
+        "file": "tick.mp3",
+        "at": 22.21,
+        "volume": 0.26
+      },
+      {
+        "file": "tick.mp3",
+        "at": 23.36,
+        "volume": 0.26
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 32.51,
+        "volume": 0.45
+      }
+    ]
+  },
+  "_thumbnail_note": "10.56s sits mid-P3, well clear of all four 0.5s wipes (1.86 / 9.21 / 16.31 / 30.26) -- a thumbnail grabbed inside a wipe renders the gradient wash instead of her. Was 12.6s before the P1 trim moved the whole timeline 2.04s earlier.",
+  "thumbnail": {
+    "at": 10.56,
+    "kicker": "🚢 WELCOME DAY · SAT 19 SEPT",
+    "headline": "3 HOURS ON A **PRIVATE CRUISE**"
+  },
+  "caption_txt": {
+    "title": "PFEC Global Welcome Day — 19 September, on the water",
+    "body": [
+      "New in Australia? Come and meet the people who can actually help — and everyone else settling in at the same time as you.",
+      "The PFEC Global International Student Welcome Day is a private river cruise on Saturday 19 September, running out of our Brisbane, Melbourne, Perth, Adelaide and Sydney branches. Free entry, food and drinks on us. Bring your friends, meet our team, and make a few new ones."
+    ],
+    "bullets": [
+      "📅 Saturday 19 September 2026 — free entry",
+      "🚢 Brisbane — 11:30 AM to 2:30 PM",
+      "🚢 Melbourne — 12:00 PM to 3:00 PM",
+      "🚢 Adelaide — 12:00 PM to 3:00 PM",
+      "🚢 Perth — 12:00 PM to 4:00 PM",
+      "🚢 Sydney — 12:00 PM to 4:00 PM",
+      "🍽️ Food and drinks free — bring your friends",
+      "🤝 Meet the PFEC team and other new arrivals"
+    ],
+    "urgency": "Limited spots — register now, link in bio.",
+    "contact": "New to Australia and not sure where to start? Come and talk to our team on the day.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #WelcomeDay #InternationalStudents #StudyInAustralia #NewInAustralia #SriLankanStudents #BrisbaneEvents #MelbourneEvents #PerthEvents #AdelaideEvents #SydneyEvents #StudentCruise",
+    "music_credit": "Music: \"Miami Viceroy\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)",
+    "offices": false,
+    "disclaimer": false
+  },
+  "_bg_swap_note": "bg_swap.py (run after build_base.py, before insert_broll.py) is this reel's image-behind-subject moment and the direct answer to 'use the welcome day images appropriately for each city': as she names the five branches, a city plate snap-cuts behind her, five hard cuts in 3.4s, with her matted on top throughout. Melbourne, Sydney and Adelaide are real PFEC Welcome Day photographs from the March 2026 cruise -- the Adelaide one even has the event banner in it. Brisbane and Perth have no Welcome Day photo library anywhere on the company Drive, so those two fall back to CC0/CC BY river-and-skyline plates chosen to sit in the same daytime-on-the-water family as the three real ones. Full sourcing and licences in assets/cities/CREDITS.txt.",
+  "_caption_txt_note": "Per the user's request this reel ships WITHOUT the six-office contact block and WITHOUT the verbatim compliance disclaimer (caption_txt.offices/disclaimer false, both new opt-outs that default true so no other reel changes). Times are now listed PER BRANCH rather than as one window: the office designs shown on screen are the source of truth and they disagree -- Brisbane 11:30-2:30, Melbourne and Adelaide 12-3, Perth and Sydney 12-4. The earlier copy said '12 to 3 PM' for all five, which followed what she says on camera but was wrong for three branches. 'Free entry' is now stated because every one of the five designs carries a FREE ENTRY stamp. The only remaining credit is the music: all five plates are PFEC's own artwork, so the Wikimedia city-photo lines are gone."
+}

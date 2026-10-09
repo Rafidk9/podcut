@@ -1,0 +1,17 @@
+{
+  "_comment": "V2 plan. Structurally identical to the 2026-08-13 reel -- two B-roll cutaways and a wipe over every cut -- with every absolute time shifted +1.07s because the new P2 runs 4.37s against the original 3.30s.",
+  "_boundaries_note": "Segment durations are 5.80 / 4.37 / 6.45 / 3.10 / 6.35 = 26.07, so the segment openings are 0.00 / 5.80 / 10.17 / 16.62 / 19.72. B-roll splices into the START of a segment (out = broll[0:dur] + seg_video[dur:]), which is why those times are both the boundary and the splice start.",
+  "_searchmg_note": "Still at the top of segment 2, now 10.17-11.77, over 'Is the Just Ask Expo by PFEC Global' -- the query typing itself out on screen lands on the same words in the audio ('Just' 10.849, 'Ask' 11.229, 'Expo' 11.609-12.150). The splice can only start at a segment opening, so it begins 0.68s ahead of the phrase, exactly as in v1. prep_searchmg.py needs no changes: it produces a fixed 1.6s asset independent of where it lands.",
+  "_broll1_note": "Still at the top of segment 5, now 19.72-24.17, covering the connecting phrase 'There will be' plus the three-role list it introduces, and returning in the 0.06s gap before 'There will be a real conversation' (24.229) so he closes on camera. broll.py needs no timing changes either: its card cues are LOCAL to the splice, and because P3c keeps its original keep range the words still land at local 0.909 / 2.329 / 3.189 exactly as before.",
+  "_wipes_note": "Four cuts, four wipes, no two adjacent the same: flash(5.80) -> speed(10.17) -> grid(16.62) -> flash(19.72). 10.17 and 19.72 are B-roll boundaries and those default to grid, so boundary_wipes names speed and flash explicitly; neither appears in extra_wipes, because a boundary already emits its own wipe and listing it twice would stack two on one frame.",
+  "n_segments": 5,
+  "broll_dur": 1.3,
+  "plan": { "2": "searchmg", "4": "broll_1" },
+  "boundaries": { "2": 10.17, "4": 19.72 },
+  "broll_durs": { "2": 1.6, "4": 4.45 },
+  "boundary_wipes": { "2": "speed", "4": "flash" },
+  "extra_wipes": [
+    { "at": 5.80, "style": "flash" },
+    { "at": 16.62, "style": "grid" }
+  ]
+}

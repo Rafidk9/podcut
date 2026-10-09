@@ -26,11 +26,22 @@ STING = os.path.join(WORK, "sting.mp4")
 
 def music_config():
     """Per-reel override via <reel>/content.json -> {"music": {"track": "...",
-    "volume": 0.05}}. "track" is a filename under assets/music/ (see its
-    CREDIT.txt -- every track there must carry a licence entry, and any reel
-    using a non-default track must reproduce that credit line in caption.txt
-    via content.json's "caption_txt.music_credit", same as the disclaimer).
-    Defaults reproduce the Lakemba reel's tuned track+level if unspecified."""
+    "volume": 0.05, "duck_ratio": 10, "duck_threshold": 0.04}}. "track" is a
+    filename under assets/music/ (see its CREDIT.txt -- every track there
+    must carry a licence entry, and any reel using a non-default track must
+    reproduce that credit line in caption.txt via content.json's
+    "caption_txt.music_credit", same as the disclaimer). Defaults reproduce
+    the Lakemba reel's tuned track+level+ducking if unspecified.
+
+    duck_ratio/duck_threshold feed sidechaincompress below. The house default
+    (ratio 10, threshold 0.04 ~= -28dBFS) is deliberately aggressive -- voice
+    always wins, full stop -- which is right for a normal talking-head reel,
+    but on a reel where the speaker talks almost continuously it means the
+    bed gets crushed to near-silence for nearly the whole runtime regardless
+    of "volume", not just quiet -- raising "volume" alone can't fix that.
+    Lower duck_ratio (gentler reduction) and/or raise duck_threshold (fewer
+    moments trigger it at all) when a reel specifically needs the music to
+    stay audible under her voice, not just present in the gaps."""
     cfg = os.path.join(REEL, "content.json")
     music = {}
     if os.path.isfile(cfg):
@@ -38,7 +49,28 @@ def music_config():
     track = os.path.join(ASSETS, "music", music.get("track", DEFAULT_MUSIC))
     if not os.path.isfile(track):
         raise SystemExit(f"content.json music.track not found: {track}")
-    return track, music.get("volume", 0.05)
+    return (track, music.get("volume", 0.05),
+            music.get("duck_ratio", 10), music.get("duck_threshold", 0.04))
+
+
+def end_cards_config():
+    """Which trailing end cards to concat, via <reel>/content.json ->
+    {"end_cards": {"disclaimer": true, "consultation": true}}.
+
+    Both default TRUE, so every existing reel rebuilds byte-identically and a
+    reel has to opt OUT deliberately. The disclaimer card is the migration-
+    advice compliance notice; it belongs on anything that touches visas,
+    eligibility or outcomes, and should only be dropped when the reel makes no
+    migration claim at all -- a pure social-event announcement, say. Dropping
+    it here does NOT drop it from caption.txt: that's a separate opt-out
+    (caption_txt.disclaimer), so a reel can keep the written notice while
+    losing the on-screen card, or vice versa."""
+    cfg = os.path.join(REEL, "content.json")
+    cards = {}
+    if os.path.isfile(cfg):
+        cards = json.load(open(cfg, encoding="utf-8")).get("end_cards", {})
+    return {"disclaimer": cards.get("disclaimer", True),
+            "consultation": cards.get("consultation", True)}
 
 
 def sfx_path(filename):
@@ -70,6 +102,15 @@ def sfx_cues():
     for c in cues:
         sfx_path(c["file"])  # raises if missing from both locations
     return cues
+
+
+def limiter_limit():
+    cfg = os.path.join(REEL, "content.json")
+    if os.path.isfile(cfg):
+        lim = json.load(open(cfg, encoding="utf-8")).get("limiter", {})
+        if "limit" in lim:
+            return float(lim["limit"])
+    return 0.79
 
 
 def voice_denoise_model():
@@ -130,8 +171,15 @@ def main():
     if os.path.exists(STING):
         print("closing sting found -- appending", STING)
         st_norm = os.path.join(WORK, "seg_sting.mp4"); norm_segment(STING, st_norm, silent=True); segs.append(st_norm)
-    d_norm = os.path.join(WORK, "seg_dis.mp4"); norm_segment(DIS, d_norm, silent=True); segs.append(d_norm)
-    o_norm = os.path.join(WORK, "seg_con.mp4"); norm_segment(CON, o_norm, silent=True); segs.append(o_norm)
+    cards = end_cards_config()
+    if cards["disclaimer"]:
+        d_norm = os.path.join(WORK, "seg_dis.mp4"); norm_segment(DIS, d_norm, silent=True); segs.append(d_norm)
+    else:
+        print("end_cards.disclaimer false -- shipping without the disclaimer card")
+    if cards["consultation"]:
+        o_norm = os.path.join(WORK, "seg_con.mp4"); norm_segment(CON, o_norm, silent=True); segs.append(o_norm)
+    else:
+        print("end_cards.consultation false -- shipping without the consultation card")
     lst = os.path.join(WORK, "final_concat.txt")
     open(lst, "w").write("\n".join(f"file '{os.path.abspath(s)}'" for s in segs) + "\n")
     assembled = os.path.join(WORK, "assembled_full.mp4")
@@ -165,7 +213,7 @@ def main():
     # clear", rather than a single static blanket-quiet volume.
     mixed = os.path.join(WORK, "mixed.mp4")
     fade_out_st = max(0.0, total - 2.4)
-    music_track, vol = music_config()
+    music_track, vol, duck_ratio, duck_threshold = music_config()
 
     # Optional RNNoise voice clean (reverberant rooms). Separate pre-pass so the
     # mix stays a plain filtergraph; cwd at the model dir -> bare-filename path.
@@ -206,7 +254,7 @@ def main():
         f"[1:a]atrim=0:{total:.3f},volume={vol},afade=t=in:st=0:d=1.5,"
         f"afade=t=out:st={fade_out_st:.3f}:d=2.4[m];"
         f"[{voice}]asplit=2[voice1][voice2];"
-        f"[m][voice1]sidechaincompress=threshold=0.04:ratio=10:attack=40:release=450:makeup=1[mduck];"
+        f"[m][voice1]sidechaincompress=threshold={duck_threshold}:ratio={duck_ratio}:attack=40:release=450:makeup=1[mduck];"
         + "".join(f + ";" for f in sfx_filters) + final_mix)
 
     run(["-i", assembled, "-stream_loop", "-1", "-i", music_track, *extra_in, *sfx_in,
@@ -243,7 +291,11 @@ def main():
              # loudnorm's linear correction is a single static gain -- it can
              # still leave short percussive transients (SFX hits) a shade above
              # the -1 dBTP target; this hard ceiling is the safety net.
-             "alimiter=limit=0.79:level=disabled",
+             # content.json "limiter": {"limit": 0.72} (opt-in) lowers the
+             # ceiling for a dense voice that rides the limiter continuously,
+             # where AAC's inter-sample overshoot lands true peak above -1 dBTP
+             # even though sample peaks sit at the ceiling. Default unchanged.
+             f"alimiter=limit={limiter_limit():.3f}:level=disabled",
              "-c:v", "copy", *AENC, final])
     print("FINAL REEL:", final, f"({total:.2f}s)")
 

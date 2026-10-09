@@ -124,7 +124,15 @@ def zoom_filter(direction, amount, dur):
     """A smooth zoompan push over the clip: supersample x2 first so the sub-pixel
     pan reads jitter-free, then zoompan back down to 1080x1920. 'in' ramps
     1.0 -> 1+amount across the clip (cosine ease); 'out' ramps 1+amount -> 1.0.
+    'tight' (or 'tight:0.18' to set its own amount) holds a STATIC 1+amount
+    crop for the whole clip -- alternating tight/wide clips across hard cuts
+    reads as a second camera angle (jump-cut style) rather than a push.
     Anything else (hold/none) -> no filter."""
+    if isinstance(direction, str) and direction.startswith("tight"):
+        amt = float(direction.split(":", 1)[1]) if ":" in direction else amount
+        if amt <= 0 or dur <= 0.1:
+            return ""
+        return _zoompan(f"{1.0 + amt:.4f}")
     if direction not in ("in", "out") or amount <= 0 or dur <= 0.1:
         return ""
     n = max(2, round(dur * 30)) - 1          # last output-frame index

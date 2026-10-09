@@ -1,0 +1,130 @@
+{
+  "_comment": "Tushar Chopra (PFEC Registered Migration Agent, MARN 2418420) promoting the 'Just Ask' Education & Migration Expo -- 25 Aug, 2-5PM -- and specifically the migration seminar he is personally running at the MELBOURNE office. Brief: viral transitions, animations and SFX including zoom ins and outs, plus the Melbourne expo image design where appropriate. 6 segments (see clips.json), 5 cuts, every cut wiped.",
+  "_name_note": "Surname 'Chopra' and MARN 2418420 NOT taken from chat -- verified against three independent in-repo sources before being put on screen: the 2026-07-17 reel's own content.json name card, its caption_txt contact line, and SAAS_PLAN.md's credential-registry example (all agree on Tushar Chopra / 2418420). Same MARN recorded in memory for him.",
+
+  "_expo_design_note": "The Just Ask Expo identity is carried in THREE places, deliberately sequential rather than stacked -- each gets its own window and none overlaps another: (1) the supplied newspaper text-match-cut B-roll at 6.60-9.10s, landing 'JustAskEXPO' on screen as he says it (see broll_plan.json); (2) documents[] flashing the actual Just Ask Education & Migration Expo poster artwork at ~9.4-11.7s while he states the time -- that IS the expo's own image design, and it also shows the Melbourne/Sydney/Adelaide city ovals; (3) bg_swap_melbourne.py putting Flinders Street Station BEHIND him at 12.90-14.10s for 'at our Melbourne office', the one line in the script that names his city. Ordering these rather than layering them is what keeps a dense 7.6s segment readable.",
+
+  "gold": ["JUST", "ASK", "EXPO", "MELBOURNE", "AUGUST", "FREE", "REGISTER",
+           "REAL", "ANSWERS", "LIMITED", "MIGRATION"],
+
+  "name": { "text": "Tushar Chopra", "role": "Registered Migration Agent",
+            "start": 0.5, "end": 4.2 },
+  "_mara_note": "MUST be mode 'styled' + 'marn'. A first pass wrote {\"text\": \"MARN 2418420\"} -- 'text' is not a key build_captions.py reads for this element, so the DEFAULT_CONTENT merge silently kept mode 'image' and rendered assets/marn designs/Ali's MARN.png, putting MARN **2117037** on screen directly beside Tushar Chopra's name. Caught on a frame check of work/captioned.mp4, not by any warning. There is no official badge artwork on file for Tushar, so 'styled' (the recreated OMARA dot-map sticker) is correct here -- same treatment his 2026-07-17 reel used.",
+  "mara": { "mode": "styled", "marn": "2418420" },
+
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+
+  "hook_banner": { "text": "STOP GUESSING 🤔", "start": 0.0, "end": 1.5 },
+  "cta": { "text": "REGISTER NOW! 🎉", "start": 25.2, "end": 26.4 },
+
+  "caption_highlight": true,
+
+  "_cap_top_note": "Left at the default 62%. Checked a frame from each of the five setups (check/raw_IMG_80*.jpg): his chin sits highest at ~35% of frame height in the armchair take (8068) and lowest at ~48% in the seated table take (8064), so a band at 62% lands on his chest in every setup and never touches his face. No per-clip override needed.",
+
+  "_hero_note": "One hero-word slam only, on 'ASK' -- it is the campaign's own name ('Just Ask Expo') and the exact pivot of his script ('you need to ask someone who actually knows'). A second slam on MELBOURNE was considered and dropped: it would fire inside the background-swap window and fight the skyline reveal for the same beat. pad_after/hold are tightened from the 0.6/0.3 defaults to 0.15/0.1: measured against the assembled transcript, the defaults put the slam's end at 6.99s and even 0.25/0.2 put it at 6.69s -- both PAST the 6.60s cut, so the word would have hung over the flash wipe. 0.15/0.1 resolves to 4.47-6.49s, clearing the cut by 0.11s, and the snap-cut off the word suits the energetic brief anyway.",
+  "hero_words": [
+    { "anchor_phrase": "ask someone who actually knows", "text": "ASK",
+      "pad_after": 0.15, "hold": 0.1 }
+  ],
+
+  "_badges_note": "Four badges, four DIFFERENT entrance effects (shimmer / particles / pixelate / default pop) so the reel never repeats an entrance -- effects matched to tone: shimmer on the positive 'real answers' promise, particles on the uni-reps reveal, pixelate on the time-saving 'one afternoon' beat (echoes the grid wipes' own technique), and the plain punchy pop reserved for the urgency beat. Colours alternate and no two consecutive badges share a corner.",
+  "_badge_timing_note": "Anchors were measured against the assembled transcript and moved off the wipe cuts, because a badge whose phrase happens to OPEN a segment pops in at the exact frame the wipe covers the screen -- the entrance animation plays behind the transition and is wasted. 'university reps will be here as well' resolved to exactly 17.25 (the cut) so it was shortened to 'reps will be here as well' -> 17.79; 'spaces are limited' resolved to exactly 23.76 (the cut) so it was shortened to 'are limited' -> 24.16. Two deliberate exceptions: REAL ANSWERS overruns its segment end by 0.10s (segment 3 is only 3.05s and the badge carries 1.2s of trailing pad, so no anchor inside it can fit -- 0.10s is imperceptible), and 1 AFTERNOON carries 0.87s past the cut on purpose, holding the payoff through the transition into 'spaces are limited' so the two ideas connect. Those two never share the screen with a same-corner badge.",
+  "badges": [
+    { "anchor_phrase": "real questions, real answers",
+      "text": "REAL ANSWERS 💬", "icon": "star", "color": "gold",
+      "pos": "top-right", "effect": "shimmer" },
+    { "anchor_phrase": "reps will be here as well",
+      "text": "UNI REPS ON SITE 🎓", "icon": "people", "color": "cyan",
+      "pos": "top-left", "effect": "particles" },
+    { "anchor_phrase": "in just one afternoon",
+      "text": "1 AFTERNOON ⏱️", "icon": "check", "color": "green",
+      "pos": "top-right", "effect": "pixelate" },
+    { "anchor_phrase": "are limited",
+      "text": "LIMITED SPOTS ⚡", "icon": "star", "color": "red",
+      "pos": "top-left" }
+  ],
+
+  "_highlights_note": "Marker-swipe highlighter reveals for the two facts a viewer has to retain -- the date and the time -- pinned to opposite top corners while the expo poster itself sits low in frame (top 860px). Anchor phrases are taken verbatim from work/IMG_8066.transcript.json's word tokens: ASR wrote the times as '2:00 to 5:00 PM', so a loose 'from 2 to 5' would have silently missed the 0.8 match threshold.",
+  "_highlights_added_note": "Two more marker-swipe highlights added on request ('add some highlighting texts'). Both slots were chosen by measuring the resolved windows against what is ALREADY on screen, not by picking phrases that sounded good: MIGRATION SEMINAR (11.42-14.23, top-left) drops into the empty stretch after the expo poster clears at 11.13 and after 25 AUGUST clears at 10.17; COURSE + PATHWAY (21.01-23.80, top-left) drops into the gap after the UNI REPS badge clears at 20.34, and only ever shares the screen with 1 AFTERNOON, which is top-RIGHT. 'NO SCRIPTS' was considered for segment 3 and rejected: it resolved to 16.04-18.33, which collides with the REAL ANSWERS badge in the same top-right corner and then runs 1.08s past the cut into the UNI REPS badge -- three elements fighting over a 3.05s segment.",
+  "highlights": [
+    { "anchor_phrase": "the 25th of august", "text": "25 AUGUST", "pos": "top-left", "color": "gold" },
+    { "anchor_phrase": "from 2:00 to 5:00 pm", "text": "2–5 PM", "pos": "top-right", "color": "cyan" },
+    { "anchor_phrase": "running a migration seminar", "text": "MIGRATION SEMINAR", "pos": "top-left", "color": "green" },
+    { "anchor_phrase": "migration pathway", "text": "COURSE + PATHWAY", "pos": "top-left", "color": "gold" }
+  ],
+
+  "_documents_note": "The real Just Ask Expo poster, flashed while he states the date/time. 600x600 native shown at 900px wide -- some softening from the upscale, acceptable for a ~2.5s card. top:860px keeps it clear of his face: he is standing and mid-frame in this take (8066), chin at roughly 45% (=860px of 1920), so anchoring the card's top edge at his chin puts it over his torso, not his face. suppress_captions stops the 2-word band double-stacking over the poster.",
+  "_documents_moved_note": "Anchor moved from 'on the 25th of august from' to 'from 2:00 to 5:00 pm' when the text-match-cut B-roll was added. The poster used to resolve to 7.91-11.13s, which sat directly on top of the match cut's 6.60-9.10s window -- a full-width poster card stacked over a full-frame newspaper animation, two big graphics fighting for the same 1.2s. Re-anchoring to the time phrase pushes it clear to roughly 9.4-11.7s, so the beats now run in sequence rather than on top of each other: match cut (6.60-9.10) -> cut back to him -> poster (9.4-11.7) -> Flinders St behind him (12.90-14.10). Relevance is unharmed: the poster states the date AND the time, so it reads just as well against 'from 2 to 5 PM' as against '25th of August'. The 25 AUGUST highlight was deliberately NOT moved -- it is a small top-corner marker, it stays synced to the words it names, and over the newspaper it reinforces the date rather than competing.",
+  "documents": [
+    { "image": "just-ask-expo-poster.jpg",
+      "anchor_phrase": "from 2:00 to 5:00 pm",
+      "label": "", "poster": true, "width": 900, "top": "860px",
+      "pad_before": 0.2, "pad_after": 1.2, "suppress_captions": true }
+  ],
+
+  "_decor_note": "Effects layer switched on per the 'confettis, effects where appropriate' request. sparkles = 4-point twinkle stars + thin outline rings; handle = the social pill low-centre. 'accents' (the soft drifting orbs) is deliberately left OFF: the README offers decor for footage with dead wall space and a PLAIN backdrop, and every one of these five setups is already visually busy (glass atrium, foliage, timber, an arched window) -- large low-opacity orbs over that reads as muddiness rather than polish, whereas the small crisp sparkles/rings still register. Confetti is NOT configured here because it isn't opt-in: build_captions.py fires a ~16-dot burst out of the CTA pill unconditionally at __CTA_START__, so this reel already had one at 25.2s.",
+  "decor": { "sparkles": true, "handle": "@PFECGlobal" },
+
+  "_zoom_note": "Zoom ins AND outs, per the brief. build_base.py keys hits by clip index (dict), so ONE punch per clip max -- a clip with a hit ignores its `segments` direction entirely. Four clips get a punch on their own strongest word; the two that don't (seg 3 and seg 4) get slow cosine pushes in opposite directions so the reel breathes instead of pulsing constantly. hits[].at is RAW clip-local time straight off that clip's transcript, NOT the output timeline. Clip 2's punch sits at raw 2.28-3.34 ('Just Ask Expo'), deliberately far from the 8.42-9.18 Melbourne background-swap window -- a simultaneous zoom would fight the skyline reveal.",
+  "zoom": {
+    "amount": 0.09,
+    "segments": ["in", "in", "in", "out", "in", "in"],
+    "hits": [
+      { "clip": 0, "at": [2.16, 3.58], "amount": 0.15 },
+      { "clip": 1, "at": [3.42, 5.04], "amount": 0.16 },
+      { "clip": 2, "at": [2.28, 3.34], "amount": 0.14 },
+      { "clip": 5, "at": [3.04, 3.78], "amount": 0.16 }
+    ]
+  },
+
+  "voice_denoise": true,
+
+  "_music_note": "\"Special Spotlight\" (126bpm, synths/percussion, feel Bouncy/Driving/Grooving, incompetech genre 7 -- the same commercial/corporate bucket as Presenterator/Inspired/Beauty Flow). Brand-new to this project on request: every one of the 10 tracks already in assets/music/ had been used at least once, so this was picked from the full 1442-entry incompetech catalog rather than the local folder. Chosen because its catalog description is literally written for this exact job -- scoring a talking-head interview segment -- and 126bpm keeps the energy up without the frantic 164bpm of Upbeat Forever, which suits a script carrying real detail (date, time, venue) that a viewer has to actually absorb. At 3:12 it also comfortably outruns this 28.6s reel, so no looping. Licence entry added to assets/music/CREDIT.txt and the exact credit line mirrored into caption_txt.music_credit below.",
+  "_music_level_note": "User: 'the bg is a bit too loud'. Two things were wrong, and the volume was only the smaller one. The ducking config carried over from the previous reel (duck_ratio 1.3, duck_threshold 0.4) is far gentler than the house default (10 / 0.04): threshold 0.4 is high enough that his voice rarely crosses it and ratio 1.3 barely reduces anything when it does, so the bed was effectively running FLAT under speech instead of stepping back for it. That reads as 'too loud' even at a modest level, because the music is competing with the voice rather than sitting under it. Fixed both: volume 0.30 -> 0.14 AND real ducking (ratio 7, threshold 0.08) so the bed drops under each line and recovers in the gaps. MEASURED rather than guessed, in two passes -- ffmpeg volumedetect over speech-free gaps (10.75+0.50s and 16.95+0.40s, both clear of every SFX cue) against a speech-covered span (8.20+1.40s): BEFORE the bed sat at -16.7/-17.0 dB with speech at -15.8 dB, i.e. the music was running barely 1 dB under his voice. An intermediate 0.18/6/0.10 pass reached about 2.5 dB of separation, which measured better but still left the bed competing, so it went one step further. AFTER: gaps -20.4/-21.1 dB, speech -17.2 dB = 3.2-3.9 dB of separation, roughly 4 dB down in absolute terms. Note the two-pass loudnorm partially compensates any music cut by adding gain back to the whole mix, which is why the absolute numbers move together and SEPARATION is the meaningful metric here, not the raw gap level.",
+  "music": { "track": "special-spotlight-kevin-macleod.mp3", "volume": 0.14, "duck_ratio": 7, "duck_threshold": 0.08 },
+
+  "_sfx_note": "10 cues in a 28.6s reel -- the 10th (7.98) marks the match cut's RETURN to camera at 8.10s (it tracks broll_plan.json's broll_durs for segment 2; it sat at 8.98 while that splice was 2.5s and moved with it when the splice was shortened to 1.5s), which is a plain hard cut with no wipe over it (a wipe there would collide with nothing, but the whoosh alone is enough to sell a cut back from a full-frame graphic). Kept at 0.26, below the other whooshes, because it lands under speech rather than at a silent seam. Five transition whooshes sit one per wipe cut, placed 0.12s BEFORE each boundary so the whoosh peaks into the cut rather than after it. whoosh-impact on the ASK slam is offset by the cue's own 165ms internal attack (see assets/sfx/README.md) so the thud lands ON the word. Two pops mark the two graphic reveals: the expo poster at 7.88 and the Melbourne skyline at 12.95. Both were set from the ACTUAL resolved windows, not estimates -- build_captions.py's log put the poster card at 7.91-11.13 (an earlier guess of 8.51 was on the word '25th', which would have fired 0.6s after the card was already on screen), and the skyline's fade starts at segment-local 6.30 = output 12.90. success-chime under the CTA. Per the >8-cue rule, volumes are scaled down from the stock levels (whooshes 0.30 not 0.45, impact 0.55 not 0.8, chime 0.50 not 0.7) -- re-check qa_reel's true peak.",
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 2.98, "volume": 0.30 },
+      { "file": "transition-whoosh.mp3", "at": 6.48, "volume": 0.30 },
+      { "file": "transition-whoosh.mp3", "at": 7.98, "volume": 0.26 },
+      { "file": "transition-whoosh.mp3", "at": 14.08, "volume": 0.30 },
+      { "file": "transition-whoosh.mp3", "at": 17.13, "volume": 0.30 },
+      { "file": "transition-whoosh.mp3", "at": 23.63, "volume": 0.30 },
+      { "file": "whoosh-impact.mp3", "at": 4.46, "volume": 0.55 },
+      { "file": "pop.mp3", "at": 7.88, "volume": 0.32 },
+      { "file": "pop.mp3", "at": 12.95, "volume": 0.32 },
+      { "file": "success-chime.mp3", "at": 25.29, "volume": 0.50 }
+    ]
+  },
+
+  "_thumbnail_note": "at:4.9 is inside segment 1 (3.10-6.60) and well clear of every wipe -- a thumbnail grabbed inside a wipe renders as a gradient wash instead of the presenter.",
+  "thumbnail": {
+    "at": 4.9,
+    "kicker": "🎓 JUST ASK EXPO · MELBOURNE",
+    "headline": "STOP GUESSING. **JUST ASK.**"
+  },
+
+  "caption_txt": {
+    "title": "Confused About Your Pathway? Just Ask — Melbourne, 25 August",
+    "body": [
+      "Your course is ending and nobody has given you a straight answer about what comes next. You don't need to guess — you need to ask someone who actually knows.",
+      "At the PFEC Global Just Ask Education & Migration Expo, Tushar Chopra (Registered Migration Agent, MARN 2418420) is running a migration seminar at our Melbourne office. Real questions, real answers, no scripts — and university reps will be on site too, so you can sort out your course and your migration pathway in a single afternoon."
+    ],
+    "bullets": [
+      "📅 25 August, 2–5 PM — PFEC Global Melbourne office",
+      "🎤 Migration seminar run by Tushar Chopra, Registered Migration Agent (MARN 2418420)",
+      "🎓 University reps on site — course + migration pathway sorted in one afternoon",
+      "💬 Real questions, real answers, no scripts"
+    ],
+    "urgency": "Spaces are limited — register now, link in bio, and come ask anything.",
+    "contact": "Come and ask Tushar Chopra, PFEC Registered Migration Agent (MARN 2418420), at the Melbourne Just Ask Expo — no appointment needed.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #JustAskExpo #MelbourneEvents #StudyInMelbourne #InternationalStudents #MigrationAdvice #StudyInAustralia #EducationExpo #MigrationAgent #StudentVisa #MelbourneStudents",
+    "_music_credit_note": "Only the music line remains: the behind-subject plate is now the CC0 Flinders Street Station photo, and CC0 requires no attribution, so the previous 'Melbourne CBD skyline: Jorge Láscar ... CC BY 2.0' line was removed rather than left behind for an image the reel no longer uses. It is still recorded in assets/cities/CREDITS.txt for provenance.",
+    "music_credit": "Music: \"Special Spotlight\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  },
+
+  "_bg_swap_note": "bg_swap_melbourne.py (run after build_base.py, before insert_broll.py) mattes Tushar out with rembg and puts FLINDERS STREET STATION behind him for 'at our Melbourne office' on segment 2. See that script's docstring for the exact local-time window and assets/cities/CREDITS.txt for the image licence and crop reasoning. NOTE the rebuild order this forces: bg_swap writes seg_02.mp4 in place, so changing the plate means re-running build_base.py FIRST to regenerate a clean seg_02 (the old skyline is otherwise still baked into it), then bg_swap, then insert_broll -> captions -> composite. Skipping the build_base step would composite the new plate on top of the old one."
+}

@@ -1,0 +1,15 @@
+{
+  "_comment": "V2 of the Salman Farsi / Just Ask Expo reel. IDENTICAL to 2026-08-13_salman-just-ask-expo except that P2 is replaced with a user-supplied AI kinetic-multicam treatment of the same line. That reel is finished and delivered -- this is a separate folder and does not touch it.",
+  "_p2_note": "The new P2 (input/P2.mp4) is an AI-generated restyle of the original P2 take: same speaker, same location, same spoken line ('One event, one afternoon, every answer'), but cut into rapid camera repositions (close-up -> wide walking shot) with kinetic supers ONE EVENT / ONE AFTERNOON / EVERY ANSWER already burned into the picture. Two consequences handled in content.json: the reel's own 2-word captions are suppressed across this segment (they would print the same three phrases a second time), and the EVERY ANSWER badge that used to sit on this line is dropped for the same reason.",
+  "_p2_spec_note": "\"sdr\": true is REQUIRED on this clip and is not optional styling. P1/P3 are genuine iPhone HDR (yuv420p10le, arib-std-b67, BT.2020) and take build_base.py's HLG->SDR tone-map path; the new P2 is 8-bit yuv420p with ALL FOUR colour tags reading 'unknown', and zscale=t=linear errors outright on input with no transfer to convert from. The sdr path skips the tone-map and stamps bt709/tv via setparams instead. It is also 720x1280 @ 24fps against the reel's 1080x1920 @ 30 -- the pipeline upscales and retimes it, so it is softer than the surrounding takes. That is inherent to the supplied asset, not a pipeline setting.",
+  "_p2_trim_note": "keep [1.55, 5.92]: first word 'One' at 1.799 (0.25s of lead-in, and nothing is burned on screen before it), last word 'answer.' ends 5.679, trailing self-cue 'Okay' at 6.019 dropped. The 1.56s gap between 'afternoon,' (ends 3.419) and 'every' (starts 4.980) is DELIBERATELY kept -- it is not dead air, it is where the walking shot and the ONE AFTERNOON super play out. Trimming it would cut the baked animation in half.",
+  "_audio_note": "Checked before committing to the swap: integrated speech loudness is -20.9 LUFS on the new P2 against -20.7 (P1) and -21.8 (P3), so there is no level jump at either cut. Still worth an ears pass for room-tone/codec character, since this segment's audio has been through an AI generation pass and the others have not.",
+  "_timing_note": "P2 runs 4.37s against the original's 3.30s, so everything from segment 2 onward shifts +1.07s on the output timeline (cuts 5.80 / 10.17 / 16.62 / 19.72, total 26.07s vs 25.00s). Every LOCAL timing inside the per-reel scripts is unchanged, because P1 and all three P3 spans keep their exact original keep ranges -- date_behind.py, cities_behind.py and broll.py's card cues all still line up without edits.",
+  "clips": [
+    { "name": "P1", "ext": ".MOV", "keep": [1.35, 7.15] },
+    { "name": "P2", "ext": ".mp4", "sdr": true, "keep": [1.55, 5.92] },
+    { "name": "P3", "ext": ".MOV", "keep": [0.20, 6.65] },
+    { "name": "P3", "ext": ".MOV", "keep": [6.65, 9.75] },
+    { "name": "P3", "ext": ".MOV", "keep": [9.75, 16.10] }
+  ]
+}

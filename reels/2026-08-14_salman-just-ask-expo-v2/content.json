@@ -1,0 +1,107 @@
+{
+  "_comment": "V2 of the Salman Farsi / Just Ask Expo reel -- same script, same treatments, but P2 is a user-supplied AI kinetic-multicam clip (see clips.json). The 2026-08-13 reel is finished and delivered; this is a separate folder and leaves it untouched. Everything from segment 2 onward shifts +1.07s because the new P2 is 4.37s against the original 3.30s; total content is 26.07s (was 25.00s).",
+  "_asr_note": "Same corrections as v1: only 'counselor' -> Australian 'counsellor' for on-screen text. The new P2 transcribed cleanly as 'One event, one afternoon, every answer.' with a trailing self-cue 'Okay' that is trimmed via clips.json, not asr_fix.",
+  "asr_fix": { "counselor": "counsellor" },
+  "gold": ["JUST", "ASK", "EXPO", "PFEC", "FREE", "EVENT", "ANSWER", "ANSWERS",
+           "AUGUST", "25TH", "SYDNEY", "MELBOURNE", "ADELAIDE", "STUCK"],
+  "name": { "text": "Salman Farsi", "role": "Education Counsellor",
+            "start": 0.6, "end": 4.0 },
+  "_mara_note": "Salman is an Education Counsellor, not a Registered Migration Agent -- no MARN exists for him, so mara.mode is 'none'. Never invent one. The script separately mentions migration agents will be AT the expo, which is a statement about the event, not about him.",
+  "mara": { "mode": "none" },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "hook_banner": { "text": "STUCK ON YOUR COURSE? 🤔", "start": 0.0, "end": 1.5 },
+  "cta": { "text": "REGISTER NOW! 🎉", "start": 24.62, "end": 26.07 },
+  "caption_highlight": true,
+  "_cap_top_note": "Left at the 62% default. P1 and P3 frame him small with his face high (~39% of frame height). The new P2 is a multicam clip whose close-up puts his face far higher still, and whose wide walking shot puts it lower -- but captions are suppressed across that whole segment anyway (see _hero_note4), so it never competes.",
+  "_hero_note": "FOUR silent entries, none of which render anything themselves -- each exists only to suppress the plain 2-word caption cards over a window that already carries its own text or graphic. build_captions.py suppresses a card when the card's START falls inside the window, which is why some anchors deliberately begin one word early.",
+  "_hero_note4": "The FOURTH entry is new to v2 and is the whole reason this reel needed config changes rather than just a re-run: the supplied P2 has ONE EVENT / ONE AFTERNOON / EVERY ANSWER burned into the picture, so the reel's own captions would print those same three phrases a second time, in smaller type, over the top of them. The window covers 5.90-10.13, i.e. the entire P2 segment; the next card ('Is' at 10.409) falls outside it and inside the searchmg window instead, so nothing is left uncovered.",
+  "hero_words": [
+    { "anchor_phrase": "One event, one afternoon, every answer", "text": "",
+      "pad_after": 0.2, "hold": 0.0, "silent": true },
+    { "anchor_phrase": "Is the Just Ask", "text": "",
+      "pad_after": 0.25, "hold": 0.0, "silent": true },
+    { "anchor_phrase": "on 25th of August from 2 p.m. to 5 p.m.", "text": "",
+      "pad_after": 0.2, "hold": 0.35, "silent": true },
+    { "anchor_phrase": "There will be university representative, migration agent, and education counsellor",
+      "text": "", "pad_after": 0.0, "hold": 0.0, "silent": true }
+  ],
+  "_badges_note": "ONE badge in v2, down from two. The EVERY ANSWER badge was dropped: it was anchored to 'one event, one afternoon and every answer', and the new P2 now burns EVERY ANSWER into the picture itself -- the badge would have been the same two words a third time on the same line, after the caption suppression already removed the second. FREE ENTRY stays on 'by PFEC Global' (resolves ~12.04s), which is clear of the searchmg cutaway ending at 11.77.",
+  "badges": [
+    {
+      "anchor_phrase": "by PFEC Global",
+      "text": "FREE ENTRY 💯",
+      "icon": "check",
+      "color": "green",
+      "pos": "top-left",
+      "effect": "particles"
+    }
+  ],
+  "_documents_note": "The Just Ask Expo campaign banner, anchored to the CITIES line so it lands on the words its artwork illustrates. Width 620 at top:1150px so it reads as a secondary flyer card BELOW cities_behind.py's photo band (which runs y=0..960, feathered from 880) rather than competing with it.",
+  "documents": [
+    {
+      "image": "just-ask-expo-poster.jpg",
+      "anchor_phrase": "in our Melbourne, Sydney, and Adelaide office",
+      "label": "",
+      "poster": true,
+      "width": 620,
+      "top": "1150px",
+      "pad_before": 0.15,
+      "pad_after": 0.1,
+      "suppress_captions": true
+    }
+  ],
+  "_decor_note": "Orbs and sparkles only -- no @PFECGlobal handle pill, same as v1.",
+  "decor": { "accents": true, "sparkles": true },
+  "_zoom_note": "hits[] are keyed by clip index with 'at' in RAW clip time (0:P1 1:P2 2:P3a 3:P3b 4:P3c); only ONE hit per index is honoured, and a clip with a hit ignores its segments[] direction. CHANGED FROM V1: the punch-zoom on clip 1 is REMOVED. The new P2 is a kinetic multicam clip that already snaps between a close-up and a wide walking shot on its own -- adding a pipeline push-zoom on top would fight camera motion the asset is built around. Segment 1 is 'hold' for the same reason. That still leaves in / hold / out / in / punch across the five cuts, so the brief's zoom ins and outs are intact and no two adjacent segments move the same way.",
+  "zoom": {
+    "amount": 0.1,
+    "segments": ["in", "hold", "out", "in", "hold"],
+    "hits": [
+      { "clip": 4, "at": [14.819, 15.720], "amount": 0.15 }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "'Cloud Dancer' (Kevin MacLeod, CC BY 4.0), same as v1. Licence block is already in assets/music/CREDIT.txt.",
+  "_ducking_note": "duck_ratio 8 / duck_threshold 0.05 with the bed at 0.44 -- ducking carried over from v1, bed raised from v1's 0.38 for THIS cut, where it was arrived at by measurement rather than taste. The reel's peak source is his VOICE, not the SFX transients (a per-3s peak profile of work/mixed.mp4 showed peaks flat across the whole spoken body), and the voice bus has no compression of its own, so a near-constant bed simply stacked on top of it. Real ducking pulls the bed under every phrase so the two stop summing. Two traps worth remembering: LOWERING SFX volumes made the true peak WORSE (quieter cues drop integrated loudness, so the two-pass loudnorm applies more static gain and lifts the voice peaks with it), and softening the duck to 6/0.07 blew the peak straight back out. Re-measure with qa_reel after any change here rather than adjusting by ear. V2 needed the bed lifted 0.38 -> 0.44: the replacement P2 carries a 1.56s pause between 'afternoon' and 'every answer' where the bed plays unducked, which raised the programme's dynamic range (LRA 3.1 against v1's 1.7) and left the peak at -0.1 dBTP. Raising the bed lands almost entirely in gaps like that one, so it lifts integrated loudness and cuts the static loudnorm gain without adding anything where his voice peaks: -1.3 dBTP at an unchanged -14.3 LUFS, LRA 2.7. The music is correspondingly more present during that pause, which suits the burned-in ONE AFTERNOON animation playing over it, but it is the one spot to listen to first.",
+  "music": { "track": "cloud-dancer-kevin-macleod.mp3", "volume": 0.44, "duck_ratio": 8, "duck_threshold": 0.05 },
+  "_sfx_note": "Cue times are absolute on the output timeline and are all v1's values +1.07s, since the longer P2 shifts everything after segment 1. transition-whoosh sits on each of the 4 cuts (5.80 / 10.17 / 16.62 / 19.72, taken from broll_plan.json's boundaries); pop.mp3 on the two date-plate slams (segment 2 starts 10.17, plate entrances are local 3.30 and 4.90 -> 13.47 and 15.07); tick.mp3 on each city name; success-chime under the CTA. pop and tick attack at sample 0 so they sit ON the beat with no offset. Volumes are v1's measured-safe set -- see _ducking_note before touching them.",
+  "sfx": {
+    "cues": [
+      { "file": "transition-whoosh.mp3", "at": 5.80, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 10.17, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 16.62, "volume": 0.20 },
+      { "file": "transition-whoosh.mp3", "at": 19.72, "volume": 0.20 },
+      { "file": "pop.mp3", "at": 13.47, "volume": 0.22 },
+      { "file": "pop.mp3", "at": 15.07, "volume": 0.22 },
+      { "file": "tick.mp3", "at": 17.29, "volume": 0.17 },
+      { "file": "tick.mp3", "at": 18.05, "volume": 0.17 },
+      { "file": "tick.mp3", "at": 18.95, "volume": 0.17 },
+      { "file": "success-chime.mp3", "at": 24.62, "volume": 0.32 }
+    ]
+  },
+  "thumbnail": {
+    "at": 3.2,
+    "kicker": "🎯 JUST ASK EXPO · 25 AUG",
+    "headline": "ONE EVENT. EVERY **ANSWER**"
+  },
+  "caption_txt": {
+    "title": "The One Event You Can't Skip — Just Ask Expo, 25 August",
+    "body": [
+      "Still stuck on which course actually suits you? Still not sure which institution fits your goals? Stop guessing — just ask.",
+      "The PFEC Global Just Ask Expo is on 25 August, 2 to 5 PM, at our Melbourne, Sydney and Adelaide offices. University representatives, migration agents and education counsellors, all in one room, all afternoon. One event, one afternoon, every answer."
+    ],
+    "bullets": [
+      "📅 25 August 2026, 2–5 PM",
+      "📍 PFEC Global Melbourne, Sydney & Adelaide offices",
+      "🎓 University representatives — ask them directly, no waiting on emails",
+      "🛂 Migration agents on site for a free migration consultation",
+      "💬 Education counsellors for real, one-on-one conversations",
+      "✅ Free entry — 1 afternoon, 3 cities, 0 cost"
+    ],
+    "urgency": "One afternoon. Every answer. Register now — link in bio.",
+    "contact": "Come and meet Salman and the PFEC Global team at the Just Ask Expo — no appointment needed, just bring your questions.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #JustAskExpo #EducationExpo #StudyInAustralia #InternationalStudents #SydneyEvents #MelbourneEvents #AdelaideEvents #FreeEntry #UniversityPathway #MigrationAdvice #StudentLife",
+    "music_credit": "Music: \"Cloud Dancer\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nMelbourne skyline: Jorge Láscar, via Wikimedia Commons — CC BY 2.0\nAdelaide riverbank: Ikhwan Zailani Yuslim, via Wikimedia Commons — CC BY 2.0\nSydney Opera House: Ypsilon from Finland, via Wikimedia Commons — CC0"
+  }
+}

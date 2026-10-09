@@ -21,14 +21,22 @@ import os
 import shutil
 import subprocess
 
-CACHE_VERSION = 3  # v2: badge text is now JSON-escaped into JS (v1 broke on
+CACHE_VERSION = 4  # v2: badge text is now JSON-escaped into JS (v1 broke on
                     # apostrophes/quotes in badge text, e.g. "DON'T RISK IT",
                     # silently rendering a blank badge -- see build_captions.py's
                     # _badge_element()). v3: dm_bubble card repositioned lower
                     # (top:96px -> top:365px) -- it was rendering directly under
                     # the brand logo chip (build_composite.py overlays the logo
                     # at y=38, ~174px tall, so anything above ~215px is hidden
-                    # behind it) -- see _dm_bubble_element()/.dm-card CSS.
+                    # behind it) -- see _dm_bubble_element()/.dm-card CSS. v4:
+                    # badge pill text now reveals word-by-word (was one
+                    # single-block pop-in) -- see _badge_element()'s entrance
+                    # tween. Caught 2026-08-07 when the new animation didn't
+                    # show up in a full rebuild: element_hash() only covers
+                    # `content` (text/icon/colour/position), never the actual
+                    # css_extra/body_html/js_body strings, so a template-only
+                    # change like this one silently keeps serving the old
+                    # cached webm forever unless CACHE_VERSION is bumped.
 
 _ELEMENT_HTML = """<!doctype html>
 <html><head><meta charset="UTF-8"/><meta name="viewport" content="width=1080, height=1920"/>

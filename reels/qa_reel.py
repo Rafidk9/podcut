@@ -178,8 +178,22 @@ def check_caption_text():
         add(FAIL, "Caption placeholders", "un-overridden default(s) present: [NEED: ...]")
     else:
         add(OK, "Caption placeholders", "none")
-    add(OK if "Disclaimer" in text else WARN, "Compliance disclaimer",
-        "present" if "Disclaimer" in text else "MISSING from caption")
+    # The disclaimer is expected by default, so a missing one is a warning -- but a
+    # reel can deliberately ship without it (caption_txt.disclaimer false, see
+    # build_caption_txt.py), and warning about a choice the reel made on purpose
+    # trains people to ignore the gate. Only flag it when it was NOT opted out.
+    want_disclaimer = True
+    _cfg = os.path.join(REEL, "content.json")
+    if os.path.isfile(_cfg):
+        want_disclaimer = (json.load(open(_cfg, encoding="utf-8"))
+                           .get("caption_txt", {}).get("disclaimer", True))
+    if "Disclaimer" in text:
+        add(OK, "Compliance disclaimer", "present")
+    elif want_disclaimer:
+        add(WARN, "Compliance disclaimer", "MISSING from caption")
+    else:
+        add(OK, "Compliance disclaimer",
+            "intentionally omitted (caption_txt.disclaimer false)")
     # risky claim scan -- skip the verbatim disclaimer block (it legitimately
     # contains 'does not assure ... outcome'); scan only the copy above it.
     body = text.split("▎ Disclaimer")[0]

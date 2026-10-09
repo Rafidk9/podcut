@@ -1,0 +1,24 @@
+{
+  "_comment": "No B-roll stinger splices. The reel already carries a lot inside its own frames -- the five-city behind-subject snap sequence, a hero slam, three badges, two marker highlights and a real cruise photo card -- and the two longest segments are the ones doing that work, so cutting away from her to a motion-graphic stinger would interrupt exactly the beats that need to land. All four cuts get an energetic brand wipe instead, each a different style from its neighbours so a 37s reel never repeats a transition back to back.",
+  "n_segments": 5,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    {
+      "at": 1.86,
+      "style": "flash"
+    },
+    {
+      "at": 9.21,
+      "style": "speed"
+    },
+    {
+      "at": 16.31,
+      "style": "grid"
+    },
+    {
+      "at": 30.26,
+      "style": "speed"
+    }
+  ]
+}

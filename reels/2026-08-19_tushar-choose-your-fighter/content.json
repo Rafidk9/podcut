@@ -1,0 +1,119 @@
+{
+  "_comment": "Tushar Chopra / 'Choose Your Fighter' -- a comment-bait engagement reel, not an event promo and not migration advice. Creative brief in EDIT_PROMPT.md. All times below are CONTENT-timeline seconds (segments open at 0.00 / 2.25 / 7.05 / 9.37); build_composite.py adds any opener offset itself, and this reel has no opener, so content time is also base_broll time.",
+
+  "_asr_note": "No asr_fix needed. All four takes transcribed cleanly and contain no domain terms -- the visa categories on screen are graphics I authored, not words he speaks, so there is nothing for the dictionary to mis-hear. Resist adding entries speculatively: every key here merges into the shared default dict and applies to anchor matching too.",
+
+  "_gold_note": "Tints spoken caption words only. Chosen so the emphasis tracks the argument rather than the nouns: WRONG and MONTHS are the cost, YOUR/SITUATION/FITS are the thesis, BEST is the word the reel is arguing against. Note none of the four pathway names appear -- he never says them, and gilding them would imply a ranking the reel exists to deny.",
+  "gold": ["WRONG", "YOUR", "SITUATION", "FITS", "BEST", "MONTHS", "COMMENT", "PICK", "ONE"],
+
+  "_name_note": "Full name and MARN both taken from the 2026-08-11_tushar-melbourne-expo reel's content.json, which is the project's own record -- NOT invented and not guessed from the MARN. Placed at 3.1-6.6 so it sits inside segment 1, where he is seated, still and centred against the steel backdrop. It cannot go earlier: segment 0 is the fighter-grid cutaway for its first 2.10s, and a lower-third over a full-frame graphic would read as a caption on the graphic rather than an identification of the speaker.",
+  "name": { "text": "Tushar Chopra", "role": "Registered Migration Agent",
+            "start": 3.1, "end": 6.6 },
+  "mara": { "mode": "styled", "marn": "2418420" },
+
+  "_info_note": "Disabled the way build_captions.py's own default expresses it (far-future window) rather than deleting the key. There is no event, date, venue or price to carry -- this reel's whole payload is a question.",
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+
+  "_hook_banner_note": "Empty ON PURPOSE. The JS guard is `HB && HB.text && HB.end > HB.start`, so an empty string renders nothing. The fighter-select grid IS this reel's hook and it already carries its own headline ('CHOOSE YOUR NEXT MOVE') burned into the cutaway; a banner on top of it would be a second competing headline in the first half-second.",
+  "hook_banner": { "text": "", "start": 0.0, "end": 0.0 },
+
+  "cta": { "text": "COMMENT YOUR PICK 👇", "start": 10.80, "end": 12.87 },
+  "caption_highlight": true,
+
+  "_cap_top_note": "56% rather than the 62% default, measured off the stills rather than assumed, because three differently-framed takes have to share one band position. Segment 1 puts his chin at ~52% of frame height, so a band starting at 56% (y=1075) clears his face by ~77px. The binding constraint is segment 2, where both hands are up between ~64% and ~75%; at 62% the band would have sat right on them. Segment 3 is a wide with his face at ~22%, so it is unaffected either way. Segment 0's captions are suppressed entirely (see _hero_note), so the grid never competes.",
+  "cap_top": "56%",
+
+  "_hero_note": "ONE entry, and it is silent -- it renders nothing and exists only to suppress the plain 2-word caption cards across the fighter-grid cutaway, which would otherwise print 'PICK ONE' and 'WRONG' in the middle of a graphic that already says both things in its own type. resolve_anchor's pad_before is a fixed 0.15 (not settable per spec), so the window resolves to 0.08-2.18 (measured, anchor match 1.00): it opens before the 'PICK' card at 0.229 and still contains the 'WRONG' card at 1.609, while ending well before segment 1's first card ('There's' at 3.069).",
+
+  "_hero_removed_note": "A SECOND entry -- a visible full-screen 'YOUR SITUATION' slam on the reel's thesis line -- was built, rendered, reviewed on the actual frame and then CUT. It resolved correctly (6.30-7.48, anchor match 1.00, clear of the 7.05 cut), so this is not a timing failure. The problem is composition: .hero-slam is hardcoded in build_captions.py's stylesheet to `top:50%; transform:translateY(-50%)` with no per-reel knob, and segment 1 frames him with his face occupying roughly 30-52% of frame height, so a dead-centre slam lands squarely across his mouth and chin for 1.18s while he delivers the most important sentence in the reel. On the frame it reads as a mistake, not as a designed moment. Do not re-add it without first moving the slam, which needs a change to shared CSS. Nothing is lost by dropping it: with the hero gone the normal 2-word band renders 'YOUR SITUATION' at cap_top 56%, below his chin, and both words are in `gold` so the emphasis still lands -- and the reel already has one full-frame graphic slam (the X at 1.609). Two competing slams in 13 seconds was the greedier read anyway.",
+  "hero_words": [
+    { "anchor_phrase": "Pick one. Wrong", "text": "",
+      "pad_after": 0.15, "hold": 0.0, "silent": true }
+  ],
+
+  "_badges_note": "Two badges, different colours, different corners and DIFFERENT EFFECTS -- shimmer on the informational beat, particles on the warning beat. Giving both the default pop-in is what got flagged as 'stale and repetitive' on an earlier reel. Red is spent here and on the X in the cutaway and nowhere else, per the house rule that it means genuine urgency; the cyan badge deliberately does not name a winning option.",
+  "badges": [
+    {
+      "anchor_phrase": "There's no best option",
+      "text": "NO SINGLE BEST 🤷",
+      "icon": "info",
+      "color": "cyan",
+      "pos": "top-left",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "could cost you months",
+      "text": "MONTHS LOST ⏳",
+      "icon": "star",
+      "color": "red",
+      "pos": "top-right",
+      "effect": "particles"
+    }
+  ],
+
+  "_decor_note": "OFF. The decor layer earns its place on reels with large dead margins; this one already spends its empty space on a full-frame graphic cutaway, two badges, a lower-third and a hero slam across only 12.87s. Orbs on top of that is clutter, not polish. (The cutaway carries two drifting orbs of its own, inside the grid render, so the visual language is still present where there is room for it.)",
+
+  "_zoom_note": "hits[] are keyed by clip index with 'at' in RAW clip time, not content time. Segment 0 holds because its first 2.10s is a graphic and a push-zoom would fight the grid's own animation. Segment 1 pushes in slowly through the thesis line. Segment 2 holds so the punch-zoom on 'months' reads as a deliberate hit rather than an acceleration of an existing move -- 'months' is raw 2.599-3.000 in IMG_8196, so the window is set just around it. Segment 3 pushes in to close the distance on the wide corridor take for the CTA. No two adjacent segments move the same way.",
+  "zoom": {
+    "amount": 0.1,
+    "segments": ["hold", "in", "hold", "in"],
+    "hits": [
+      { "clip": 2, "at": [2.50, 3.10], "amount": 0.16 }
+    ]
+  },
+
+  "_voice_note": "All four takes are in a hard-surfaced building lobby -- polished stone floor, steel column cladding, glass shopfronts -- and the wide corridor take (segment 3) has audible slap off the far end. RNNoise pre-pass before the music mix and the two-pass loudnorm, so the normalisation doesn't lift the room's reverb tails with his voice.",
+  "voice_denoise": true,
+
+  "_music_note": "CHANGED on review feedback asking for a more fun and energetic bed. 'Mega Hyper Ultrastorm' (Kevin MacLeod, CC BY 4.0) -- 220 BPM, feel tags Action/Bouncy/Grooving, and the catalogue description is literally 'Player One Up! Ready! Go! Health 100%', i.e. it is actual video-game music. For a fighter-select reel that is the on-theme pick as well as the energetic one. Downloaded fresh from incompetech; its licence block was added to assets/music/CREDIT.txt BEFORE this reference, and the credit line is mirrored into caption_txt.music_credit below. It replaces 'Miami Viceroy', which was the retro-synth choice and measurably too sedate for the brief. THE VOLUME IS NOT A TYPO AND MUST NOT BE 'CORRECTED' BACK TOWARDS 0.40. These two tracks are nowhere near the same level: measured over their first 20s, Miami Viceroy integrates at -23.4 LUFS and Mega Hyper Ultrastorm at -10.2 LUFS -- a 13.2 dB difference. Carrying the old 0.40 bed across would have put the music 13 dB hot and buried his voice under it. Level parity is 0.40 * 10^(-13.2/20) = 0.088; 0.11 is deliberately ~2 dB above parity, because the ask was for the bed to feel more present, not merely different. ALWAYS measure a replacement track's integrated loudness against the outgoing one and rescale the bed by the difference -- the volume key is a raw linear gain with no normalisation behind it, so it is only meaningful relative to a specific file. The track also runs at full energy from t=0 (checked on a 1s RMS envelope: flat ~-12 dB for the first 25s), so there is no soft intro to wait out on a 19s reel.",
+  "music": { "track": "mega-hyper-ultrastorm-kevin-macleod.mp3", "volume": 0.11,
+             "duck_ratio": 8, "duck_threshold": 0.05 },
+
+  "_sfx_note": "TWELVE cues, which is above the 6-8 the stock volumes were tuned for, so every level here is scaled down from the outset rather than after a failed QA -- past roughly 8 cues the transients start pushing the two-pass loudnorm's true peak over target. The cutaway accounts for eight of them: four card pops (0.14/0.22/0.30/0.38, one per card as it slams in), two selector ticks sampled from the eight hops rather than one per hop (ticking every hop at that speed reads as a machine-gun rattle, not indecision), a pop on the lock at 1.45, and the whoosh-impact on the X at 1.609 -- the loudest cue in the reel, and the only one that should be. pop and tick attack at sample 0 so they sit exactly on the beat with no offset compensation. The three transition-whooshes take their times straight from broll_plan.json's extra_wipes. RE-MEASURE with qa_reel after any change; if true peak fails, scale these proportionally rather than hunting individual cues.",
+  "sfx": {
+    "cues": [
+      { "file": "pop.mp3", "at": 0.14, "volume": 0.13 },
+      { "file": "pop.mp3", "at": 0.22, "volume": 0.13 },
+      { "file": "pop.mp3", "at": 0.30, "volume": 0.13 },
+      { "file": "pop.mp3", "at": 0.38, "volume": 0.13 },
+      { "file": "tick.mp3", "at": 0.86, "volume": 0.09 },
+      { "file": "tick.mp3", "at": 1.27, "volume": 0.09 },
+      { "file": "pop.mp3", "at": 1.45, "volume": 0.16 },
+      { "file": "whoosh-impact.mp3", "at": 1.609, "volume": 0.28 },
+      { "file": "transition-whoosh.mp3", "at": 2.25, "volume": 0.16 },
+      { "file": "transition-whoosh.mp3", "at": 7.05, "volume": 0.16 },
+      { "file": "transition-whoosh.mp3", "at": 9.37, "volume": 0.16 },
+      { "file": "success-chime.mp3", "at": 10.80, "volume": 0.26 }
+    ]
+  },
+
+  "_thumbnail_note": "MOVED to 4.20. The previous 2.55 grab is gone with the footage it came from -- it sat in the held-smile tail of segment 0, which is exactly the awkward moment that was cut. Segment 0 is now grid + wipe end to end, so there is no usable frame of him in it at all. 5.00 is mid-segment-1, where he is seated, still and centred against the steel backdrop: clear of the speed wipe (2.00-2.50), clear of the grid wipe at 7.05, and far from both cut points. build_thumbnail pulls from base_broll.mp4, which is pre-caption, so no kinetic caption word can freeze into the still. Picked by sampling six candidate frames across segment 1 and comparing them cropped: 4.20 and 4.40 both catch him mid-word with his mouth open, which reads as a fumbled screengrab on a still. 5.00 is a closed-mouth confident half-smile with his eyes to camera. Verified on the rendered frame.",
+  "thumbnail": {
+    "at": 5.00,
+    "kicker": "🎮 CHOOSE YOUR FIGHTER",
+    "headline": "PICK ONE. **WRONG.**"
+  },
+
+  "caption_txt": {
+    "_offices_note": "offices:false -- the six-branch address block is opt-out and this reel isn't promoting an event or an office visit. A single contact line already covers the ask, and the full branch list would read as unrelated boilerplate under a question-and-comment post.",
+    "offices": false,
+    "title": "Choose your fighter: which pathway did you pick?",
+    "body": [
+      "Study. 485 visa. Skilled migration. Employer sponsorship. Four doors, and every migration video online will tell you one of them is the 'best' one.",
+      "It isn't. There is no best pathway — there's only the one that fits your situation: your occupation, your age, your points, your state, your timing, your budget. Pick the wrong door and you don't just lose a fee, you lose months you can't get back."
+    ],
+    "bullets": [
+      "🎓 Study — a pathway for some people, a detour for others",
+      "🛫 485 visa — depends entirely on what you studied and when",
+      "🛠️ Skilled migration — points, occupation lists and state nomination all have to line up",
+      "🏢 Employer sponsorship — needs the right employer as much as the right applicant",
+      "⏳ Guessing wrong costs months, not just money",
+      "💬 Comment your pick and Tushar will tell you if it's actually right for you"
+    ],
+    "urgency": "Comment the one you'd pick — 1, 2, 3 or 4 — and we'll tell you honestly whether it fits.",
+    "contact": "Tushar Chopra — Registered Migration Agent, MARN 2418420. Comment your pick below, or book a consultation to talk through your own situation properly.",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #ChooseYourFighter #AustralianMigration #485Visa #SkilledMigration #EmployerSponsorship #StudyInAustralia #InternationalStudents #MigrationAgent #MARA #VisaPathway #AustraliaPR",
+    "music_credit": "Music: \"Mega Hyper Ultrastorm\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  }
+}

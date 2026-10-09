@@ -1,0 +1,10 @@
+{
+  "_comment": "Recording order IS script order here (file timestamps 15:23:43 / 15:24:54 / 15:27:00 / 15:30:28 / 15:32:12 -> hook, what-it-is, the cruise, date+branches, CTA), unlike the Just Ask Expo countdown reel where playback had to be re-ordered. Every clip is genuine 4K60 HLG/BT.2020 HDR off a Samsung rear camera (ffprobe-confirmed), so all five take build_base.py's default tone-map path -- no \"sdr\" flags. Not mirror-flipped either: the PFEC logo on her jacket reads left-to-right correctly in a frame grab from every take, so no \"flip\" either. Keep ranges are set ~0.13s before her first word and ~0.3s after her last, off the Sinhala word timings in work/<clip>.transcript.si.json (the English caption track is derived from those same timings -- see make_en_transcript.py). P1 is the exception: it starts at 3.89 rather than 1.85 because the six-month qualifier was cut on request. Sinhala is verb-final, so \"pahugiya maasa haya ethulathadi\" (within the last six months) sits in the MIDDLE of the sentence -- words 1-4 of P1.transcript.si.json -- and dropping it by trimming the head leaves \"Australiavalata aapu kenekda?\" (did you come to Australia?), a complete grammatical question, with no interior splice and so no jump cut. 3.89 is not the ASR word start (4.00, which is late): it is the measured inter-word energy trough, since her next word actually begins at ~3.925.",
+  "clips": [
+    { "name": "P1", "ext": ".mp4", "keep": [3.89, 5.75] },
+    { "name": "P2", "ext": ".mp4", "keep": [1.35, 8.70] },
+    { "name": "P3", "ext": ".mp4", "keep": [0.75, 7.85] },
+    { "name": "P4", "ext": ".mp4", "keep": [2.00, 15.95] },
+    { "name": "P5", "ext": ".mp4", "keep": [1.18, 6.05] }
+  ]
+}

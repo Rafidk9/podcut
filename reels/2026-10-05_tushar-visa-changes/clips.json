@@ -1,0 +1,12 @@
+{
+  "_comment": "Tushar Chopra (Registered Migration Agent, MARN 2418420) promoting the daily 'Navigating Visa Changes' seminar at PFEC Global Melbourne, from 6 Oct 2026, 12-1 PM. Seven separate phone takes (P1..P7, 4K HLG vertical, same desk/white wall). Keep spans sit inside measured word gaps in work/P*.transcript.json and skip the count-ins ('two, one, go'). P3 has a flubbed first take ('...what you should n- oh, f***') -- only the clean second take (8.75+) is kept. P6's 'So register' is dropped (5.63 end) because P7 re-says 'So register right now' as the closer.",
+  "clips": [
+    { "name": "P1", "ext": ".mov", "keep": [1.85, 10.15] },
+    { "name": "P2", "ext": ".mov", "keep": [1.00, 7.10] },
+    { "name": "P3", "ext": ".mov", "keep": [8.75, 15.75] },
+    { "name": "P4", "ext": ".mov", "keep": [1.85, 3.85] },
+    { "name": "P5", "ext": ".mov", "keep": [2.28, 7.70] },
+    { "name": "P6", "ext": ".mov", "keep": [1.72, 5.63] },
+    { "name": "P7", "ext": ".mov", "keep": [1.38, 2.85] }
+  ]
+}

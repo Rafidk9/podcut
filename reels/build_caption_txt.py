@@ -82,6 +82,7 @@ DEFAULT_CAPTION = {   # Lakemba reel
     # list would read as unrelated boilerplate (e.g. a compliance/warning
     # reel with no event or office visit being promoted).
     "offices": True,
+    "disclaimer": True,
 }
 
 
@@ -102,6 +103,12 @@ def build():
     # Music credit is opt-in; when empty, drop the line entirely (no dangling gap).
     credit = f"{c['music_credit'].strip()}\n\n" if c.get("music_credit", "").strip() else ""
     offices = f"{OFFICES}\n\n" if c.get("offices", True) else ""
+    # Verbatim compliance disclaimer, opt-out exactly the way the offices block
+    # is (default True, so every existing reel rebuilds unchanged). Drop it only
+    # on a reel that makes no migration claim at all -- a purely social event
+    # announcement, say. Independent of build_composite.py's end_cards.disclaimer,
+    # so a reel can keep the written notice while losing the on-screen card.
+    tail = DISCLAIMER if c.get("disclaimer", True) else ""
     text = f"""{bold(c['title'])}
 
 {body}
@@ -117,7 +124,7 @@ def build():
 
 {c['hashtags']}
 
-{credit}{DISCLAIMER}
+{credit}{tail}
 """
     path = os.path.join(OUT, "caption.txt")
     open(path, "w", encoding="utf-8").write(text)

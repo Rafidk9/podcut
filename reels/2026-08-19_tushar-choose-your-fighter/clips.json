@@ -1,0 +1,20 @@
+{
+  "_comment": "Tushar Chopra / 'Choose Your Fighter' engagement reel. Four takes shot 2026-08-19, downloaded from the shared Drive folder. Full creative brief in EDIT_PROMPT.md; this file only decides what footage gets built and where it is cut.",
+
+  "_source_note": "All four are iPhone 4K60 HDR -- 3840x2160 yuv420p10le, arib-std-b67 / BT.2020, portrait via a rotation=-90 display matrix. That is exactly the profile build_base.py's DEFAULT vf path expects, so NO clip here sets \"sdr\": true. Do not add it: zscale=t=linear is the tone-map these need, and the sdr path would skip it and ship washed-out BT.2020 primaries stamped as bt709. Backdrops were eyeballed for the mirror-flip tell (the 2026-07 selfie-footage problem) -- the lobby signage and the 'C+L' shopfront lettering in IMG_8197 both read forwards, so no clip needs \"flip\": true either.",
+
+  "_slate_note": "Every take opens with an off-mic self-slate ('One, go' / 'On. Go.' / 'Um, go') which is trimmed off by the keep ranges below. Word times come from work/<name>.transcript.json (ElevenLabs), not from eyeballing a waveform.",
+
+  "_trim_8196_note": "THE ONE TRIM THAT NEEDED MEASURING RATHER THAN READING. The transcript puts the slate's 'go' ending at 0.939 and the first real word 'And' starting at 0.959 -- a 20ms gap, which is not a cut point. A 20ms-window RMS envelope over the decoded audio shows what actually happened: the slate runs 0.60-0.74 at about -33 dB, then there is genuine silence from 0.76 to 0.93 at -48..-53 dB, then 'And' attacks at 0.94 and climbs to -17 dB. Cutting at 0.90 lands in the middle of that measured silence with ~40ms of lead-in before the consonant. If this reel is ever recut, re-measure rather than trusting the word boundary. The other three slates leave 540-640ms of clear air and cut anywhere.",
+
+  "_keep_8192_note": "Tail SHORTENED from 3.90 to 3.30 on review feedback -- the reel must never cut back to him on 'Wrong'. Everything in this take after the word ends (3.079) is him grinning and dropping his pointing hand: checked frame by frame at 3.08 / 3.18 / 3.30 / 3.45, there is no deadpan frame in there at all, he breaks character immediately. The earlier cut held 0.87s of it as a deliberate beat and it read as awkward, not knowing. Now the fighter-grid cutaway covers 2.20s of a 2.25s segment and the speed wipe centred on the 2.25 cut covers what little is left, so the X slam wipes straight into the next take and he is never seen delivering the punchline. The segment still has to outlast its own cutaway by a frame or two -- insert_broll splices as broll[0:dur] + seg_video[dur:], and an exactly-equal dur would leave an empty second half and break the concat. The 0.92s of silence INSIDE the take (between 'one.' at 1.740 and 'Wrong' at 2.659) is still kept on purpose: that gap is where the selector locks on and the viewer commits to a guess.",
+
+  "_timeline_note": "Segment durations are 2.25 / 4.80 / 2.32 / 3.50 = 12.87s of content, so segment openings sit at 0.00 / 2.25 / 7.05 / 9.37. Those are the numbers broll_plan.json's wipes and content.json's sfx cues are keyed to. Add ~6.2s of appended end cards for the finished runtime.",
+
+  "clips": [
+    { "name": "IMG_8192", "ext": ".MOV", "keep": [1.05, 3.30] },
+    { "name": "IMG_8195", "ext": ".MOV", "keep": [1.60, 6.40] },
+    { "name": "IMG_8196", "ext": ".MOV", "keep": [0.90, 3.22] },
+    { "name": "IMG_8197", "ext": ".MOV", "keep": [2.15, 5.65] }
+  ]
+}

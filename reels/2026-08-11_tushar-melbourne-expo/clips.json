@@ -1,0 +1,14 @@
+{
+  "_comment": "Tushar (Registered Migration Agent, MARN 2418420) promoting the PFEC Global 'Just Ask' Education & Migration Expo -- 25 Aug, 2-5PM -- and specifically the migration seminar HE is running at the Melbourne office. Five source takes, each a different backdrop/setup in the same venue (8064 seated at a wooden table, 8065 seated against warm timber, 8066 standing at a glass atrium, 8067 standing at an arched window, 8068 seated in an armchair), so every cut already reads as a genuine location change -- the wipes just punctuate it.",
+  "_order_note": "Playback order is narrative, and matches ascending file order here by coincidence: hook (8064) -> reframe/'ask someone who knows' (8065) -> event details + Melbourne seminar (8066) -> proof 'real questions, real answers' (8066 again) -> uni reps + one afternoon (8067) -> CTA (8068).",
+  "_split_note": "IMG_8066 is deliberately entered TWICE with two non-overlapping keep spans. It's a single 10.4s take carrying two distinct beats separated by a real 0.52s pause ('...Melbourne office.' ends 9.18, 'Real...' starts 9.70). Splitting it there buys a real cut (and therefore a wipe + its own zoom direction) mid-take instead of one long flat 10.7s segment. build_base.py keys segments by list index and only uses `name` to find the input file + transcript, so a repeated name is safe.",
+  "_trim_note": "8065 opens with a crew count-in ('One, go' 0.26-1.40, detected as a separate speaker) and 8067 opens with crew chatter ('Huh? Good? Okay.' 4.00-5.52) -- both cut via these keep starts, not asr_fix. Every keep start/end is taken from that clip's own work/<name>.transcript.json word timings with ~0.15-0.35s of breathing room.",
+  "clips": [
+    { "name": "IMG_8064", "ext": ".mov", "keep": [1.95, 5.05] },
+    { "name": "IMG_8065", "ext": ".mov", "keep": [1.90, 5.40] },
+    { "name": "IMG_8066", "ext": ".mov", "keep": [1.85, 9.45] },
+    { "name": "IMG_8066", "ext": ".mov", "keep": [9.55, 12.60] },
+    { "name": "IMG_8067", "ext": ".mov", "keep": [6.55, 13.05] },
+    { "name": "IMG_8068", "ext": ".mov", "keep": [1.50, 6.35] }
+  ]
+}

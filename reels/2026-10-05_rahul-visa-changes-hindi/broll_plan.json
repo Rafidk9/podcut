@@ -1,0 +1,9 @@
+{
+  "_comment": "No B-roll, and -- unlike the English version's four wipes -- the cuts here are HARD jump-cuts between wide and tight framings (see content.json zoom). Exactly one flash wipe, at 11.35, marking the beat change from the worry hook into the logistics ('So from 6th of October...'). Output time = raw - 6.80 (all keep spans are contiguous). Cut times: 6.00, 11.35, 16.95, 21.15, 23.65, 27.35, 30.65, 34.40.",
+  "n_segments": 9,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 11.35, "style": "flash" }
+  ]
+}

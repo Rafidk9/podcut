@@ -1,0 +1,10 @@
+{
+  "_comment": "Rahul Dhanda (Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640) promoting the in-person 'Navigating Visa Changes' seminar -- 6-16 Oct, Mon-Fri, 1-2 PM, Sydney + Parramatta offices. ONE source take (IMG_0284, 39.5s, iPhone HLG 4K vertical, plain white wall), so it is entered five times with non-overlapping keep spans, split at the real sentence pauses: hook/worry (ends 'soon.' 9.24) -> dates/time/offices (ends 'office.' 17.94) -> what we'll discuss (ends 'you.' 25.46) -> don't wait / CTA (ends 'clarity.' 30.60) -> sign-off. The 30.60-32.58 dead pause (~2s) is cut out entirely between spans 4 and 5. Every keep edge sits inside a measured word gap from work/IMG_0284.transcript.json.",
+  "clips": [
+    { "name": "IMG_0284", "ext": ".mov", "keep": [0.85, 9.48] },
+    { "name": "IMG_0284", "ext": ".mov", "keep": [9.48, 18.14] },
+    { "name": "IMG_0284", "ext": ".mov", "keep": [18.14, 25.78] },
+    { "name": "IMG_0284", "ext": ".mov", "keep": [25.78, 30.85] },
+    { "name": "IMG_0284", "ext": ".mov", "keep": [32.33, 36.85] }
+  ]
+}
