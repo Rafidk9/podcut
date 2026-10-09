@@ -1,0 +1,102 @@
+{
+  "asr_fix": { "dm-ing": "DM-ing" },
+  "gold": ["RED", "GREEN", "FLAG", "PR", "VISA", "MIGRATION", "REGISTER",
+           "REGISTERED", "FREE", "CONSULTATION"],
+  "names": [
+    { "text": "Apurva Golani", "role": "Registered Migration Agent",
+      "marn": "2518793", "pos": "left", "start": 0.4, "end": 4.0 },
+    { "text": "Priti Dabhi", "role": "Team Leader (Education)",
+      "pos": "right", "start": 0.4, "end": 4.0 }
+  ],
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "REGISTER NOW!", "start": 25.9, "end": 27.42 },
+  "hero_words": [
+    { "anchor_phrase": "red flag versus green flag",
+      "text": "<span style=\"color:#E84B37\">🚩 RED FLAG</span> <span style=\"font-size:0.55em;opacity:.85\">vs</span> <span style=\"color:#31EB7C\">GREEN FLAG 🟢</span>",
+      "pad_after": 0.4, "hold": 0.3 }
+  ],
+  "badges": [
+    { "anchor_phrase": "guaranteed PR", "text": "🚩 RED FLAG",
+      "icon": "flag", "color": "red", "pos": "top" },
+    { "anchor_phrase": "registered migration agent", "text": "✅ GREEN FLAG",
+      "icon": "check", "color": "green", "pos": "top" },
+    { "anchor_phrase": "Getting your visa advice", "text": "🚩 RED FLAG",
+      "icon": "flag", "color": "red", "pos": "top" },
+    { "anchor_phrase": "zero pressure to sign anything", "text": "✅ GREEN FLAG",
+      "icon": "check", "color": "green", "pos": "top" },
+    { "anchor_phrase": "Green Flag Energy", "text": "🟢 GREEN FLAG ENERGY",
+      "icon": "flag", "color": "green", "pos": "top", "effect": "shimmer" }
+  ],
+  "dm_bubbles": [
+    { "anchor_phrase": "DM-ing you", "sender": "unknown_agent_247",
+      "avatar": "👤", "message": "GUARANTEED PR!! DM me 💰",
+      "flag": "red" },
+    { "anchor_phrase": "registered migration agent", "sender": "MARA VERIFICATION",
+      "avatar": "🛡️", "message": "Apurva Golani — VERIFIED ✅ #2518793",
+      "flag": "green" },
+    { "anchor_phrase": "zero pressure to sign anything", "sender": "BOOKING CONFIRMED",
+      "avatar": "📅", "message": "FREE Consultation — No Obligation",
+      "flag": "green" }
+  ],
+  "fb_comments": [
+    { "anchor_phrase": "Facebook comment section",
+      "comments": [
+        { "name": "Rajesh K.", "initial": "R",
+          "text": "my cousin's friend got PR in 2 weeks, just apply direct 😂",
+          "likes": 24 },
+        { "name": "Priya S.", "initial": "P",
+          "text": "agents are a scam, do it yourself trust me",
+          "likes": 11 },
+        { "name": "Sarah M.", "initial": "S",
+          "text": "paid a random guy on Instagram, worked for me 💸",
+          "likes": 8 }
+      ], "flag": "red" }
+  ],
+  "documents": [
+    { "image": "migration360-poster.png", "anchor_phrase": "your city this August",
+      "label": "", "poster": true, "width": 960, "top": "920px",
+      "pad_before": 0.15, "pad_after": 0.9, "suppress_captions": true }
+  ],
+  "caption_highlight": true,
+  "zoom": {
+    "amount": 0.08,
+    "segments": ["in", "hold", "in", "hold", "in", "in"],
+    "hits": [
+      { "clip": 1, "at": [3.84, 4.78], "amount": 0.16 },
+      { "clip": 3, "at": [3.90, 5.20], "amount": 0.14 }
+    ]
+  },
+  "voice_denoise": true,
+  "music": { "track": "cheery-monday-kevin-macleod.mp3", "volume": 0.075 },
+  "sfx": {
+    "cues": [
+      { "file": "whoosh-impact.mp3", "at": 1.58, "volume": 0.8 },
+      { "file": "transition-whoosh.mp3", "at": 4.20, "volume": 0.4 },
+      { "file": "whoosh-impact.mp3", "at": 5.93, "volume": 0.75 },
+      { "file": "transition-whoosh.mp3", "at": 7.84, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 8.65, "volume": 0.65 },
+      { "file": "transition-whoosh.mp3", "at": 11.84, "volume": 0.4 },
+      { "file": "whoosh-impact.mp3", "at": 13.98, "volume": 0.75 },
+      { "file": "transition-whoosh.mp3", "at": 16.32, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 17.61, "volume": 0.65 },
+      { "file": "transition-whoosh.mp3", "at": 20.10, "volume": 0.4 },
+      { "file": "success-chime.mp3", "at": 20.12, "volume": 0.7 },
+      { "file": "success-chime.mp3", "at": 25.98, "volume": 0.75 }
+    ]
+  },
+  "thumbnail": { "at": 1.8, "kicker": "MIGRATION ADVICE",
+                 "headline": "**RED FLAG** VS **GREEN FLAG**" },
+  "caption_txt": {
+    "title": "Red Flag or Green Flag? How to Spot a Legit Migration Agent",
+    "body": [
+      "Migration advice: red flag versus green flag. A random agent DM-ing you with a “guaranteed PR” is a red flag — so is getting your visa advice from the Facebook comment section.",
+      "The green flags? Sitting down with a REGISTERED migration agent face to face, and a free consultation with zero pressure to sign anything. That's what real advice looks like — and it's exactly what's on offer at PFEC Global's Migration360 Roadshow, hitting your city this August."
+    ],
+    "bullets": [],
+    "urgency": "Green Flag Energy is coming to a city near you this August — link in bio.",
+    "contact": "Book your FREE consultation with Apurva Golani, PFEC Registered Migration Agent (MARN 2518793)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #RedFlagGreenFlag #Migration360 #Roadshow #RegisteredMigrationAgent #StudyInAustralia #SkilledMigration #MigrationAdvice #GreenFlagEnergy",
+    "music_credit": "Music: \"Cheery Monday\" — Kevin MacLeod (incompetech.com)"
+  }
+}

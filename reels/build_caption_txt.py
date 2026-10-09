@@ -92,19 +92,20 @@ def load_caption():
 def build():
     c = load_caption()
     body = "\n\n".join(c["body"])
-    bullets = "\n".join("✔ " + b for b in c["bullets"])
-    # Music credit is opt-in; when empty, drop the line entirely (no dangling gap).
+    # Bullets, urgency, and music credit are all opt-in -- when empty, drop
+    # the whole section (header included) rather than leaving a dangling
+    # "What You Should Know:" with nothing under it or a bare emoji line.
+    bullets_block = ""
+    if c.get("bullets"):
+        bullets = "\n".join("✔ " + b for b in c["bullets"])
+        bullets_block = f"{bold('What You Should Know:')}\n{bullets}\n\n"
+    urgency_block = f"\U0001F4CC {c['urgency']}\n\n" if c.get("urgency", "").strip() else ""
     credit = f"{c['music_credit'].strip()}\n\n" if c.get("music_credit", "").strip() else ""
     text = f"""{bold(c['title'])}
 
 {body}
 
-{bold("What You Should Know:")}
-{bullets}
-
-\U0001F4CC {c['urgency']}
-
-\U0001F4F2 {c['contact']}
+{bullets_block}{urgency_block}\U0001F4F2 {c['contact']}
 
 {OFFICES}
 

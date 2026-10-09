@@ -74,7 +74,13 @@ def voice_denoise_model():
     through filter_complex parsing, but a bare filename (cwd at the model dir)
     in a plain -af pass is clean. Cleaning here -- before the music mix + the
     two-pass loudnorm -- stops loudnorm from lifting the room's reverb tails and
-    making the clip sound echoey."""
+    making the clip sound echoey. Chained ahead of RNNoise: a gentle highpass
+    (f=90) to shave HVAC/room rumble below where a human voice's fundamental
+    sits -- measured via astats on a 2026-07-24 reel shot in a glass-walled
+    office, the RNNoise-only pass still left a ~-46dB noise floor during
+    speech gaps (audibly present, well above a clean ~-55/-60dB target); the
+    highpass alone doesn't reach RNNoise's spectral floor but measurably lowers
+    it and costs nothing for adult voices (fundamentals sit well above 90Hz)."""
     cfg = os.path.join(REEL, "content.json")
     on = False
     if os.path.isfile(cfg):
@@ -145,7 +151,7 @@ def main():
     if model:
         voice_clean = os.path.join(WORK, "voice_clean.wav")
         subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error", "-i", assembled,
-                        "-af", "arnndn=m=" + os.path.basename(model), "-ar", "48000",
+                        "-af", "highpass=f=90,arnndn=m=" + os.path.basename(model), "-ar", "48000",
                         "-ac", "2", voice_clean], check=True, cwd=os.path.dirname(model))
         extra_in, voice = ["-i", voice_clean], "2:a"
         print("voice cleaned with RNNoise (voice_denoise) ->", voice_clean)
