@@ -1,0 +1,60 @@
+{
+  "category": "kinetic-type",
+  "duration_s": 7,
+  "fps": 30,
+  "canvas": { "w": 1920, "h": 1080, "aspect": "16:9" },
+  "style": "Scrapbook / zine analogue collage. A crumpled paper ball unfurls into a flat torn-paper scrap carrying the title. Heavy condensed headline against a light lowercase subtitle, washi tape, highlighter swipe, biro doodle. Reference-implementation rebuild of the 'Unusual Paper Titles' Premiere .mogrt; see ~/.claude/styles/hyperframes/torn-paper-title.md.",
+  "palette": ["#FFFFFF", "#ECF167", "#FE96EB", "#000000", "#4F4F4F", "#FA5F6E"],
+  "font": "Anton (headline) + Exo 2 (subtitle), self-hosted woff2 in assets/fonts/",
+  "beats": [0.18, 0.55, 1.2, 1.45, 6.4],
+  "export": "mp4",
+
+  "asset_needs": [],
+
+  "block": null,
+  "customize": {
+    "note": "Hand-authored. No catalog block covers a 3D paper unfurl; the closest caption-* blocks are flat text reveals and would have to be torn apart to fit."
+  },
+
+  "content": {
+    "scenes": [
+      {
+        "id": "unfurl",
+        "start": 0,
+        "end": 1.5,
+        "text": "PAPER TITLES / cool style",
+        "emphasis_words": ["PAPER", "TITLES"],
+        "emotion": "playful, tactile, handmade",
+        "motion": "ball -> inflate -> unfurl -> flatten+settle",
+        "beats": [0.18, 0.55, 1.2, 1.45]
+      },
+      {
+        "id": "hold",
+        "start": 1.5,
+        "end": 6.4,
+        "text": "PAPER TITLES / cool style",
+        "emphasis_words": [],
+        "emotion": "settled",
+        "motion": "near-static breath (slight rotate + drift), never frozen",
+        "beats": []
+      },
+      {
+        "id": "crumple-out",
+        "start": 6.4,
+        "end": 7,
+        "text": "",
+        "emphasis_words": [],
+        "emotion": "snappy exit",
+        "motion": "reverse crumple back to a ball, ~3x faster than the entrance",
+        "beats": [6.4]
+      }
+    ]
+  },
+
+  "technique": {
+    "approach": "18 vertical slices of one artwork, each slice a 3D-transformed strip inside a shared perspective. Each strip holds a full copy of the artwork offset by -i*stripWidth and cropped by overflow:hidden, so the composed title deforms piecewise with the paper as the strips unfold. Route 3 of the three documented rebuild routes.",
+    "fidelity_note": "Approximates the original, which displacement-maps the text onto pre-rendered 3D paper-unfold footage. Piecewise strip deformation reads convincingly in motion but is not true surface displacement. Route 2 (Three.js vertex displacement) would match more closely at much higher cost.",
+    "determinism": "Torn silhouette, crumple creases, doodle path and the per-strip crumple jitter are all generated at load from a fixed-seed mulberry32 PRNG. No render-time clocks, no unseeded randomness, no network.",
+    "alpha_overlay": "Hide or delete the #bg clip and render with --format webm (or mov) for the transparent overlay variant. The coral field is demo-only and is not part of the style."
+  }
+}
