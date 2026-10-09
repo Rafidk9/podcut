@@ -13,14 +13,14 @@
     {
       "role": "hero-mark-source",
       "kind": "svg",
-      "source": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\logo\\pfec-logo-colour.svg",
+      "source": "../../assets/logo/pfec-logo-colour.svg",
       "treatment": "none",
       "note": "Already-resolved local file, no search. Use ONLY the first <g> of this SVG (the abstract mark) — three parallel diagonal parallelogram bars, NOT the wordmark text groups below it. viewBox is 1200x429.3. Bar geometry (for re-derivation in the 3D build): bar 1 (fill #100694) points 103.49,18.37 / 15.96,280.03 / 146.85,280.03 / 234.37,18.37; bar 2 (fill #908EC0) points 281.78,18.37 / 194.24,280.03 / 325.14,280.03 / 412.68,18.37; bar 3 (fill #C9C9E2) points 459.87,18.37 / 372.35,280.03 / 503.24,280.03 / 590.77,18.37. Each bar is a constant-width parallelogram (top width ~130.9px = bottom width), evenly gapped (~47.4px gap top and bottom), all slanted at the same angle (horizontal shift ~87.5px over a height of ~261.7px, i.e. ~18.5deg off vertical, leaning like a forward slash). Combined mark bounding box is ~574.8 x 261.7 (~2.2:1 wide). Left-to-right tint ramp is dark->mid->light: #100694 -> #908EC0 -> #C9C9E2."
     },
     {
       "role": "footer-logo-lockup",
       "kind": "logo",
-      "source": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\derived\\logo_colour_1000.png",
+      "source": "../../assets/derived/logo_colour_1000.png",
       "treatment": "none",
       "note": "Pre-rendered full-color raster wordmark lockup for the small bottom-left footer placement — simpler than re-deriving the wordmark from SVG at small size. NOT used for the hero mark (hero mark is built from the SVG bars above, 3D-extruded)."
     }
@@ -92,11 +92,11 @@
   },
 
   "content": {
-    "logo": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\logo\\pfec-logo-colour.svg",
+    "logo": "../../assets/logo/pfec-logo-colour.svg",
     "tagline": "Learn more \u2014 link in bio",
     "url": null,
     "url_note": "No literal URL pill in this design — the footer CTA line ('Learn more \u2014 link in bio') stands in for it per the brief; do not fabricate a URL.",
     "headline_lines": ["Free Webinar", "[Month Day, Year]", "[time] AEST"],
-    "footer_logo_asset": "C:\\Users\\AU-0011-PFEC-G\\Downloads\\podcut\\podcut\\assets\\derived\\logo_colour_1000.png"
+    "footer_logo_asset": "../../assets/derived/logo_colour_1000.png"
   }
 }

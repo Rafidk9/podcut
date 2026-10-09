@@ -10,6 +10,11 @@ engine/.env
 engine/.podcut_work*/
 engine/.podcut_jobs/
 
+# Claude Code local state (worktrees are separate checkouts of this repo)
+.claude/worktrees/
+.claude/settings.local.json
+.playwright-mcp/
+
 # Node / Next
 node_modules/
 web/.next/

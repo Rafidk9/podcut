@@ -73,6 +73,41 @@ Setup is in [`worker/README.md`](worker/README.md) (laptop) and
 python worker/podcut_worker.py --dry-run   # check it sees your reels; no network
 ```
 
+## Setup on a new machine
+
+Raw footage, renders and per-reel working folders are **not** in this repo
+(see `.gitignore`) -- only code, the editorial config for each reel
+(`content.json`, `clips.json`, `broll_plan.json`, per-reel `broll.py` /
+`bg_swap.py`) and the shared brand assets. Footage comes from Google Drive.
+
+Prerequisites (on PATH): **Python 3.12**, **ffmpeg + ffprobe**, **Node 20+**, git.
+Optional: Tesseract OCR (only for `tools/letter-redactor`).
+
+```bash
+git clone https://github.com/Rafidk9/podcut.git
+cd podcut
+
+# Python env (engine + reels pipeline share it)
+cd engine
+python -m venv .venv && .venv\Scripts\activate      # Windows (macOS/Linux: source .venv/bin/activate)
+pip install -r requirements.txt
+pip install pillow                                   # reels: thumbnails/overlays
+pip install rembg                                    # optional: "text behind subject" (bg_swap.py)
+copy .env.example .env                               # optional keys; leave blank to use local fallbacks
+cd ..
+
+# HyperFrames CLI (captions / B-roll / wipes render through it)
+cd tools/hyperframes && npm install && cd ../..
+
+# sanity check -- no media or keys needed
+cd engine && python -m pytest -q && cd ..
+```
+
+Then build a reel per [`reels/README.md`](reels/README.md): `python reels/new_reel.py
+<YYYY-MM-DD>_<slug>`, drop the clips into its `input/`, and run the pipeline
+scripts in order. To rebuild an existing reel, its config is already in
+`reels/<reel>/`; just put the original clips back into `input/`.
+
 ## Quick start
 
 ```bash
