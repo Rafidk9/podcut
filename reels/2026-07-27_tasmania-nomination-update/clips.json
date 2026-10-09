@@ -1,0 +1,8 @@
+{
+  "clips": [
+    { "name": "P1", "ext": ".mp4", "sdr": true, "keep": [0.87, 18.48] },
+    { "name": "P1", "ext": ".mp4", "sdr": true, "keep": [18.48, 29.65] },
+    { "name": "P1", "ext": ".mp4", "sdr": true, "keep": [29.65, 35.90] },
+    { "name": "P1", "ext": ".mp4", "sdr": true, "keep": [35.90, 46.08] }
+  ]
+}

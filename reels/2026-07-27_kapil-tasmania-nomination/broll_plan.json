@@ -1,0 +1,14 @@
+{
+  "_comment": "No B-roll: at 28s this take is wall-to-wall information (hook -> allocation numbers -> roadshow CTA) with no connecting/filler phrase long enough to cut away over without burying key content -- per reels/README.md the count is script-judged and legitimately zero here. The 6 segment boundaries are instead masked with wipe transitions, mixing the diagonal 'speed' sweep with the grid wipe and one flash for the beat change into the roadshow pitch.",
+  "n_segments": 7,
+  "plan": {},
+  "boundaries": {},
+  "extra_wipes": [
+    { "at": 2.04, "style": "speed" },
+    { "at": 5.23, "style": "grid" },
+    { "at": 9.51, "style": "speed" },
+    { "at": 13.93, "style": "flash" },
+    { "at": 19.13, "style": "speed" },
+    { "at": 25.33, "style": "grid" }
+  ]
+}

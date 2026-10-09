@@ -1,0 +1,12 @@
+{
+  "_comment": "P1/P2/P3 = IMG_1943/1944/1947 from the Drive 'Tasmania' folder. Each take is split at a real pause between sentences so every beat gets its own zoom treatment and a wipe transition on the cut (see broll_plan.json extra_wipes). Slate count-ins ('One, go') and the trailing 'One.' are trimmed off.",
+  "clips": [
+    { "name": "P1", "ext": ".MOV", "keep": [1.62, 3.66] },
+    { "name": "P1", "ext": ".MOV", "keep": [3.66, 6.85] },
+    { "name": "P2", "ext": ".MOV", "keep": [1.25, 5.53] },
+    { "name": "P2", "ext": ".MOV", "keep": [5.53, 9.95] },
+    { "name": "P3", "ext": ".MOV", "keep": [1.72, 6.92] },
+    { "name": "P3", "ext": ".MOV", "keep": [6.92, 13.12] },
+    { "name": "P3", "ext": ".MOV", "keep": [13.12, 15.75] }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "asr_fix": { "twenty-six/twenty-seven": "26/27" },
+  "gold": ["TASMANIA", "TASMANIAN", "NOMINATION", "VISA", "SUBCLASS", "PROGRAM",
+           "REGISTRATIONS", "INTEREST", "IMMIGRATION", "INCREASE", "APPLY",
+           "26/27"],
+  "name": { "text": "Ali Ehsan", "role": "Director, NSW | Registered Migration Agent",
+            "start": 0.3, "end": 5.0 },
+  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
+  "cta": { "text": "FOLLOW FOR UPDATES!", "start": 41.9, "end": 45.17 },
+  "list_top": "60%",
+  "hero_words": [
+    { "anchor_phrase": "two thousand and fifty",
+      "text": "<span style=\"color:#FFC500\">2,050</span> <span style=\"font-size:0.5em\">PLACES</span>",
+      "top": "74%", "pad_after": 0.3, "hold": 0.2 }
+  ],
+  "badges": [
+    { "anchor_phrase": "26/27 year program", "text": "2026\u201327 PROGRAM",
+      "icon": "star", "color": "gold", "pos": "top" },
+    { "anchor_phrase": "will reopen for new registrations of interest", "text": "REOPENING SOON",
+      "icon": "star", "color": "cyan", "pos": "top" }
+  ],
+  "lists": [
+    { "anchor_phrase": "one to five zero places for subclass one nine zero and eight hundred places for subclass four nine one",
+      "title": "TASMANIA 2026\u201327 PLACES",
+      "items": ["1,250 \u2014 Subclass 190", "800 \u2014 Subclass 491"] }
+  ],
+  "stat_jumps": [
+    { "anchor_phrase": "one ninety allocation has gone up from twelve hundred to twelve fifty",
+      "label": "SUBCLASS 190", "from": "1,200", "to": "1,250", "direction": "up",
+      "top": "1160px" },
+    { "anchor_phrase": "four nine one allocation has gone up from six fifty to eight hundred",
+      "label": "SUBCLASS 491", "from": "650", "to": "800", "direction": "up",
+      "top": "1160px" }
+  ],
+  "caption_highlight": true,
+  "zoom": {
+    "amount": 0.0,
+    "segments": ["hold"],
+    "hits": [
+      { "clip": 0, "at": [7.92, 8.80], "amount": 0.10 }
+    ]
+  },
+  "voice_denoise": true,
+  "music": { "track": "cheery-monday-kevin-macleod.mp3", "volume": 0.04 },
+  "sfx": {
+    "cues": [
+      { "file": "whoosh-impact.mp3", "at": 6.89, "volume": 0.8 },
+      { "file": "success-chime.mp3", "at": 12.40, "volume": 0.6 },
+      { "file": "transition-whoosh.mp3", "at": 17.55, "volume": 0.3 },
+      { "file": "success-chime.mp3", "at": 20.10, "volume": 0.7 },
+      { "file": "success-chime.mp3", "at": 24.72, "volume": 0.7 },
+      { "file": "transition-whoosh.mp3", "at": 28.70, "volume": 0.3 },
+      { "file": "whoosh-impact.mp3", "at": 31.85, "volume": 0.6 },
+      { "file": "success-chime.mp3", "at": 41.80, "volume": 0.7 }
+    ]
+  },
+  "thumbnail": { "at": 2.0, "kicker": "TASMANIA VISA UPDATE",
+                 "headline": "**2,050** STATE NOMINATION PLACES" },
+  "caption_txt": {
+    "title": "Tasmania Boosts State Nomination Places for 2026\u201327",
+    "body": [
+      "Big update for anyone planning to apply for Tasmanian State Nomination: Tasmania has received 2,050 state nomination places for the 2026\u201327 program \u2014 1,250 for Subclass 190 and 800 for Subclass 491.",
+      "That's a solid increase on last year: the 190 allocation is up from 1,200 to 1,250, and the 491 allocation has jumped from 650 to 800. Tasmania has also confirmed the State Nomination Program will reopen for new Registrations of Interest in the coming weeks, with the exact date to be announced soon."
+    ],
+    "bullets": [],
+    "urgency": "",
+    "contact": "Questions about Tasmania nomination? Reach out to Ali Ehsan, PFEC Director NSW / Registered Migration Agent (MARN 2117037)",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #TasmaniaVisa #StateNomination #Subclass190 #Subclass491 #AustralianMigration #SkilledMigration #RegisteredMigrationAgent",
+    "music_credit": ""
+  }
+}

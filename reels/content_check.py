@@ -17,10 +17,12 @@ import os
 # alongside adding a new one (see the docstring above for why this is a
 # warning, not a schema that blocks unrecognized keys).
 KNOWN_KEYS = {
-    "asr_fix", "gold", "name", "mara", "info", "cta", "documents",
-    "cap_top", "list_top", "decor", "lists", "badges", "roadshow",
-    "urgency_chip", "hero_words", "hook_banner", "save_prompt",
-    "caption_highlight", "music", "sfx", "voice_denoise", "zoom",
+    "asr_fix", "gold", "name", "mara", "names", "info", "cta", "documents",
+    "fb_comments", "stat_jumps", "celebrations",
+    "cap_top", "list_top", "decor", "lists", "badges", "dm_bubbles", "roadshow",
+    "urgency_chip", "hero_words", "hook_banner", "save_prompt", "flight_map",
+    "landmark_sweep",
+    "caption_highlight", "caption_style", "music", "sfx", "voice_denoise", "zoom",
     "thumbnail", "caption_txt",
 }
 

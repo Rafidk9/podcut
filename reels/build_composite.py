@@ -74,7 +74,13 @@ def voice_denoise_model():
     through filter_complex parsing, but a bare filename (cwd at the model dir)
     in a plain -af pass is clean. Cleaning here -- before the music mix + the
     two-pass loudnorm -- stops loudnorm from lifting the room's reverb tails and
-    making the clip sound echoey."""
+    making the clip sound echoey. Chained ahead of RNNoise: a gentle highpass
+    (f=90) to shave HVAC/room rumble below where a human voice's fundamental
+    sits -- measured via astats on a 2026-07-24 reel shot in a glass-walled
+    office, the RNNoise-only pass still left a ~-46dB noise floor during
+    speech gaps (audibly present, well above a clean ~-55/-60dB target); the
+    highpass alone doesn't reach RNNoise's spectral floor but measurably lowers
+    it and costs nothing for adult voices (fundamentals sit well above 90Hz)."""
     cfg = os.path.join(REEL, "content.json")
     on = False
     if os.path.isfile(cfg):
@@ -145,7 +151,7 @@ def main():
     if model:
         voice_clean = os.path.join(WORK, "voice_clean.wav")
         subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error", "-i", assembled,
-                        "-af", "arnndn=m=" + os.path.basename(model), "-ar", "48000",
+                        "-af", "highpass=f=90,arnndn=m=" + os.path.basename(model), "-ar", "48000",
                         "-ac", "2", voice_clean], check=True, cwd=os.path.dirname(model))
         extra_in, voice = ["-i", voice_clean], "2:a"
         print("voice cleaned with RNNoise (voice_denoise) ->", voice_clean)
@@ -198,7 +204,23 @@ def main():
          # loudnorm's linear correction is a single static gain -- it can
          # still leave short percussive transients (SFX hits) a shade above
          # the -1 dBTP target; this hard ceiling is the safety net.
-         "alimiter=limit=0.79:level=disabled",
+         #
+         # aresample BEFORE the limiter is load-bearing, not cosmetic:
+         # loudnorm emits 192 kHz, so limiting there caps 192 kHz sample
+         # peaks while the inter-sample content between them survives --
+         # it folds back into real samples on the encoder's downsample to
+         # 48 kHz and lands ~2.8 dB ABOVE the ceiling (measured: a clean
+         # -2.0 dBTP chain output encoding to +0.8 dBTP, i.e. clipping,
+         # which qa_reel.py then fails). Limiting at the final 48 kHz rate
+         # instead leaves the ceiling intact through the AAC encode.
+         # Ceiling is 0.63 (-4.0 dBFS), not the -1 dBTP target itself: AAC
+         # overshoots whatever the limiter hands it, and the size of that
+         # overshoot scales with how hard the material sits against the
+         # ceiling. Measured on this reel -- a sparse bed overshot ~1 dB, a
+         # dense driving track ~2.5 dB, so a 0.79 ceiling shipped +0.5 dBTP
+         # (clipping) on the latter. 0.63 lands both at about -1.5 dBTP while
+         # loudness stays inside qa_reel.py's -14 +/-1 LUFS window.
+         "aresample=48000,alimiter=limit=0.63:level=disabled",
          "-c:v", "copy", *AENC, final])
     print("FINAL REEL:", final, f"({total:.2f}s)")
 

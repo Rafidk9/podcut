@@ -1,0 +1,52 @@
+# Domain-term dictionary (reels/dictionary.py). Shared across every reel --
+# these are PFEC's own fixed vocabulary, not reel-specific config.
+#
+# Format: one entry per line.
+#   TERM             a domain term, kept as reference/documentation only
+#   wrong=>right     case-insensitive correction; "wrong" may be several
+#                    words ("marn number=>MARN"), matched as whole tokens
+#
+# The correction pairs below are BEST-GUESS placeholders for likely ASR
+# mishearings -- REVIEW AGAINST REAL TRANSCRIPTS before trusting them blindly
+# on a live reel. Each guess is commented with what it's guarding against.
+
+# --- reference terms (no correction implied) ---
+PFEC
+PFEC Global
+MARN
+MARA
+subclass 500
+subclass 485
+subclass 482
+subclass 189
+subclass 190
+subclass 491
+Lakemba
+
+# --- corrections: PFEC (spoken as one word, "P-FEC" / "piffek" -- ASR may
+#     spell out the letters or hear a similar-sounding real word/phrase) ---
+p fec=>PFEC                        # NEEDS REVIEW: letters spelled out separately
+pay feck=>PFEC                     # NEEDS REVIEW: phonetic near-miss
+p fec global=>PFEC Global          # NEEDS REVIEW: letters spelled out + "Global"
+
+# --- corrections: MARN / MARA (registration acronyms, ASR may hear a
+#     similar short real word instead) ---
+marn number=>MARN                  # NEEDS REVIEW: "MARN number" redundant phrasing collapsed
+morn=>MARN                         # NEEDS REVIEW: phonetic near-miss, single word
+mara's=>MARA's                     # NEEDS REVIEW: capitalization-only fix, ASR lowercases acronyms
+
+# --- corrections: visa subclasses (ASR commonly splits "subclass" into two
+#     words even though it's said as one; numbers themselves are usually
+#     transcribed correctly, so only the "sub class"->"subclass" join needs
+#     fixing per subclass actually used across PFEC's reels) ---
+sub class 500=>subclass 500        # NEEDS REVIEW: two-word split of "subclass"
+sub class 485=>subclass 485        # NEEDS REVIEW: two-word split of "subclass"
+sub class 482=>subclass 482        # NEEDS REVIEW: two-word split of "subclass"
+sub class 189=>subclass 189        # NEEDS REVIEW: two-word split of "subclass"
+sub class 190=>subclass 190        # NEEDS REVIEW: two-word split of "subclass"
+sub class 491=>subclass 491        # NEEDS REVIEW: two-word split of "subclass"
+
+# --- corrections: Lakemba (Sydney suburb, less common word -- ASR may hear
+#     a phonetically similar real word/place instead) ---
+la kemba=>Lakemba                  # NEEDS REVIEW: split into two words
+lakemper=>Lakemba                  # NEEDS REVIEW: phonetic near-miss
