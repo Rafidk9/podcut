@@ -49,6 +49,30 @@ Already implemented in `build_captions.py` (soft low-opacity brand-colour
 orbs + twinkle stars + a handle pill, sitting behind the captions), off by
 default. Offer it when a reel's footage has a lot of empty margin.
 
+## Motion-style library is available (opener / sting / B-roll)
+
+20 PFEC-branded motion templates (split-flap, kinetic type, neon, particles,
+isometric, glassmorphism, retro VHS, …) in `assets/motion-styles/`, rendered
+by `build_motion.py` from `content.json`'s `"motion"` list into the
+opener/sting/B-roll slots. Offer one when a reel wants a cold open, a closing
+sting, or a cutaway that a HyperFrames stinger would otherwise be hand-built
+for — but pick the style to fit the reel's tone (split-flap for travel/offices,
+kinetic type for a hook, neon for live events; keep playful styles like
+pixel-art/comic-book off compliance-toned reels). Text comes from this reel's
+content; never ship a template's demo numbers. Docs: `reels/README.md`.
+
+For a cold open or teaser that should flow as **one continuous take** (each
+beat grows out of the last, camera push/settle, real motion blur), use
+`tools/longtake/` (PFEC's own and commercial-safe; skill `pfec-longtake`) and
+wire it in with `"take"`. Never use the onetake skill for commercial reels.
+It is licensed for the non-profit wing only.
+
+For a word-synced animated explainer over a whole talking-head reel, run one
+full-frame longtake with the presenter in a window. At each take change the
+window closes into a graphic, which hides the jump cut. The matte comes from a
+mask-mode copy of the same comp. Reference:
+`reels/2026-10-28_tushar-explainer/` (`take/comp.html`, `composite_take.py`).
+
 ## End-of-reel ritual: propose new learnings for confirmation
 
 When a reel edit is finished, before considering the task done: review what

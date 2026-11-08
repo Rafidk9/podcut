@@ -5,10 +5,10 @@ from the center to fully cover the frame, holds briefly, then scales out from
 the edges to reveal -- recolored to brand Dark Blue so it reads as a designed
 transition, not a generic wipe. Overlaid centered on each B-roll cut boundary
 to mask the hard cut with a quick, on-brand flourish (~0.5s total)."""
-import os, shutil, subprocess, json
+import os, shutil, json
 
 from reel_paths import WORK, HF_QUALITY, HF_FPS, hyperframes_cli  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
+from render_progress import hf_render  # noqa: E402 -- render with a progress bar
 DUR = 0.5   # total transition length; peak (full coverage) sits at DUR/2
 
 _HTML = """<!doctype html>
@@ -111,12 +111,7 @@ def _render(html, dur, proj_name, out_name):
     json.dump({"id": proj_name, "name": "brand wipe transition"}, open(os.path.join(proj, "meta.json"), "w"))
 
     out = os.path.join(WORK, out_name)
-    cli = hyperframes_cli()
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
-    subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(out),
-                    "-f", str(HF_FPS), "--format", "webm", "-q", HF_QUALITY, "--quiet"],
-                   cwd=proj, check=True, env=env)
+    hf_render(hyperframes_cli(), proj, out, HF_FPS, HF_QUALITY, fmt="webm")
     print("rendered", out)
 
 

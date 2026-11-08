@@ -1,0 +1,22 @@
+{
+  "_comment": "Rahul Dhanda (Director & RMA, MARN 2418640) -- 'Your occupation not on the NSW skills list? Check carefully: NSW publishes ANZSCO unit groups, not individual occupation codes.' ONE 58.3s take (IMG_0060.MOV -> input/raw.mov, iPhone 4K60 HLG portrait, default tone-map path). Seated at a desk, plain white wall -- no backdrop text to judge mirroring; no flip.",
+  "_cut_note": "Hinglish, captioned in English (make_en_transcript.py). Every sentence-level pause is cut; mid-sentence gaps under ~0.6s are kept so phrases stay whole. 'including.' (51.70-52.12, a trailing slip) is dropped. Segments 0-15 below; fx.py post-processes them (behind-subject plates, scribbles, focus zooms, parallax, velocity ramps).",
+  "clips": [
+    { "name": "raw", "ext": ".mov", "keep": [2.74, 5.36] },
+    { "name": "raw", "ext": ".mov", "keep": [5.88, 7.52] },
+    { "name": "raw", "ext": ".mov", "keep": [7.82, 8.96] },
+    { "name": "raw", "ext": ".mov", "keep": [9.24, 13.22] },
+    { "name": "raw", "ext": ".mov", "keep": [14.04, 15.84] },
+    { "name": "raw", "ext": ".mov", "keep": [16.30, 17.28] },
+    { "name": "raw", "ext": ".mov", "keep": [17.54, 21.12] },
+    { "name": "raw", "ext": ".mov", "keep": [21.46, 22.98] },
+    { "name": "raw", "ext": ".mov", "keep": [23.22, 24.64] },
+    { "name": "raw", "ext": ".mov", "keep": [25.44, 27.96] },
+    { "name": "raw", "ext": ".mov", "keep": [28.72, 31.76] },
+    { "name": "raw", "ext": ".mov", "keep": [32.14, 38.62] },
+    { "name": "raw", "ext": ".mov", "keep": [39.30, 43.66] },
+    { "name": "raw", "ext": ".mov", "keep": [44.12, 51.66] },
+    { "name": "raw", "ext": ".mov", "keep": [52.32, 54.48] },
+    { "name": "raw", "ext": ".mov", "keep": [54.88, 57.10] }
+  ]
+}

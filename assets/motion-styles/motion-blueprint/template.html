@@ -1,0 +1,110 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blueprint motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'GEAR ASSEMBLY', DEFAULT_SUB = 'DWG NO. 018 · SCALE 1:2';
+const DEFAULT_COLORS = { bg: '#1453a8', c1: '#ffffff', c2: '#9ec5ff', c3: '#ffd84a' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// technical drawing: grid, gears drawn on with dashed construction lines, then meshing rotation + dimensions
+function gearPath(cx, cy, r, teeth, rot) {
+  ctx.beginPath(); const td = r * .16;
+  for (let i = 0; i < teeth; i++) {
+    const a0 = rot + i / teeth * TAU, a1 = a0 + TAU / teeth * .25, a2 = a0 + TAU / teeth * .5, a3 = a0 + TAU / teeth * .75;
+    const pts = [[a0, r - td], [a1, r + td * .2], [a2, r + td * .2], [a3, r - td]];
+    pts.forEach(([a, rr], k) => { const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr; (i === 0 && k === 0) ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+  }
+  ctx.closePath();
+}
+function drawOn(len, p) { ctx.setLineDash([len * p, len]); }
+function draw(t) {
+  bg(COL.bg);
+  // grid
+  if (!ALPHA) { const s = U / 24; ctx.lineWidth = 1; for (let x = 0; x < W; x += s) { ctx.strokeStyle = Math.round(x / s) % 4 ? 'rgba(255,255,255,.07)' : 'rgba(255,255,255,.16)'; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); } for (let y = 0; y < H; y += s) { ctx.strokeStyle = Math.round(y / s) % 4 ? 'rgba(255,255,255,.07)' : 'rgba(255,255,255,.16)'; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); } }
+  const G = [ { x: CX - U * .12, y: CY - U * .06, r: U * .25, n: 18, dir: 1, st: .1 }, { x: 0, y: 0, r: U * .15, n: 11, dir: -1, st: .6 }, { x: 0, y: 0, r: U * .11, n: 8, dir: 1, st: 1.0 } ];
+  G[1].x = G[0].x + (G[0].r + G[1].r) * Math.cos(.55) * 1.02; G[1].y = G[0].y + (G[0].r + G[1].r) * Math.sin(.55) * 1.02;
+  G[2].x = G[0].x + (G[0].r + G[2].r) * Math.cos(-1.9) * 1.02; G[2].y = G[0].y + (G[0].r + G[2].r) * Math.sin(-1.9) * 1.02;
+  const spin = ease.in(prog(t, 1.8, 2.6)) * (t - 1.8) * .6;
+  ctx.lineCap = ctx.lineJoin = 'round';
+  G.forEach((g, i) => {
+    const p = ease.inOut(prog(t, g.st, g.st + .9)), rot = spin * g.dir * (G[0].r / g.r) + (i === 1 ? Math.PI / g.n : 0);
+    // construction circle (dashed)
+    ctx.setLineDash([U * .01, U * .008]); ctx.strokeStyle = hexA(COL.c2, .6 * p); ctx.lineWidth = Math.max(1, U * .0015);
+    ctx.beginPath(); ctx.arc(g.x, g.y, g.r * 1.12, 0, TAU * p); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(g.x - g.r * 1.3 * p, g.y); ctx.lineTo(g.x + g.r * 1.3 * p, g.y); ctx.moveTo(g.x, g.y - g.r * 1.3 * p); ctx.lineTo(g.x, g.y + g.r * 1.3 * p); ctx.stroke();
+    // gear outline drawn on
+    const per = g.r * TAU * 1.6;
+    ctx.strokeStyle = COL.c1; ctx.lineWidth = U * .004; drawOn(per, p); gearPath(g.x, g.y, g.r, g.n, rot); ctx.stroke();
+    ctx.setLineDash([g.r * 2 * p, g.r * 4]); ctx.beginPath(); ctx.arc(g.x, g.y, g.r * .55, rot, rot + TAU); ctx.stroke();
+    ctx.setLineDash([]); ctx.beginPath(); ctx.arc(g.x, g.y, g.r * .14 * p, 0, TAU); ctx.stroke();
+    for (let s = 0; s < 4; s++) { const a = rot + s * Math.PI / 2; ctx.globalAlpha = p; ctx.beginPath(); ctx.arc(g.x + Math.cos(a) * g.r * .34, g.y + Math.sin(a) * g.r * .34, g.r * .08, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1; }
+    // dimension line
+    const dp = ease.out(prog(t, g.st + .9, g.st + 1.3)); if (dp > 0) {
+      const y = g.y + g.r * 1.32 + U * .02 * i; ctx.strokeStyle = COL.c3; ctx.lineWidth = Math.max(1, U * .002);
+      ctx.beginPath(); ctx.moveTo(g.x - g.r * dp, y); ctx.lineTo(g.x + g.r * dp, y); ctx.stroke();
+      for (const sx of [-1, 1]) { ctx.beginPath(); ctx.moveTo(g.x + sx * g.r * dp, y - U * .01); ctx.lineTo(g.x + sx * g.r * dp, y + U * .01); ctx.stroke(); }
+      font(600, U * .022, MONO); ctx.fillStyle = COL.c3; ctx.textAlign = 'center'; ctx.globalAlpha = dp; ctx.fillText(`Ø${Math.round(g.r * 2 / U * 100)} · Z=${g.n}`, g.x, y - U * .012); ctx.globalAlpha = 1;
+    }
+  });
+  ctx.setLineDash([]);
+  // title block
+  const tb = ease.out(prog(t, 2.2, 2.8)); if (tb > 0 && (TEXT || SUB)) {
+    const bw2 = Math.min(W * .84, U * .9), bh2 = U * .14, bx = CX - bw2 / 2, by = Math.min(H - bh2 - U * .06, CY + U * .5);
+    ctx.globalAlpha = tb; ctx.strokeStyle = COL.c1; ctx.lineWidth = U * .003; ctx.strokeRect(bx, by, bw2, bh2); ctx.beginPath(); ctx.moveTo(bx, by + bh2 * .6); ctx.lineTo(bx + bw2, by + bh2 * .6); ctx.moveTo(bx + bw2 * .7, by + bh2 * .6); ctx.lineTo(bx + bw2 * .7, by + bh2); ctx.stroke();
+    ctx.fillStyle = COL.c1; ctx.textAlign = 'left'; fitFont(TEXT, 700, U * .045, bw2 * .9, MONO); ctx.fillText(TEXT, bx + U * .02, by + bh2 * .45);
+    font(400, U * .022, MONO); ctx.fillText(SUB, bx + U * .02, by + bh2 * .86); ctx.textAlign = 'right'; ctx.fillText('REV A', bx + bw2 - U * .02, by + bh2 * .86); ctx.globalAlpha = 1;
+  }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

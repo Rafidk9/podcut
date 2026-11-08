@@ -1,0 +1,12 @@
+{
+  "_comment": "No B-roll: one dense 11.6s take where every phrase carries information, so there is no connecting/filler span to cover. Two extra wipes on the two topic turns; the other three cuts (0.99 / 2.48 / 7.68) stay as hard jump cuts with a framing change, which IS the fast-paced style. 5.14 also hides the '15 OCT' plate's exit (it holds to the end of seg 2).",
+  "n_segments": 6,
+  "broll_dur": 1.3,
+  "plan": {},
+  "boundaries": {},
+  "broll_durs": {},
+  "extra_wipes": [
+    { "at": 5.14, "style": "speed" },
+    { "at": 9.54, "style": "flash" }
+  ]
+}

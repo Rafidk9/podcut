@@ -1,0 +1,104 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Split Flap motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'MAKE|IT|MOVE', DEFAULT_SUB = 'GATE 1 · ON TIME';
+const DEFAULT_COLORS = { bg: '#0d0d0f', c1: '#f5f1e6', c2: '#1d1d21', c3: '#ffb000' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// airport departures board: every cell flips through characters and lands on the message
+const CH = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const rows = TEXT.toUpperCase().split('|');
+const NC = Math.max(6, ...rows.map(r => r.length + 2));
+const cellW = Math.min(W * .86 / NC, U * .14), cellH = cellW * 1.4, gap = cellW * .1;
+const gridW = NC * cellW + (NC - 1) * gap;
+const targets = rows.map(r => { const pad = Math.floor((NC - r.length) / 2); return (' '.repeat(pad) + r).padEnd(NC, ' '); });
+function cellChar(r, c, t) {
+  const tgt = targets[r][c], ti = Math.max(0, CH.indexOf(tgt));
+  const start = .3 + r * .35 + c * .06, flips = 8 + ((r * 7 + c * 13) % 9), rate = .055;
+  const k = Math.floor((t - start) / rate);
+  if (t < start) return [CH[(r * 5 + c * 3) % CH.length], 0];
+  if (k >= flips) return [tgt, 0];
+  return [CH[(ti - flips + k + CH.length * 4) % CH.length], ((t - start) % rate) / rate];
+}
+function half(x, y, ch, upper, sc) {
+  ctx.save(); ctx.beginPath(); ctx.rect(x, upper ? y : y + cellH / 2, cellW, cellH / 2); ctx.clip();
+  if (sc !== 1) { const pivot = y + cellH / 2; ctx.translate(0, pivot); ctx.scale(1, sc); ctx.translate(0, -pivot); }
+  rrect(x, y, cellW, cellH, cellW * .1); ctx.fillStyle = upper ? '#26262b' : COL.c2; ctx.fill();
+  font(800, cellH * .62, '"Helvetica Neue",Arial,' + SANS); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = COL.c1; ctx.fillText(ch, x + cellW / 2, y + cellH / 2 + cellH * .03);
+  ctx.restore();
+}
+function draw(t) {
+  bg(COL.bg);
+  const x0 = CX - gridW / 2, totalH = rows.length * cellH + (rows.length - 1) * gap * 3, y0 = CY - totalH / 2;
+  font(700, U * .028, MONO); ctx.textAlign = 'center'; ctx.fillStyle = COL.c3; ctx.fillText('D E P A R T U R E S', CX, y0 - U * .07);
+  ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fillRect(x0 - gap * 2, y0 - gap * 2, gridW + gap * 4, totalH + gap * 4);
+  for (let r = 0; r < rows.length; r++) for (let c = 0; c < NC; c++) {
+    const x = x0 + c * (cellW + gap), y = y0 + r * (cellH + gap * 3);
+    const [ch, f] = cellChar(r, c, t);
+    const nxt = f > 0 ? CH[(CH.indexOf(ch) + 1) % CH.length] : ch;
+    half(x, y, f > 0 ? nxt : ch, true, 1);           // new top behind
+    half(x, y, ch, false, 1);                         // old bottom
+    if (f > 0) {
+      if (f < .5) half(x, y, ch, true, 1 - f * 2);       // old top folding down
+      else half(x, y, nxt, false, (f - .5) * 2);         // new bottom unfolding
+    }
+    ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x, y + cellH / 2 - 1, cellW, 2);
+  }
+  if (SUB) { font(600, U * .026, MONO); ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(245,241,230,.5)'; ctx.fillText(SUB.toUpperCase(), CX, y0 + totalH + U * .09); }
+  // status light
+  ctx.fillStyle = Math.floor(t * 2) % 2 ? COL.c3 : hexA(COL.c3, .3); ctx.beginPath(); ctx.arc(x0 + gridW, y0 - U * .078, U * .008, 0, TAU); ctx.fill();
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

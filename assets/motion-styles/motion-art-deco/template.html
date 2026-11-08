@@ -1,0 +1,102 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Art Deco motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'DECO', DEFAULT_SUB = 'EST. 1925';
+const DEFAULT_COLORS = { bg: '#0b0a08', c1: '#d9b25f', c2: '#f6e3a8', c3: '#8a6a2a' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// gold-leaf deco: a centre line drops, nested arches and sunburst rays draw outward, letters reveal with a sheen
+function gold(x0, y0, x1, y1, shift) { const g = ctx.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, COL.c3); g.addColorStop(clamp(.35 + shift * .3), COL.c1); g.addColorStop(clamp(.5 + shift * .3), COL.c2); g.addColorStop(clamp(.65 + shift * .3), COL.c1); g.addColorStop(1, COL.c3); return g; }
+function draw(t) {
+  bg(COL.bg);
+  const sh = Math.sin(t / DUR * TAU), lw = Math.max(1.5, U * .0035);
+  const R = Math.min(W * .42, U * .42), base = CY + R * .55;
+  ctx.strokeStyle = gold(CX - R, base - R, CX + R, base, sh); ctx.lineWidth = lw; ctx.lineCap = 'butt';
+  // 1. centre line drops
+  const p1 = ease.inOut(prog(t, 0, .7));
+  ctx.beginPath(); ctx.moveTo(CX, H * .04); ctx.lineTo(CX, lerp(H * .04, base - R * 1.12, p1)); ctx.stroke();
+  // 2. nested arches
+  for (let k = 0; k < 5; k++) {
+    const p = ease.inOut(prog(t, .6 + k * .12, 1.4 + k * .12)); if (p <= 0) continue;
+    const r = R * (1 - k * .16);
+    ctx.beginPath(); ctx.moveTo(CX - r, base); ctx.lineTo(CX - r, base - r * .35);
+    ctx.arc(CX, base - r * .35, r, Math.PI, Math.PI + Math.PI * p * .5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(CX + r, base); ctx.lineTo(CX + r, base - r * .35);
+    ctx.arc(CX, base - r * .35, r, 0, -Math.PI * p * .5, true); ctx.stroke();
+  }
+  // 3. sunburst rays inside the inner arch
+  const p3 = ease.out(prog(t, 1.5, 2.4)), rin = R * .2, rout = R * .34;
+  for (let k = 0; k <= 16; k++) { const a = Math.PI + k / 16 * Math.PI, pr = clamp(p3 * 17 - k * .5); if (pr <= 0) continue;
+    ctx.beginPath(); ctx.moveTo(CX + Math.cos(a) * rin, base - R * .2 + Math.sin(a) * rin); ctx.lineTo(CX + Math.cos(a) * lerp(rin, rout, pr), base - R * .2 + Math.sin(a) * lerp(rin, rout, pr)); ctx.stroke(); }
+  // stepped base + side fans
+  const p4 = ease.out(prog(t, 1.2, 2));
+  for (let k = 0; k < 3; k++) { const w = R * (1.25 + k * .14) * p4; ctx.beginPath(); ctx.moveTo(CX - w, base + k * U * .025); ctx.lineTo(CX + w, base + k * U * .025); ctx.stroke(); }
+  // diamond finial
+  const p5 = ease.back(prog(t, 2.1, 2.5)); if (p5 > 0) { const y = base - R * 1.12, d = U * .025 * p5; ctx.fillStyle = gold(CX - d, y - d, CX + d, y + d, sh); ctx.beginPath(); ctx.moveTo(CX, y - d * 1.6); ctx.lineTo(CX + d, y); ctx.lineTo(CX, y + d * 1.6); ctx.lineTo(CX - d, y); ctx.fill(); }
+  // 4. letters reveal one by one, wide-tracked
+  if (TEXT) {
+    const letters = [...TEXT.toUpperCase()], s = Math.min(R * .3, (R * 1.5) / letters.length); font(300, s, '"Josefin Sans","Futura","Didot",' + SERIF);
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const sp = s * 1.15, x0 = CX - (letters.length - 1) * sp / 2, ty = base - R * .62;
+    letters.forEach((c, i) => { const p = ease.out(prog(t, 2.3 + i * .12, 2.8 + i * .12)); if (p <= 0) return; ctx.globalAlpha = p; ctx.fillStyle = gold(x0 - sp, ty - s, x0 + letters.length * sp, ty + s, sh * 1.5); ctx.fillText(c, x0 + i * sp, ty + (1 - p) * s * .3); });
+    ctx.globalAlpha = 1;
+  }
+  if (SUB) { const p = ease.out(prog(t, 3, 3.6)); font(400, U * .024, SERIF); ctx.textAlign = 'center'; ctx.globalAlpha = p; ctx.fillStyle = COL.c1; ctx.fillText(SUB.toUpperCase().split('').join(' '), CX, base + U * .11); ctx.globalAlpha = 1; }
+  // frame corners
+  const pc = ease.out(prog(t, .2, 1)), m = U * .05, cl = U * .12 * pc;
+  ctx.strokeStyle = COL.c1; for (const [x, y, sx, sy] of [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]]) { ctx.beginPath(); ctx.moveTo(x, y + cl * sy); ctx.lineTo(x, y); ctx.lineTo(x + cl * sx, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x + U * .015 * sx, y + cl * .6 * sy); ctx.lineTo(x + U * .015 * sx, y + U * .015 * sy); ctx.lineTo(x + cl * .6 * sx, y + U * .015 * sy); ctx.stroke(); }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

@@ -1,0 +1,11 @@
+{
+ "_comment": "Tushar Chopra (RMA, MARN 2418420) -- SA Skills Commission trade-course rule change. 8 iPhone 4K HLG takes from Drive; IMG_9145/9146 are bloopers (dropped), count-ins trimmed.",
+ "clips": [
+  {"name": "IMG_9144", "ext": ".MOV", "keep": [2.14, 6.52]},
+  {"name": "IMG_9147", "ext": ".MOV", "keep": [0.62, 4.26]},
+  {"name": "IMG_9152", "ext": ".MOV", "keep": [1.90, 6.32]},
+  {"name": "IMG_9153", "ext": ".MOV", "keep": [1.74, 5.36]},
+  {"name": "IMG_9157", "ext": ".MOV", "keep": [1.90, 7.92]},
+  {"name": "IMG_9158", "ext": ".MOV", "keep": [1.58, 6.52]}
+ ]
+}

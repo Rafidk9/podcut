@@ -1,0 +1,101 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clay 3D motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = '', DEFAULT_SUB = '';
+const DEFAULT_COLORS = { bg: '#f6efe6', c1: '#ff8fb1', c2: '#6aa8ff', c3: '#ffd25a' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// soft clay toys: sphere, rounded cube, ring; bouncy squash-and-stretch with contact shadows
+function shadow(x, y, r, k) { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(90,60,40,${.28 * k})`); g.addColorStop(1, 'rgba(90,60,40,0)'); ctx.fillStyle = g; ctx.save(); ctx.translate(x, y); ctx.scale(1, .28); ctx.translate(-x, -y); ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.restore(); }
+function clayGrad(x, y, r, c) { const [R, G, B] = hexRGB(c); const g = ctx.createRadialGradient(x - r * .35, y - r * .4, r * .05, x, y, r * 1.05);
+  g.addColorStop(0, `rgb(${Math.min(255, R + 70)},${Math.min(255, G + 70)},${Math.min(255, B + 70)})`); g.addColorStop(.45, c); g.addColorStop(1, `rgb(${R * .62 | 0},${G * .62 | 0},${B * .62 | 0})`); return g; }
+function bounce(t, period, ph) { const u = ((t / period + ph) % 1 + 1) % 1; const h = 4 * u * (1 - u); const sq = u < .08 ? 1 - u / .08 : u > .92 ? (u - .92) / .08 : 0; return [h, sq]; }
+function draw(t) {
+  bg(COL.bg);
+  if (!ALPHA) { const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, U); g.addColorStop(0, '#fffaf3'); g.addColorStop(1, COL.bg); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  const floor = CY + U * .2, r = U * .13, intro = ease.back(prog(t, 0, .6));
+  const items = [
+    { k: 'sphere', x: CX - U * .28, c: COL.c1, per: DUR / 3, ph: 0 },
+    { k: 'cube', x: CX + U * .02, c: COL.c2, per: DUR / 4, ph: .35 },
+    { k: 'ring', x: CX + U * .3, c: COL.c3, per: DUR / 3, ph: .65 }];
+  for (const it of items) {
+    const [h, sq] = bounce(t, it.per, it.ph);
+    const lift = h * U * .22 * intro, sy = 1 - sq * .22 + h * .06, sx = 1 + sq * .2 - h * .03;
+    shadow(it.x, floor + r * .95, r * (1.2 - h * .45), (1 - h * .6) * intro);
+    const y = floor - lift;
+    ctx.save(); ctx.translate(it.x, y + r); ctx.scale(sx * intro, sy * intro); ctx.translate(0, -r);
+    if (it.k === 'sphere') { ctx.fillStyle = clayGrad(0, 0, r, it.c); ctx.beginPath(); ctx.arc(0, 0, r, 0, TAU); ctx.fill(); }
+    if (it.k === 'cube') {
+      ctx.rotate(Math.sin(t / it.per * TAU) * .18 + (t / DUR) * TAU * .25);
+      const s = r * 1.7; const [R, G, B] = hexRGB(it.c);
+      rrect(-s / 2, -s / 2, s, s, s * .22); const g = ctx.createLinearGradient(-s / 2, -s / 2, s / 2, s / 2);
+      g.addColorStop(0, `rgb(${Math.min(255, R + 60)},${Math.min(255, G + 60)},${Math.min(255, B + 60)})`); g.addColorStop(.5, it.c); g.addColorStop(1, `rgb(${R * .6 | 0},${G * .6 | 0},${B * .6 | 0})`); ctx.fillStyle = g; ctx.fill();
+      rrect(-s / 2 + s * .1, -s / 2 + s * .08, s * .5, s * .18, s * .09); ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.fill();
+    }
+    if (it.k === 'ring') {
+      ctx.rotate(-.35 + Math.sin(t / it.per * TAU) * .25);
+      ctx.beginPath(); ctx.arc(0, 0, r * 1.05, 0, TAU); ctx.arc(0, 0, r * .45, 0, TAU, true);
+      ctx.fillStyle = clayGrad(0, 0, r * 1.05, it.c); ctx.fill('evenodd');
+      ctx.beginPath(); ctx.arc(0, 0, r * .46, 0, TAU); ctx.strokeStyle = 'rgba(120,80,0,.25)'; ctx.lineWidth = r * .08; ctx.stroke();
+    }
+    // soft spec highlight (clay = broad, low)
+    ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(-r * .38, -r * .45, r * .22, r * .12, -.6, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  if (TEXT) { fitFont(TEXT, 900, U * .11, W * .85); ctx.textAlign = 'center'; ctx.fillStyle = '#3a2a22'; const p = ease.back(prog(t, .5, 1.1)); ctx.save(); ctx.translate(CX, floor + U * .28); ctx.scale(p, p); ctx.fillText(TEXT, 0, 0); ctx.restore(); }
+  if (SUB) { font(600, U * .032); ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(58,42,34,.6)'; ctx.fillText(SUB, CX, floor + U * .35); }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

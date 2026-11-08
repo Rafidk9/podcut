@@ -1,0 +1,14 @@
+{
+  "_comment": "Rahul Dhanda (Director & RMA, MARN 2418640) -- '190 invitation round is happening now' (21 Oct 2026). ONE 20.2s take (IMG_0082.MOV -> input/raw.mov, iPhone 4K120 HLG portrait, default tone-map path). Seated at a desk, plain white wall -- no backdrop text; no flip.",
+  "_cut_note": "Every sentence pause cut; 'Start.' (0.08-0.32) and trailing 'Yeah.' (19.76) dropped. ASR heard 'one ninety' (subclass 190, NOT 189 like the 2026-10-15 take). Cuts sit inside measured word gaps. fx.py post-processes segments 0-7.",
+  "clips": [
+    { "name": "raw", "ext": ".mov", "keep": [0.90, 3.56] },
+    { "name": "raw", "ext": ".mov", "keep": [3.98, 5.40] },
+    { "name": "raw", "ext": ".mov", "keep": [5.46, 7.72] },
+    { "name": "raw", "ext": ".mov", "keep": [8.06, 9.56] },
+    { "name": "raw", "ext": ".mov", "keep": [9.90, 11.50] },
+    { "name": "raw", "ext": ".mov", "keep": [11.62, 13.44] },
+    { "name": "raw", "ext": ".mov", "keep": [13.84, 16.50] },
+    { "name": "raw", "ext": ".mov", "keep": [16.76, 19.40] }
+  ]
+}

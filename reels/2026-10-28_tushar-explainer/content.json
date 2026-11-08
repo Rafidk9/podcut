@@ -1,0 +1,138 @@
+{
+  "_comment": "Tushar Chopra (RMA, MARN 2418420) -- South Australian Skills Commission drops the approved-apprenticeship-agreement rule for schools teaching trade courses. EXPLAINER FORMAT: one continuous pfec-longtake comp (take/comp.html, full 1080x1920) carries a word-synced animated explainer; Tushar shows through a moving window whose edge is a matte rendered from the same comp (take/ mask mode). At every take change the window closes so the explainer hides the jump cut, then reopens on the next take. onetake NOT used (commercial). composite_take.py bakes it into work/segments after build_base.",
+  "asr_fix": {
+    "pifc": "PFEC",
+    "commission.com": "Commission"
+  },
+  "gold": [
+    "BIG",
+    "NEWS",
+    "INTERNATIONAL",
+    "STUDENTS",
+    "TRADE",
+    "COURSES",
+    "SOUTH",
+    "AUSTRALIA",
+    "SKILLS",
+    "COMMISSION",
+    "MAJOR",
+    "CHANGE",
+    "PREVIOUSLY",
+    "RULE",
+    "SCHOOLS",
+    "APPROVED",
+    "APPRENTICESHIP",
+    "AGREEMENT",
+    "NO",
+    "LONGER",
+    "EXISTING",
+    "NEW",
+    "ENROLLMENTS",
+    "PFEC",
+    "GLOBAL"
+  ],
+  "caption_highlight": true,
+  "cap_top": "70%",
+  "name": {
+    "text": "Tushar Chopra",
+    "role": "Registered Migration Agent",
+    "start": 0.6,
+    "end": 3.6
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418420"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "badges": [],
+  "highlights": [],
+  "documents": [],
+  "hero_words": [],
+  "zoom": {
+    "amount": 0.0,
+    "segments": [
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold"
+    ]
+  },
+  "voice_denoise": true,
+  "music": {
+    "track": "digital-lemonade-kevin-macleod.mp3",
+    "volume": 0.022,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "limiter": {
+    "limit": 0.82
+  },
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  },
+  "sfx": {
+    "cues": [
+      {
+        "file": "pop.mp3",
+        "at": 0.16,
+        "volume": 0.07
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 4.05,
+        "volume": 0.07
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 7.39,
+        "volume": 0.1
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 12.15,
+        "volume": 0.07
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 14.22,
+        "volume": 0.1
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 21.85,
+        "volume": 0.07
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 25.78,
+        "volume": 0.08
+      }
+    ]
+  },
+  "_sfx_note": "7 cues: hook pop, whoosh on three of the five window closes (4.38/12.45/22.12 cuts), whoosh-impact on the MAJOR CHANGE slam and the APPROVED stamp, chime on the PFEC logo. Kept low for true peak (see memory: SFX density).",
+  "thumbnail": {
+    "at": "auto",
+    "kicker": "🛠️ SOUTH AUSTRALIA · TRADE COURSES",
+    "headline": "A **MAJOR CHANGE** FOR TRADE STUDENTS",
+    "sticker": "BIG NEWS"
+  },
+  "caption_txt": {
+    "title": "𝗕𝗶𝗴 𝗡𝗲𝘄𝘀 𝗳𝗼𝗿 𝗧𝗿𝗮𝗱𝗲 𝗖𝗼𝘂𝗿𝘀𝗲 𝗦𝘁𝘂𝗱𝗲𝗻𝘁𝘀 𝗶𝗻 𝗦𝗼𝘂𝘁𝗵 𝗔𝘂𝘀𝘁𝗿𝗮𝗹𝗶𝗮! 🛠️🇦🇺",
+    "body": [
+      "The South Australian Skills Commission has announced a major change for international students planning to study trade courses in South Australia. Previously, schools that could teach trade courses had a rule: certain trade courses needed an approved apprenticeship agreement.",
+      "This no longer applies to schools offering trade courses, for both existing and new enrolments. If you're planning on studying a trade course in South Australia, talk to our Registered Migration Agent Tushar Chopra (MARN 2418420) at PFEC Global."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #SouthAustralia #TradeCourses #InternationalStudents #StudyInAustralia #Apprenticeship #Adelaide #VET #MigrationAgent",
+    "music_credit": "Music: \"Digital Lemonade\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  }
+}

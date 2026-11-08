@@ -1,0 +1,12 @@
+{
+  "_comment": "Rahul Dhanda (Director & RMA, MARN 2418640) -- 189 invitation round happening now (15 Oct 2026). ONE 14.0s take (IMG_0024.MOV, iPhone 4K60 HLG portrait -> default tone-map path, no sdr flag). Backdrop PFEC logo reads forwards, so no flip.",
+  "_cut_note": "Fast jump-cut edit: every pause cut, 'Hi everyone.' (0.14-0.68) DROPPED so the reel opens on 'Finally, 189 ...'. ASR heard '189' as 'one eight nine' -- merged into one '189' token directly in work/raw.transcript.json (1.42-1.82). Cut points sit inside measured word gaps: 3.42/3.86 (3.38-3.92), 5.64/5.76 (5.58-5.82), 7.12/7.48 (7.02-7.56), 9.90/10.24 (9.82-10.30), 11.52/11.58 (11.42-11.68).",
+  "clips": [
+    { "name": "raw", "ext": ".mov", "keep": [0.90, 3.42] },
+    { "name": "raw", "ext": ".mov", "keep": [3.86, 5.64] },
+    { "name": "raw", "ext": ".mov", "keep": [5.76, 7.12] },
+    { "name": "raw", "ext": ".mov", "keep": [7.48, 9.90] },
+    { "name": "raw", "ext": ".mov", "keep": [10.24, 11.52] },
+    { "name": "raw", "ext": ".mov", "keep": [11.58, 13.02] }
+  ]
+}

@@ -196,7 +196,7 @@ def check_caption_text():
             "intentionally omitted (caption_txt.disclaimer false)")
     # risky claim scan -- skip the verbatim disclaimer block (it legitimately
     # contains 'does not assure ... outcome'); scan only the copy above it.
-    body = text.split("▎ Disclaimer")[0]
+    body = re.split(r"(?:▎ )?Disclaimer:", text)[0]
     risky = sorted(set(re.findall(r"(?i)\b(guarantee[ds]?|guaranteeing|100\s*%|no[- ]risk)\b", body)))
     add(WARN if risky else OK, "Overpromising scan",
         "review: " + ", ".join(risky) if risky else "no guarantee-style claims in copy")

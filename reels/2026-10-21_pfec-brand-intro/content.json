@@ -1,0 +1,19 @@
+{
+  "_note": "Footage-free brand intro built with tools/longtake (brand_take/) + build_reel.py -- not the build_base/captions pipeline. Copy is from the PFEC brand guidelines only.",
+  "caption_txt": {
+    "title": "Meet PFEC Global — Education | Migration 🌏✨",
+    "body": [
+      "Thinking about your future in Australia? At PFEC Global, we guide international students every step of the way — from choosing the right course and university, to enrolment support and career planning.",
+      "Our Registered Migration Agents provide honest, ethical advice on visa and PR pathways, and our community events — Welcome Day, Sports Tournament and the Education & Migration Expo — make sure you never navigate it alone. Your goals, achieved together."
+    ],
+    "contact": "Book a FREE consultation with PFEC Global at any of our 7 offices across Australia",
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #StudyInAustralia #InternationalStudents #EducationAgent #MigrationAgent #AustraliaPR #StudentVisa #Melbourne #Sydney #Adelaide #Perth #Brisbane #Parramatta #Lakemba",
+    "music_credit": "Music: \"Digital Lemonade\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)",
+    "offices": true,
+    "disclaimer": true
+  },
+  "thumbnail": {
+    "style": "classic"
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Consultation end card (7 offices)</title>
+<!--
+  Source for assets/endcards/consultation-card.mp4 (3.0 s, 1080x1920), rebuilt
+  2026-10-21 to add Parramatta (house rule: every end card lists all 7 offices,
+  Parramatta last). Look matches the original card: same background
+  (background.png = frame 0 of the original), colour logo, navy CTA bar, cyan
+  city pills, red outline pin/phone icons, Poppins. Motion mirrors it too:
+  logo + CTA in first, office rows slide in one by one, settled by ~1.4 s, hold.
+
+  Rebuild: python ../../../../tools/longtake/render.py comp.html --out ../../consultation-card.mp4 --no-sfx
+  (from this folder, engine venv python). The previous 6-office card is kept as
+  ../../consultation-card.6-offices.bak.mp4.
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 500; src: url(fonts/Poppins-Medium.ttf); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(fonts/Poppins-SemiBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(fonts/Poppins-Bold.ttf); }
+  html, body { margin: 0; padding: 0; }
+  body.preview { background: #1b1b1f; }
+  #stage { position: relative; overflow: hidden; font-family: Poppins, sans-serif; color: #100796; }
+  #bg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  #world { position: absolute; left: 0; top: 0; }
+  .lt { position: absolute; left: 0; top: 0; }
+  #lt-scrub { width: 100%; margin-top: 8px; }
+  #logo { width: 460px; }
+  #cta { width: 958px; height: 116px; border-radius: 26px; background: #100796; color: #fff;
+         font-weight: 700; font-size: 58px; letter-spacing: -0.5px;
+         display: flex; align-items: center; justify-content: center; }
+  .off { width: 450px; }
+  .pill { display: inline-block; background: #00B3E3; color: #100796; font-weight: 700; font-size: 36px;
+          line-height: 1; padding: 13px 34px 12px; border-radius: 12px; margin-bottom: 24px; }
+  .ln { display: flex; gap: 14px; align-items: flex-start; font-weight: 500; font-size: 29px; line-height: 1.38; }
+  .ln svg { flex: none; width: 34px; height: 34px; margin-top: 4px; }
+  .ph { font-weight: 700; font-size: 37px; margin-top: 10px; align-items: center; }
+  .ph svg { margin-top: 0; }
+</style>
+<script src="longtake.js"></script>
+</head><body>
+<div id="stage">
+  <img id="bg" src="background.png" alt="">
+  <div id="world">
+    <img class="lt" id="logo" data-lt="logo" src="logo/pfec-logo-colour.svg" alt="PFEC Global">
+    <div class="lt" id="cta" data-lt="cta">Book Your Consultation Now!</div>
+    <div id="offices"></div>
+  </div>
+</div>
+<script>
+// House office list (matches reels/build_caption_txt.py OFFICES), Parramatta last.
+const OFFICES = [
+  ["Melbourne", "L11, 50 Queen Street, Melbourne VIC 3000", "(03) 9620 1773"],
+  ["Sydney", "Suite 402, Level 4/447 Kent St Sydney NSW 2000", "(02) 8378 4282"],
+  ["Perth", "Suite A, Level 8th/16 St Georges Terrace, Perth WA 6000", "(08) 6266 8335"],
+  ["Brisbane", "Level 18, 324 Queen Street, Brisbane QLD, Australia", "(07) 3102 1707"],
+  ["Adelaide", "Level M/90, King William Street Adelaide SA 5000", "(08) 7099 2258"],
+  ["Lakemba NSW", "13/61-67 Haldon Street, Lakemba NSW 2195", "(02) 8378 4282"],
+  ["Parramatta", "Suite 1, 21 George Street, Parramatta NSW 2150", "(02) 8378 4282"],
+];
+const PIN = `<svg viewBox="0 0 24 24" fill="none" stroke="#E84B37" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>`;
+const PHONE = `<svg viewBox="0 0 24 24" fill="none" stroke="#E84B37" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16.9v2.6a1.8 1.8 0 0 1-2 1.8 17.8 17.8 0 0 1-7.8-2.8 17.5 17.5 0 0 1-5.4-5.4A17.8 17.8 0 0 1 3 5.3 1.8 1.8 0 0 1 4.8 3.3h2.6a1.8 1.8 0 0 1 1.8 1.6c.1.9.4 1.8.7 2.6a1.8 1.8 0 0 1-.4 1.9L8.4 10.5a14.4 14.4 0 0 0 5.4 5.4l1.1-1.1a1.8 1.8 0 0 1 1.9-.4c.8.3 1.7.6 2.6.7a1.8 1.8 0 0 1 1.6 1.8z"/></svg>`;
+
+// Grid: two columns, four rows; the 7th office (Parramatta) is centred on row 4.
+const COLX = [62, 566], ROW_Y = [496, 786, 1076, 1366];
+const cells = OFFICES.map(([city, addr, tel], i) => {
+  const d = document.createElement("div");
+  d.className = "lt off"; d.dataset.lt = "office" + i;
+  d.innerHTML = `<div class="pill">${city}</div><div class="ln">${PIN}<span>${addr}</span></div>` +
+                `<div class="ln ph">${PHONE}<span>${tel}</span></div>`;
+  document.getElementById("offices").appendChild(d);
+  const row = Math.floor(i / 2), last = i === OFFICES.length - 1 && OFFICES.length % 2;
+  return { d, x: last ? (1080 - 450) / 2 : COLX[i % 2], y: ROW_Y[row], row };
+});
+const { prog, ease } = LT;
+const fade = (t, t0, d = 0.4) => ease.outQuint(prog(t, t0, t0 + d));
+
+function render(t) {
+  const lg = fade(t, 0.05, 0.45);
+  LT.set(LT.el("logo"), { x: 540, y: 186 + (1 - lg) * 30, alpha: lg });
+  const c = fade(t, 0.18, 0.45);
+  LT.set(LT.el("cta"), { x: 540, y: 388 + (1 - c) * 30, alpha: c });
+  for (const { d, x, y, row } of cells) {
+    const k = fade(t, 0.38 + row * 0.2, 0.5);    // rows arrive one after another, sliding in from the left
+    d.style.transform = `translate(${x - (1 - k) * 60}px, ${y}px)`;
+    d.style.opacity = k;
+    d.style.visibility = k < 0.001 ? "hidden" : "visible";
+  }
+}
+
+LT.comp({ width: 1080, height: 1920, dur: 3.0, render });
+</script>
+</body></html>

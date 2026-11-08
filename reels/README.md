@@ -37,6 +37,7 @@ Every script prints `[reel] <name>` when auto-picking, so you always know.
 ```
 python build_base.py        # trim/normalize/tone-map + assembled transcript
 python build_broll.py       # topical B-roll stingers (HyperFrames)
+python build_motion.py      # motion-style opener/sting/B-roll/overlay (opt-in, content.json "motion")
 python build_wipe.py        # brand grid-wipe transition
 python insert_broll.py      # splice B-roll (video only; audio continuous)
 python build_captions.py    # captions + overlay cards → captioned.mp4 (SLOW)
@@ -52,19 +53,67 @@ python qa_reel.py           # pre-post QA gate (spec/colour/loudness/true-peak/
 an eyes/ears pass (reverb/noise, mishears, on-screen PII, MARN correctness,
 factual accuracy, and real in-app safe-zones still need a human).
 
-`build_thumbnail.py` grabs a frame from `work/base_broll.mp4` (default: 3.0s
-in — pre-caption, so no kinetic caption word can freeze into the still),
-composites the logo fresh, then stamps a kicker pill + bold headline on top,
-gold-accenting any `**word**` you wrap. Every field is optional via
+`build_thumbnail.py` has two styles, picked by `thumbnail.style` in
 `<reel>/content.json`:
 
+- **`news` (News flash, the house default since 2026-10-28, `thumb_poster.py`):**
+  an editorial breaking-news cover.
+  - The sharp photo, punched in on the face, sits above a diagonal edge.
+  - Below it is a solid gold block. The presenter breaks out over the edge to
+    the chest.
+  - The headline is big, navy and left-aligned. `**words**` are reversed out of
+    navy boxes.
+  - `sticker` is the red tab on the edge, and the kicker is a small line under
+    the headline.
+  - The website sits in the bottom strip, which the grid hides.
+  - It uses the same auto frame pick, alternates and grid preview as `poster`.
+- **`poster` (`thumb_poster.py`):**
+  - Auto-picks the best face frame (shared with `news`) from `work/base.mp4`,
+    the clean talking head (never a wipe, B-roll or caption). It scores ~30 frames for a found
+    face, open eyes (OpenCV Haar), sharpness, low motion and centring.
+  - Cuts the presenter out with rembg (white sticker outline).
+  - Sets a big balanced headline behind the head on a brand-washed blur of the
+    frame.
+  - Normalises the face to the same size and position on every reel.
+  - The hook stays inside Instagram's 3:4 grid crop (y 240..1680).
+  - Also writes:
+    - `output/thumbnail_alts/alt_N.jpg`: the next-best frames.
+    - `work/thumb_grid_preview.jpg`: the cover beside its grid crop.
+  - With no `headline`, it falls back to `caption_txt.title` (un-bolded, first
+    clause, last words gold).
+- **`classic`:** the original frame grab from `work/base_broll.mp4` (default
+  3.0 s) with a small kicker pill and headline at the top left. Every reel made
+  before 2026-10-28 is pinned to it, so rebuilding one never changes a shipped
+  cover.
+
 ```json
-{ "thumbnail": { "at": 4.2, "kicker": "FREE MIGRATION SEMINAR",
-                 "headline": "GET YOUR **189 VISA** FASTER" } }
+{ "thumbnail": { "at": "auto", "kicker": "🛠️ SOUTH AUSTRALIA · TRADE COURSES",
+                 "headline": "A **MAJOR CHANGE** FOR TRADE STUDENTS",
+                 "sticker": "BIG NEWS" } }
 ```
 
-With no override you still get a branded still (frame + logo + legibility
-shade) — kicker/headline just add the hook on top.
+- `at`: `"auto"`, or the seconds into the content to use instead.
+- `**word**`: gold.
+- `sticker`: an optional rotated red tag (news: on the edge; poster: at the shoulder).
+- `logo_card`: works in both styles.
+- Keep the headline to the presenter's own words, and short. Seven or fewer
+  words fill the width best.
+- Poster needs `opencv-python-headless<5` in the engine venv. OpenCV 5 dropped
+  the Haar `CascadeClassifier`.
+
+## Render progress
+
+Every long render shows a bar with percent, elapsed time and ETA, through
+`render_progress.py`. In a terminal it updates on one line. Redirected to a log
+it prints a line about every 5% / 3s instead.
+
+- ffmpeg stages: `ffmpeg_util.run()`.
+- HyperFrames renders: call `hf_render()`, not `node cli render --quiet`, which
+  prints nothing. It also keeps stdin closed, because without `--quiet` the CLI
+  can stop a build to ask "How was this render?".
+- Concurrent renders share one bar (`build_broll.py` shows the average), and the
+  caption element loop counts elements instead of drawing a bar for each.
+- `build_thumbnail.py`'s still render stays `--quiet`, because it's over quickly.
 
 ## Caption band position
 
@@ -279,6 +328,57 @@ compositing the wipe over solid magenta at t=0.25: any magenta left is a gap.
   is also not the intended count-scales-with-content behaviour — it's a
   legacy fixed-4 placement, not an AI-judged one. Always derive both files
   from this reel's own transcript before running the B-roll steps.
+
+## Motion styles (20-style library: opener / sting / B-roll / overlay)
+
+`assets/motion-styles/` vendors the "20 Claude Motion Styles" pack (split-flap,
+kinetic type, neon, particles, isometric, glassmorphism, retro VHS, …) —
+deterministic canvas templates, PFEC-branded at render time by
+`motion_style.py` (Poppins from `assets/motion-styles/fonts/`, per-style brand
+palette from `pfec_presets.json`). See the gallery: open
+`assets/motion-styles/gallery.html` in Chrome, or `PREVIEW-all-20-styles.mp4`.
+
+Opt in per reel via `content.json`; `build_motion.py` renders each entry into
+the slot the pipeline already consumes:
+
+```json
+{ "motion": [
+    { "role": "opener", "style": "split-flap", "text": "NOW|BOARDING|SYD",
+      "sub": "PFEC GLOBAL · ON TIME", "dur": 3.5, "still": [3.2] },
+    { "role": "broll", "name": "iso_offices", "style": "isometric",
+      "text": "7 OFFICES", "sub": "ACROSS AUSTRALIA", "dur": 1.6 }
+] }
+```
+
+| role | output | picked up by |
+|---|---|---|
+| `opener` | `work/opener.mp4` | `build_composite.py` (cold open) |
+| `sting` | `work/sting.mp4` | `build_composite.py` (before end cards) |
+| `broll` | `work/<name>.mp4` | `insert_broll.py` — name it in `broll_plan.json`'s `plan` |
+| `overlay` | `work/<name>.webm` (VP9 alpha) | hand compositing only |
+
+- Optional per entry: `colors` (slot → hex over the preset), `replace`
+  (template-source swaps), `brand: false` (upstream look), `still: [t…]`
+  (check frames in `work/motion_check/`). Each style's slots and text limits
+  are in its `SKILL.md`; `python motion_style.py --list` prints the fit notes.
+- A B-roll plan made only of motion clips needs no `broll.py`. The B-roll
+  rules above still apply: a motion clip goes over a connecting phrase, and
+  its words come from **this** reel, never a preset's `example`.
+- **Never ship a template's demo numbers as fact.** Some templates bake in
+  sample content (glassmorphism's weather/"daily goal 8,240" cards,
+  neo-brutalism's button, retro-vhs's date stamp). The presets swap the known
+  ones via `replace`; check stills for any others before rendering.
+- **Continuous-take films** (`tools/longtake/`, PFEC's own and commercial-safe):
+  give `"take": "<folder>"` instead of `"style"`, e.g.
+  `{ "role": "opener", "take": "opener_take" }`. Scaffold with
+  `python ../tools/longtake/new.py <reel>/opener_take` and see
+  `tools/longtake/README.md`. Run its `check.py` before the build.
+- Outputs carry a `.motion.json` sidecar; unchanged entries are skipped on
+  re-run. Delete the output to force a re-render.
+- Quick test outside a reel:
+  `python motion_style.py split-flap out.mp4 --example --dur 4` (or `--still 2.5` → `.png`).
+- Needs Playwright in the engine venv (installed: `playwright==1.64.0`, shares
+  the `ms-playwright` Chromium). Renders ~2–8s per clip.
 
 ## Document highlights (e.g. redacted visa grant letters)
 

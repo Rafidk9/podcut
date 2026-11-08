@@ -1,5 +1,5 @@
 """Run the full reel pipeline in the order documented in reels/README.md:
-build_base -> (bg_swap, if this reel has one) -> build_broll -> build_wipe ->
+build_base -> (bg_swap, if this reel has one) -> build_broll -> build_motion -> build_wipe ->
 insert_broll -> build_captions -> build_composite -> build_caption_txt ->
 build_thumbnail -> qa_reel.
 
@@ -21,6 +21,7 @@ import sys
 from reel_paths import REEL, PREVIEW  # noqa: E402 -- per-reel folders
 import build_base
 import build_broll
+import build_motion
 import build_wipe
 import insert_broll
 import build_captions
@@ -55,6 +56,10 @@ def main():
 
     print("[build_all] build_broll.py")
     build_broll.main()
+
+    # After build_broll so a motion clip wins if it shares a stinger's name.
+    print("[build_all] build_motion.py")
+    build_motion.main()
 
     print("[build_all] build_wipe.py")
     build_wipe.build()

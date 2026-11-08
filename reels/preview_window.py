@@ -18,6 +18,7 @@ import sys, os, json, shutil, subprocess
 import build_captions as bc
 
 from reel_paths import WORK, hyperframes_cli  # noqa: E402 -- per-reel folders
+from render_progress import hf_render  # noqa: E402 -- render with a progress bar
 FF = shutil.which("ffmpeg") or "ffmpeg"
 FFPROBE = shutil.which("ffprobe") or "ffprobe"
 
@@ -106,12 +107,7 @@ def main():
 
     # draft-quality transparent overlay render (fast)
     overlay = os.path.join(WORK, "preview_overlay.webm")
-    cli = hyperframes_cli()
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
-    subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(overlay),
-                    "-f", "30", "--format", "webm", "-q", "draft", "--quiet"],
-                   cwd=proj, check=True, env=env)
+    hf_render(hyperframes_cli(), proj, overlay, 30, "draft", fmt="webm")
 
     # trim the corresponding slice of the real footage (with B-roll/wipes baked in)
     base = os.path.join(WORK, "base_broll.mp4")

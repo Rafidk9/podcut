@@ -1,0 +1,12 @@
+{
+  "_comment": "Tushar Chopra / 189 invitation round (Thu 15 Oct 2026) -- fast-paced jump-cut edit of ONE 15.6s take (iPhone 4K60 HLG, portrait via rotation=-90 -> default tone-map path, no sdr flag). Backdrop PFEC logos read forwards, so no flip.",
+  "_cut_note": "Every pause is cut out and the take is split into 6 jump-cut segments that alternate framing (see content.json zoom). 'Hey everyone. As you know,' (1.26-2.58) is DROPPED so the reel opens straight on the hook 'the long-awaited 189 round'. All cut points sit inside measured word gaps from work/raw.transcript.json: 3.63 (gap 3.54-3.72), 5.40 (5.02-5.56), 8.40 (7.92-8.52), 11.10 (10.86-11.22), 12.98 (12.86-13.10).",
+  "clips": [
+    { "name": "raw", "ext": ".mp4", "keep": [2.64, 3.63] },
+    { "name": "raw", "ext": ".mp4", "keep": [3.63, 5.12] },
+    { "name": "raw", "ext": ".mp4", "keep": [5.42, 8.08] },
+    { "name": "raw", "ext": ".mp4", "keep": [8.44, 10.98] },
+    { "name": "raw", "ext": ".mp4", "keep": [11.12, 12.98] },
+    { "name": "raw", "ext": ".mp4", "keep": [13.00, 15.05] }
+  ]
+}

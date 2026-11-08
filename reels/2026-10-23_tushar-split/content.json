@@ -1,0 +1,199 @@
+{
+  "_comment": "Tushar Chopra (RMA, MARN 2418420) -- 189 invitation round of Thu 15 Oct 2026, occupation by occupation. SPLIT FORMAT like 2026-10-23_rahul-split: split.py stacks the longtake panel (top_take/, 1080x940) over Tushar in the bottom 980px; paper_wipes.py adds torn-paper wipes at take changes; text_behind.py puts '189' behind him on the hook. onetake NOT used (commercial) -- panel is pfec-longtake. Storyboard approved by user 2026-10-23: https://claude.ai/artifact/7JjwzDugLwVvzQDcGAu5rb",
+  "gold": [
+    "189",
+    "INVITATION",
+    "ROUND",
+    "THURSDAY",
+    "15TH",
+    "OCTOBER",
+    "CONSTRUCTION",
+    "HEALTHCARE",
+    "NURSE",
+    "70",
+    "80",
+    "OFFSHORE",
+    "CABINET",
+    "75",
+    "CARPENTERS",
+    "65",
+    "TILERS",
+    "WELDERS",
+    "SURPRISE",
+    "ECONOMISTS",
+    "LABORATORY",
+    "SCIENTISTS",
+    "TEACHING",
+    "SECONDARY",
+    "ECTS",
+    "90",
+    "EXPERIENCE",
+    "SUPERIOR",
+    "ENGLISH",
+    "PFEC",
+    "MELBOURNE"
+  ],
+  "caption_highlight": true,
+  "cap_top": "49%",
+  "name": {
+    "text": "Tushar Chopra",
+    "role": "Registered Migration Agent",
+    "start": 0.6,
+    "end": 4.4
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418420"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "badges": [],
+  "highlights": [],
+  "documents": [],
+  "hero_words": [],
+  "zoom": {
+    "amount": 0.06,
+    "segments": [
+      "hold",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold",
+      "tight:0.06",
+      "hold"
+    ],
+    "hits": [
+      {
+        "clip": 6,
+        "at": [
+          12.72,
+          13.2
+        ],
+        "amount": 0.1
+      },
+      {
+        "clip": 8,
+        "at": [
+          7.88,
+          8.6
+        ],
+        "amount": 0.1
+      },
+      {
+        "clip": 13,
+        "at": [
+          18.46,
+          18.9
+        ],
+        "amount": 0.1
+      },
+      {
+        "clip": 18,
+        "at": [
+          13.84,
+          14.3
+        ],
+        "amount": 0.1
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "music": {
+    "track": "digital-lemonade-kevin-macleod.mp3",
+    "volume": 0.022,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "limiter": {
+    "limit": 0.72
+  },
+  "sfx": {
+    "cues": [
+      {
+        "file": "pop.mp3",
+        "at": 0.32,
+        "volume": 0.07
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 2.86,
+        "volume": 0.12
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 15.0,
+        "volume": 0.08
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 26.72,
+        "volume": 0.08
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 31.0,
+        "volume": 0.11
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 40.18,
+        "volume": 0.08
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 51.98,
+        "volume": 0.08
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 62.5,
+        "volume": 0.11
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 67.8,
+        "volume": 0.1
+      }
+    ]
+  },
+  "thumbnail": {
+    "at": 22.6,
+    "kicker": "",
+    "headline": "",
+    "style": "classic"
+  },
+  "caption_txt": {
+    "title": "189 Invitation Round: Who Got Invited? 🇦🇺📊",
+    "body": [
+      "Last Thursday, 15 October, was the big 189 invitation round, and it was a very big round across many occupations. The two main groups invited were construction and healthcare. Registered nurses were invited from 70 to 80 points, and even offshore nurses received invitations on just 70 points. In construction there were a few surprises: cabinet makers on 75 points, carpenters on 65, wall and floor tilers, and even welders this time.",
+      "Professional occupations were invited too, such as economists on 65 points and medical laboratory scientists on just 80. In teaching, secondary school teachers were invited on 80 points, and early childhood teachers on 90 points. Want to see how your occupation compares to this round and previous rounds? Visit PFEC Melbourne and talk to our Registered Migration Agent Tushar Chopra (MARN 2418420)."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #189Visa #SkilledIndependent #SkillSelect #InvitationRound #RegisteredNurse #Construction #EarlyChildhoodTeacher #AustraliaPR #MigrationAgent",
+    "music_credit": "Music: \"Digital Lemonade\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nPhotos (CC BY 2.0): timefornurses; Jordanhill School D&T Dept; chimpwithcan; Tobyotter; Hortlander; National Eye Institute."
+  },
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  },
+  "_sfx_note": "9 cues (one over the ~8 guide, so volumes kept low; check true peak in qa_reel): unfurl pop, 189 slam, a light whoosh on each of the 6 paper wipes would blow the budget, so whooshes only on the wipes that coincide with a panel style change (15.16 polaroid, 26.88 blueprint flip, 40.34 glass fold, 52.14 notebook), SURPRISE stamp, red-pen 90 circle chime, Melbourne pin chime."
+}

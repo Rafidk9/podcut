@@ -20,6 +20,9 @@ import json
 import os
 import shutil
 import subprocess
+import sys
+
+from render_progress import hf_render
 
 CACHE_VERSION = 4  # v2: badge text is now JSON-escaped into JS (v1 broke on
                     # apostrophes/quotes in badge text, e.g. "DON'T RISK IT",
@@ -119,12 +122,14 @@ def render_element(element_type, content, duration, css_extra, body_html, js_bod
               open(os.path.join(proj, "meta.json"), "w"))
 
     out = os.path.join(work_dir, f"elem_{h}.webm")
-    ff = shutil.which("ffmpeg") or "ffmpeg"
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(ff) + os.pathsep + env.get("PATH", "")
-    subprocess.run(["node", hyperframes_cli, "render", ".", "-o", os.path.abspath(out),
-                    "-f", str(hf_fps), "--format", "webm", "-q", hf_quality, "--quiet"],
-                   cwd=proj, check=True, env=env)
+    # on_progress swallows this render's own updates: the caller counts
+    # elements on one bar, and hf_render keeps the CLI's logs from breaking it.
+    try:
+        hf_render(hyperframes_cli, proj, out, hf_fps, hf_quality, fmt="webm",
+                  on_progress=lambda pct, stage: None)
+    except subprocess.CalledProcessError as e:
+        print(e.output, file=sys.stderr)
+        raise
 
     if no_cache:
         return out, False

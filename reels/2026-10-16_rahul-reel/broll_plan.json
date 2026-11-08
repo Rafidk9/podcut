@@ -1,0 +1,10 @@
+{
+  "_comment": "Two B-roll cutaways, both over connecting phrases: seg 2 'What does NSW do?' (rhetorical bridge, 1.08 of 1.14s) and seg 12 'And if you will take this example further, for example,' (filler, first 2.95s; 'they have published' resumes at 3.46). Both are parallax + velocity-ramp HyperFrames scenes (broll.py). Most other cuts carry fx.py velocity whip-zooms instead of wipes; one flash wipe on the turn into the coaches example.",
+  "n_segments": 16,
+  "broll_dur": 1.3,
+  "plan": { "2": "nsw_q", "12": "more_examples" },
+  "boundaries": { "2": 4.26, "12": 30.72 },
+  "broll_durs": { "2": 1.08, "12": 2.95 },
+  "boundary_wipes": { "2": "speed", "12": "grid" },
+  "extra_wipes": [ { "at": 35.08, "style": "flash" } ]
+}

@@ -1,0 +1,134 @@
+{
+  "_comment": "Apurva Golani (RMA, MARN 2518793) -- employer sponsorship. EXPLAINER FORMAT, same as 2026-10-28_tushar-explainer: take/comp.html is one continuous pfec-longtake comp, matte from take/mask.html, composite_take.py writes work/captioned.mp4 (skips build_captions + insert_broll). onetake NOT used (commercial). v1 overlay version kept in output_v1_overlay/. v4: smooth motion on the light PFEC palette (pale sky-blue, cyan, navy, gold accents, matching the consultation card); Vox collage rejected, kept in output_v3_vox/. No logo in the lockup.",
+  "gold": [
+    "EMPLOYER",
+    "SPONSORSHIP",
+    "GREAT",
+    "VISA-READY",
+    "THREE",
+    "FIRST",
+    "SECOND",
+    "THIRD",
+    "NOMINATION",
+    "VISA",
+    "ALIGN",
+    "ASSESSED",
+    "PATHWAY",
+    "PFEC"
+  ],
+  "caption_highlight": true,
+  "cap_top": "62%",
+  "list_top": "58%",
+  "name": {
+    "text": "Apurva Golani",
+    "role": "Registered Migration Agent",
+    "start": 0.3,
+    "end": 4.2
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2518793"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "zoom": {
+    "amount": 0.0,
+    "segments": [
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold",
+      "hold"
+    ]
+  },
+  "hero_words": [],
+  "badges": [],
+  "lists": [],
+  "highlights": [],
+  "documents": [],
+  "voice_denoise": true,
+  "music": {
+    "track": "life-of-riley-kevin-macleod.mp3",
+    "volume": 0.3,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "thumbnail": {
+    "style": "news",
+    "at": "auto",
+    "kicker": "EMPLOYER SPONSORSHIP",
+    "headline": "STILL NOT **VISA-READY**",
+    "sticker": "3 PARTS"
+  },
+  "caption_txt": {
+    "title": "Your Employer Said Yes to Sponsorship? You're Not Visa-Ready Yet! ⚠️",
+    "body": [
+      "An employer agreeing to sponsor you is great news, but it doesn't make you visa-ready. There are three important parts to consider: the employer must meet the relevant sponsorship requirements, the nomination must meet the applicable occupation, salary and nomination requirements, and you must meet the visa requirements, including relevant skills, English criteria and experience.",
+      "All three need to align. Our Registered Migration Agent Apurva Golani (MARN 2518793) recommends getting your pathway assessed before you make any employment or migration decisions. Considering employer sponsorship? Speak with PFEC Global's migration team."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #EmployerSponsorship #SponsoredVisa #WorkVisaAustralia #AustraliaVisa #AustraliaMigration #MigrationAgent",
+    "music_credit": "Music: \"Life of Riley\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  },
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  },
+  "_music_note": "New uplifting track on user request. Voice -11.3 LUFS, Life of Riley -17.3 LUFS; 0.3 puts the bed ~17 dB under her before ducking.",
+  "limiter": {
+    "limit": 0.72
+  },
+  "sfx": {
+    "cues": [
+      {
+        "file": "pop.mp3",
+        "at": 0.72,
+        "volume": 0.3
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 3.615,
+        "volume": 0.6
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 4.72,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 10.96,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 17.36,
+        "volume": 0.35
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 24.835,
+        "volume": 0.5
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 30.215,
+        "volume": 0.5
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 33.06,
+        "volume": 0.4
+      }
+    ]
+  },
+  "_sfx_note": "8 cues as on the Tushar explainer: hook pop, stamp slam, whoosh on three window closes, align slam, ASSESSED slam, chime on logo. Levels raised because her voice is ~17 dB hotter."
+}

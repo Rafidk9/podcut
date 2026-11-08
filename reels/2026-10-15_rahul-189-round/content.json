@@ -1,0 +1,173 @@
+{
+  "_comment": "Rahul Dhanda (Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640 -- see pfec-presenters / 2026-10-05 reel) announcing the 189 invitation round is happening now (Wed 15 Oct 2026). Fast jump-cut edit of one take; content segments open at ~0.00 / 2.52 / 4.30 / 5.66 / 8.08 / 9.36, end ~10.80.",
+  "gold": [
+    "FINALLY",
+    "189",
+    "ROUND",
+    "NOW",
+    "DETAILED",
+    "INVITE",
+    "CONTACT",
+    "TEAM",
+    "VISA",
+    "CONGRATS",
+    "INVITES"
+  ],
+  "caption_highlight": true,
+  "cap_top": "60%",
+  "name": {
+    "text": "Rahul Dhanda",
+    "role": "Director & Registered Migration Agent",
+    "start": 2.6,
+    "end": 5.5
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418640"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "hook_banner": {
+    "text": "🚨 189 INVITATION ROUND IS LIVE",
+    "start": 0.0,
+    "end": 2.45
+  },
+  "_badge_note": "Different effect per element (house rule): pixelate for the 'detailed video coming' tease, shimmer for the invite beat, particles for the congrats celebration. First badge anchored on \"a detailed\" (not \"detailed video\") so it clears (anchor end +0.6s) before GOT AN INVITE pops at 4.67.",
+  "badges": [
+    {
+      "anchor_phrase": "a detailed",
+      "text": "FULL VIDEO SOON 🎥",
+      "icon": "star",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "pixelate"
+    },
+    {
+      "anchor_phrase": "an invite",
+      "text": "GOT AN INVITE? 📩",
+      "icon": "people",
+      "color": "gold",
+      "pos": "top-left",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "congrats to all",
+      "text": "CONGRATS! 🎉",
+      "icon": "star",
+      "color": "green",
+      "pos": "top-right",
+      "effect": "particles"
+    }
+  ],
+  "highlights": [],
+  "cta": {
+    "text": "CONTACT OUR TEAM 👇",
+    "start": 5.9,
+    "end": 8.0
+  },
+  "documents": [],
+  "hero_words": [],
+  "zoom": {
+    "amount": 0.1,
+    "segments": [
+      "tight:0.14",
+      "hold",
+      "tight:0.08",
+      "in",
+      "tight:0.16",
+      "hold"
+    ],
+    "hits": [
+      {
+        "clip": 0,
+        "at": [
+          1.42,
+          1.82
+        ],
+        "amount": 0.12
+      },
+      {
+        "clip": 4,
+        "at": [
+          10.44,
+          10.78
+        ],
+        "amount": 0.12
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "'Motivator' (CC BY, already in assets + CREDIT.txt) -- upbeat/celebratory, not used by any current reel config; Tushar's same-topic reel used Nonstop.",
+  "music": {
+    "track": "motivator-kevin-macleod.mp3",
+    "volume": 0.07,
+    "duck_ratio": 8,
+    "duck_threshold": 0.05
+  },
+  "_sfx_note": "7 cues, volumes kept low per the true-peak note; whooshes only at the two wipe cuts.",
+  "sfx": {
+    "cues": [
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 1.25,
+        "volume": 0.32
+      },
+      {
+        "file": "pop.mp3",
+        "at": 3.4,
+        "volume": 0.14
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 4.3,
+        "volume": 0.2
+      },
+      {
+        "file": "pop.mp3",
+        "at": 5.05,
+        "volume": 0.14
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 5.9,
+        "volume": 0.28
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 8.08,
+        "volume": 0.2
+      },
+      {
+        "file": "pop.mp3",
+        "at": 8.3,
+        "volume": 0.14
+      }
+    ]
+  },
+  "thumbnail": {
+    "at": 1.6,
+    "kicker": "🚨 189 ROUND IS LIVE",
+    "headline": "",
+    "style": "classic"
+  },
+  "caption_txt": {
+    "title": "The 189 Invitation Round Is Happening Now! 🚨🎉",
+    "body": [
+      "Finally, the long-awaited 189 (Skilled Independent) invitation round is happening now. We'll be back soon with a detailed video breaking down this round.",
+      "Received an invite? Congratulations! Our Registered Migration Agent Rahul Dhanda (MARN 2418640) and the PFEC team can help you with your visa application and next steps, so get in touch with us today."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #189Visa #SkilledIndependent #InvitationRound #EOI #SkillSelect #SkilledMigration #AustraliaPR #MigrationAgent",
+    "music_credit": "Music: \"Motivator\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  },
+  "_end_cards_note": "Consultation card dropped, as on Rahul's 2026-10-05 reels -- the shared assets/endcards/consultation-card.mp4 lists only 6 offices (no Parramatta, his own office), which breaks the 7-office rule. Disclaimer kept (compliance); all 7 offices are in caption.txt.",
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  }
+}

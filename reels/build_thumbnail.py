@@ -21,7 +21,14 @@ LOGO = os.path.join(ASSETS_ROOT, "derived", "logo_chip.png")
 # frame + the persistent logo, composited fresh here) -- kicker/headline just
 # add an on-brand hook on top.
 DEFAULT_THUMB = {
-    "at": 3.0,       # seconds into the main content to grab as the background frame
+    "style": "news",     # "news" (News flash, house default since 2026-10-28:
+                          # sharp photo over a diagonal gold block, headline below)
+                          # or "poster" (cutout, big headline behind the head), both
+                          # in thumb_poster.py; "classic" = frame grab + small
+                          # top-left headline (every reel before 2026-10-28)
+    "at": "auto",    # seconds into the main content, or "auto" (poster picks the
+                     # best face frame; classic falls back to 3.0)
+    "sticker": "",   # news/poster: small rotated red tag, e.g. "BIG NEWS" / "NEW RULE"
     "kicker": "",    # small pill above the headline, e.g. "FREE MIGRATION SEMINAR"
     "headline": "",  # big bold line; wrap a word in **stars** for the gold accent
     "logo_card": None,   # path (relative to <reel>/) to a full-canvas RGBA PNG
@@ -55,6 +62,10 @@ def build():
         raise SystemExit(f"{final} not found -- run build_composite.py first.")
 
     content = load_thumb_content()
+    if content.get("style", "news") in ("news", "poster"):
+        return build_poster(content)
+    if content["at"] == "auto":
+        content["at"] = 3.0
 
     # 1) background frame grab -- from base_broll.mp4 (pre-caption, same timeline
     # as the main content) rather than reel_final.mp4, so no kinetic caption word
@@ -110,6 +121,47 @@ def build():
         _composite_logo_card(out, os.path.join(REEL, content["logo_card"]))
 
     print("wrote", out)
+
+
+def build_poster(content):
+    import thumb_poster as tp
+    base = os.path.join(WORK, "base.mp4")
+    cfg = json.load(open(os.path.join(REEL, "content.json"), encoding="utf-8"))
+    headline = content["headline"] or tp.headline_from_title(cfg.get("caption_txt", {}).get("title", ""))
+    if content["at"] == "auto":
+        cands = tp.pick_distinct(tp.score_frames(base), k=3)
+        if not cands:
+            raise SystemExit("poster thumbnail: no face found in base.mp4 -- set thumbnail.at")
+    else:
+        cands = [{"t": float(content["at"]), "face": None}]
+    alts = os.path.join(OUT, "thumbnail_alts")
+    if os.path.exists(alts):
+        shutil.rmtree(alts)
+    for i, c in enumerate(cands):
+        frame = os.path.join(WORK, f"thumb_frame_{i}.png")
+        run(["-ss", f"{c['t']:.3f}", "-i", base, "-frames:v", "1", frame])
+        face = c["face"] or _face_or_centre(frame)
+        dest = os.path.join(OUT, "thumbnail.jpg") if i == 0 else os.path.join(alts, f"alt_{i}.jpg")
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        tp.render_poster(frame, face, dest, os.path.join(WORK, "thumb_poster"), headline,
+                         kicker=content["kicker"], sticker=content.get("sticker", ""), logo=LOGO,
+                         style=content.get("style", "news"))
+        print(f"{'wrote' if i == 0 else '  alt'} {dest}  (frame {c['t']:.2f}s)")
+    tp.grid_preview(os.path.join(OUT, "thumbnail.jpg"), os.path.join(WORK, "thumb_grid_preview.jpg"))
+    if content["logo_card"]:
+        _composite_logo_card(os.path.join(OUT, "thumbnail.jpg"), os.path.join(REEL, content["logo_card"]))
+
+
+def _face_or_centre(frame_png):
+    """Face box for a hand-picked frame (falls back to a centred guess)."""
+    import cv2
+    import thumb_poster as tp
+    g = cv2.cvtColor(cv2.imread(frame_png), cv2.COLOR_BGR2GRAY)
+    faces = tp._cascades()[0].detectMultiScale(g, 1.1, 6, minSize=(g.shape[1] // 10, g.shape[1] // 10))
+    if len(faces):
+        return [int(v) for v in max(faces, key=lambda f: f[2] * f[3])]
+    w = g.shape[1]
+    return [int(w * 0.36), int(g.shape[0] * 0.3), int(w * 0.28), int(w * 0.28)]
 
 
 def _composite_logo_card(thumb_jpg, card_png, target_width=860, bottom_margin=90):

@@ -1,0 +1,105 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pixel Art motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'COINS', DEFAULT_SUB = '';
+const DEFAULT_COLORS = { bg: '#3a1460', c1: '#ffd23f', c2: '#ff6b9a', c3: '#2c7a3a' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// 8-bit scene: low-res buffer scaled with nearest-neighbour; hero runs, jumps, collects coins; sun sets
+const PX = Math.max(4, Math.round(U / 90)), lw = Math.ceil(W / PX), lh = Math.ceil(H / PX);
+const lo = off(lw, lh), g = lo.getContext('2d');
+const HERO = ['..rrrr..', '.rrrrrr.', '.sskks..', 'ssssss..', '.bbrbb..', 'bbbrrbbb', '..bbbb..', '.bb..bb.'];
+const HERO2 = ['..rrrr..', '.rrrrrr.', '.sskks..', 'ssssss..', '.bbrbb..', 'bbbrrbbb', '..bbbb..', '..b..b..'];
+const HC = { r: '#e53b44', s: '#ffd2a1', k: '#1b1b1b', b: '#2f6fe0' };
+function sprite(rows, x, y, cmap) { rows.forEach((r, j) => [...r].forEach((c, i) => { if (c !== '.') { g.fillStyle = cmap[c]; g.fillRect(x + i, y + j, 1, 1); } })); }
+function draw(t) {
+  const T = t / DUR;
+  // sky bands (dithered gradient)
+  const bands = [COL.bg, '#5a1e7a', '#8a2b8f', COL.c2, '#ff9e6b'];
+  const hz = Math.floor(lh * .62);
+  for (let y = 0; y < hz; y++) { const k = y / hz * (bands.length - 1), i = Math.floor(k), f = k - i; for (let x = 0; x < lw; x++) { const use = f > (((x + y) % 2) ? .66 : .33) ? i + 1 : i; g.fillStyle = bands[Math.min(bands.length - 1, use)]; g.fillRect(x, y, 1, 1); } }
+  // sun (setting)
+  const sr = Math.floor(lw * .14), sx = Math.floor(lw / 2), sy = Math.floor(hz - sr * .3 + T * sr * .6);
+  for (let y = -sr; y <= sr; y++) for (let x = -sr; x <= sr; x++) if (x * x + y * y <= sr * sr && sy + y < hz && !((sy + y) % 4 === 0 && y > 0)) { g.fillStyle = y < -sr * .3 ? '#fff4a3' : COL.c1; g.fillRect(sx + x, sy + y, 1, 1); }
+  // mountains (parallax)
+  const off1 = Math.floor(t * 4);
+  g.fillStyle = '#2a0f45'; for (let x = 0; x < lw; x++) { const h = Math.floor(lh * .08 + Math.abs(Math.sin((x + off1) * .07)) * lh * .08); g.fillRect(x, hz - h, 1, h); }
+  // ground
+  const off2 = Math.floor(t * 14);
+  g.fillStyle = COL.c3; g.fillRect(0, hz, lw, lh - hz); g.fillStyle = '#4bb04f'; g.fillRect(0, hz, lw, 2);
+  g.fillStyle = '#1f5a2a'; for (let x = 0; x < lw; x++) if (((x + off2) % 6) === 0) g.fillRect(x, hz + 3, 2, 1);
+  g.fillStyle = '#7a4a2a'; g.fillRect(0, hz + 6, lw, lh - hz - 6); g.fillStyle = '#5c3720'; for (let y = hz + 8; y < lh; y += 4) for (let x = 0; x < lw; x++) if (((x + off2 + y) % 8) === 0) g.fillRect(x, y, 2, 1);
+  // coins: scroll left, collected when overlapping hero
+  const hx = Math.floor(lw * .3), jumpP = (t % 1.5) / 1.5, jump = jumpP < .5 ? Math.sin(jumpP * 2 * Math.PI) : 0;
+  const hy = hz - 8 - Math.floor(jump * lh * .1);
+  let count = 0;
+  for (let k = 0; k < 12; k++) {
+    const cx = Math.floor(lw * .55 + k * lw * .22 - t * 30 * (lw / 120)), cy = hz - 10 - Math.floor(lh * .08);
+    if (cx < hx + 4) { count++; const dt = (hx + 4 - cx) / 14; if (dt < .4) { g.fillStyle = '#fff'; g.fillRect(hx + 3, cy - Math.floor(dt * 30), 1, 2); } continue; }
+    if (cx > lw) continue;
+    const spin = Math.floor(t * 8 + k) % 4, wdt = [4, 3, 1, 3][spin];
+    g.fillStyle = COL.c1; g.fillRect(cx - (wdt >> 1), cy, wdt, 5); g.fillStyle = '#b8860b'; g.fillRect(cx - (wdt >> 1), cy + 4, wdt, 1);
+  }
+  sprite(Math.floor(t * 8) % 2 && jump === 0 ? HERO2 : HERO, hx, hy, HC);
+  // HUD
+  g.fillStyle = 'rgba(0,0,0,0)';
+  bg(COL.bg); ctx.imageSmoothingEnabled = false; ctx.drawImage(lo, 0, 0, lw * PX, lh * PX);
+  font(700, PX * 6, '"Press Start 2P","Courier New",' + MONO); ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = '#fff';
+  const hud = `${TEXT} x${String(count).padStart(2, '0')}`; ctx.fillStyle = '#000'; ctx.fillText(hud, CX + PX, H * .06 + PX); ctx.fillStyle = '#fff'; ctx.fillText(hud, CX, H * .06);
+  if (SUB) { font(700, PX * 4, MONO); ctx.fillStyle = Math.floor(t * 2) % 2 ? '#fff' : 'rgba(255,255,255,.3)'; ctx.fillText(SUB.toUpperCase(), CX, H * .86); }
+  ctx.textBaseline = 'alphabetic';
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

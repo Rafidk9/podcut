@@ -1,0 +1,124 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glassmorphism motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'Midnight Glass', DEFAULT_SUB = 'Ambient Waves';
+const DEFAULT_COLORS = { bg: '#1a1035', c1: '#ff4fa3', c2: '#7b5cff', c3: '#2ee6a6' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// frosted glass widgets floating over moving colour blobs
+const bgc = off(W, H), bgx = bgc.getContext('2d');
+function blobs(t) {
+  const T = t / DUR * TAU;
+  bgx.fillStyle = COL.bg; bgx.fillRect(0, 0, W, H);
+  const B = [[COL.c1, .3, .3, .38], [COL.c2, .72, .38, .42], [COL.c3, .4, .75, .4], ['#ffb23f', .8, .8, .3]];
+  B.forEach(([c, x, y, r], i) => {
+    const px = W * x + Math.cos(T + i * 2) * U * .12, py = H * y + Math.sin(T * (i % 2 ? 1 : -1) + i) * U * .12;
+    const g = bgx.createRadialGradient(px, py, 0, px, py, U * r); g.addColorStop(0, c); g.addColorStop(1, hexA(c, 0));
+    bgx.fillStyle = g; bgx.fillRect(0, 0, W, H);
+  });
+}
+function glass(x, y, w, h, r, k) {
+  ctx.save(); rrect(x, y, w, h, r); ctx.clip();
+  ctx.filter = `blur(${U * .035}px) saturate(1.4)`; ctx.drawImage(bgc, 0, 0); ctx.filter = 'none';
+  const g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, 'rgba(255,255,255,.32)'); g.addColorStop(1, 'rgba(255,255,255,.1)'); ctx.fillStyle = g; ctx.fillRect(x, y, w, h);
+  // moving sheen
+  const sx = x + (k % 1) * w * 2.4 - w * .7; const s = ctx.createLinearGradient(sx, y, sx + w * .4, y + h); s.addColorStop(0, 'rgba(255,255,255,0)'); s.addColorStop(.5, 'rgba(255,255,255,.18)'); s.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = s; ctx.fillRect(x, y, w, h);
+  ctx.restore();
+  rrect(x + .5, y + .5, w - 1, h - 1, r); ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = Math.max(1, U * .0025); ctx.stroke();
+}
+function draw(t) {
+  blobs(t);
+  if (ALPHA) ctx.clearRect(0, 0, W, H); else ctx.drawImage(bgc, 0, 0);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const cw = Math.min(W * .78, U * .82), x0 = CX - cw / 2, T = t / DUR;
+  const cards = [[0, U * .30, .15], [1, U * .22, .35], [2, U * .16, .55]];
+  let y = CY - (U * .30 + U * .22 + U * .16 + U * .08) / 2;
+  cards.forEach(([id, h, st], i) => {
+    const p = ease.back(prog(t, st, st + .7)), out = ease.in(prog(t, DUR - .6 + i * .08, DUR - .2 + i * .08));
+    const fl = Math.sin(t * 1.6 + i) * U * .008;
+    const yy = y + (1 - p) * U * .25 + fl - out * U * .1;
+    ctx.globalAlpha = clamp(p * 1.5) * (1 - out);
+    const ww = id === 0 ? cw : id === 1 ? cw * .48 : cw;
+    const xx = id === 2 ? x0 : x0;
+    glass(xx, yy, ww, h, U * .045, T * 1.3 + i * .3);
+    if (id === 1) glass(x0 + cw * .52, yy, cw * .48, h, U * .045, T * 1.3 + .5);
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    if (id === 0) {
+      const art = U * .17; rrect(xx + U * .05, yy + (h - art) / 2, art, art, U * .03); const g = ctx.createLinearGradient(xx, yy, xx + art, yy + art); g.addColorStop(0, COL.c1); g.addColorStop(1, COL.c2); ctx.fillStyle = g; ctx.fill();
+      ctx.fillStyle = '#fff'; fitFont(TEXT, 700, U * .05, ww - art - U * .14); ctx.fillText(TEXT, xx + art + U * .09, yy + h * .42);
+      font(500, U * .032); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillText(SUB, xx + art + U * .09, yy + h * .58);
+      const bx = xx + art + U * .09, bwid = ww - art - U * .14, pr = (t / DUR) * .9 + .05;
+      rrect(bx, yy + h * .72, bwid, U * .01, U * .005); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fill();
+      rrect(bx, yy + h * .72, bwid * pr, U * .01, U * .005); ctx.fillStyle = '#fff'; ctx.fill();
+    } else if (id === 1) {
+      font(300, U * .09); ctx.fillText(Math.round(lerp(18, 24, ease.out(prog(t, .5, 1.5)))) + '°', xx + U * .05, yy + h * .62);
+      font(500, U * .028); ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.fillText('Dubai', xx + U * .05, yy + h * .82);
+      // toggle on second card
+      const tx = x0 + cw * .52 + U * .05, ty = yy + h / 2 - U * .04, on = ease.out(prog(t, 1.6, 1.9));
+      rrect(tx, ty, U * .16, U * .08, U * .04); ctx.fillStyle = on > .5 ? hexA(COL.c3, .9) : 'rgba(255,255,255,.25)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(tx + U * .04 + on * U * .08, ty + U * .04, U * .032, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill();
+      font(500, U * .026); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillText('Focus', tx, ty + U * .13);
+    } else {
+      font(600, U * .034); ctx.fillText('Daily goal', xx + U * .05, yy + h * .4);
+      const v = Math.round(lerp(0, 8240, ease.out(prog(t, .8, 2.2)))); font(700, U * .05); ctx.textAlign = 'right'; ctx.fillText(v.toLocaleString('en-US'), xx + ww - U * .05, yy + h * .45);
+      ctx.textAlign = 'left'; rrect(xx + U * .05, yy + h * .62, ww - U * .1, U * .014, U * .007); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fill();
+      rrect(xx + U * .05, yy + h * .62, (ww - U * .1) * .82 * ease.out(prog(t, .8, 2.2)), U * .014, U * .007); ctx.fillStyle = COL.c3; ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    y += h + U * .04;
+  });
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

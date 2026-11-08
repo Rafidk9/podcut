@@ -2,89 +2,189 @@
   "_comment": "HINDI/Hinglish version of the Rahul Dhanda visa-changes seminar reel (English twin: 2026-10-05_rahul-visa-changes). Rahul Dhanda -- Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640. Seminar 06-16 Oct, Mon-Fri, 1-2 PM, Sydney + Parramatta offices. Output timeline = raw - 6.80; total ~40.7s before the disclaimer card.",
   "_language_note": "Spoken in Hinglish, CAPTIONED IN ENGLISH (user, 2026-10-06 -- replaced the first cut's romanized-Hinglish captions). make_en_transcript.py keeps ElevenLabs' Devanagari output as work/IMG_0293.transcript.hi.json and rewrites work/IMG_0293.transcript.json in English: his English phrases keep exact timing, each Hindi phrase's translation is spread over that phrase's audio window. anchor_phrases below match that English. '1:00 PM' is normalized to '1 PM' there too (user preference from the English twin).",
   "_style_note": "Deliberately different from the English twin: cyan/navy caption palette (vs gold/red), captions HIGH in the headroom (vs mid-chest), wide/tight jump-cuts (vs four brand wipes), poster MID-reel on the offices line (vs closing card), hero 'STRESSED?' (vs 'WORRIED?'), different music (Beauty Flow vs Inspired), no decor layer at all. Carries over the user's English-twin edits: no orbs, no on-screen handle, no consultation end card.",
-
-  "gold": ["VISA", "CHANGES", "STRESSED", "OCTOBER", "SYDNEY", "PARRAMATTA",
-           "QUESTIONS", "ASK", "SITUATION", "WEEK"],
-
-  "accent": { "word": "#00B3E3", "highlight_bg": "#100796",
-              "highlight_word_bg": "#00B3E3", "highlight_word_fg": "#100796",
-              "hero": "#00B3E3" },
+  "gold": [
+    "VISA",
+    "CHANGES",
+    "STRESSED",
+    "OCTOBER",
+    "SYDNEY",
+    "PARRAMATTA",
+    "QUESTIONS",
+    "ASK",
+    "SITUATION",
+    "WEEK"
+  ],
+  "accent": {
+    "word": "#00B3E3",
+    "highlight_bg": "#100796",
+    "highlight_word_bg": "#00B3E3",
+    "highlight_word_fg": "#100796",
+    "hero": "#00B3E3"
+  },
   "caption_highlight": true,
   "_cap_top_note": "In the tight framing he leans in and his chin reaches ~61% -- the 62% default would sit on his face. Captions go up into the plain headroom instead, below the top-corner badge row and above his hairline (~28% in tight clips). Verified on frames.",
   "cap_top": "17.5%",
-
-  "name": { "text": "Rahul Dhanda", "role": "Director & Registered Migration Agent",
-            "start": 0.3, "end": 4.0 },
-  "mara": { "mode": "styled", "marn": "2418640" },
-  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
-
-  "hook_banner": { "text": "VISA CHANGES STRESSING YOU? 😟", "start": 0.0, "end": 2.0 },
-
+  "name": {
+    "text": "Rahul Dhanda",
+    "role": "Director & Registered Migration Agent",
+    "start": 0.3,
+    "end": 4.0
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418640"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "hook_banner": {
+    "text": "VISA CHANGES STRESSING YOU? 😟",
+    "start": 0.0,
+    "end": 2.0
+  },
   "hero_words": [
-    { "anchor_phrase": "and stressed too", "text": "STRESSED?",
-      "pad_after": 0.2, "hold": 0.15, "size": 135 }
+    {
+      "anchor_phrase": "and stressed too",
+      "text": "STRESSED?",
+      "pad_after": 0.2,
+      "hold": 0.15,
+      "size": 135
+    }
   ],
-
   "highlights": [
-    { "anchor_phrase": "6th of october", "text": "6–16 OCTOBER", "pos": "top-left", "color": "green" },
-    { "anchor_phrase": "between 1 pm and 2 pm", "text": "MON–FRI · 1–2 PM", "pos": "top-right", "color": "gold" }
+    {
+      "anchor_phrase": "6th of october",
+      "text": "6–16 OCTOBER",
+      "pos": "top-left",
+      "color": "green"
+    },
+    {
+      "anchor_phrase": "between 1 pm and 2 pm",
+      "text": "MON–FRI · 1–2 PM",
+      "pos": "top-right",
+      "color": "gold"
+    }
   ],
-
   "_documents_note": "Poster flashed MID-reel here (the English twin closes on it): on 'you can come and meet us at our Sydney and Parramatta office', the first time he names the venues. Captions suppressed under it.",
   "documents": [
-    { "image": "visa-changes-seminar-poster.png",
+    {
+      "image": "visa-changes-seminar-poster.png",
       "anchor_phrase": "you can come and meet us at our sydney and parramatta office",
-      "label": "", "poster": true, "width": 860, "top": "420px",
-      "pad_before": 0.1, "pad_after": 0.3, "suppress_captions": true }
+      "label": "",
+      "poster": true,
+      "width": 860,
+      "top": "420px",
+      "pad_before": 0.1,
+      "pad_after": 0.3,
+      "suppress_captions": true
+    }
   ],
-
   "badges": [
-    { "anchor_phrase": "understand your current situation",
-      "text": "YOUR SITUATION 🔍", "icon": "check", "color": "cyan",
-      "pos": "top-right", "effect": "shimmer" },
-    { "anchor_phrase": "answer all your questions",
-      "text": "ASK ANYTHING 💬", "icon": "people", "color": "green",
-      "pos": "top-left", "effect": "pixelate" },
-    { "anchor_phrase": "visit us at our sydney",
-      "text": "SYDNEY + PARRAMATTA 📍", "icon": "star", "color": "gold",
-      "pos": "top-right", "effect": "particles" },
-    { "anchor_phrase": "for the whole week",
-      "text": "MON–FRI · WHOLE WEEK 📅", "icon": "check", "color": "navy",
-      "pos": "top-left" }
+    {
+      "anchor_phrase": "understand your current situation",
+      "text": "YOUR SITUATION 🔍",
+      "icon": "check",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "shimmer"
+    },
+    {
+      "anchor_phrase": "answer all your questions",
+      "text": "ASK ANYTHING 💬",
+      "icon": "people",
+      "color": "green",
+      "pos": "top-left",
+      "effect": "pixelate"
+    },
+    {
+      "anchor_phrase": "visit us at our sydney",
+      "text": "SYDNEY + PARRAMATTA 📍",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top-right",
+      "effect": "particles"
+    },
+    {
+      "anchor_phrase": "for the whole week",
+      "text": "MON–FRI · WHOLE WEEK 📅",
+      "icon": "check",
+      "color": "navy",
+      "pos": "top-left"
+    }
   ],
-
-  "cta": { "text": "COME ASK US! 🙋", "start": 21.55, "end": 23.6 },
-
-  "end_cards": { "disclaimer": true, "consultation": false },
-
+  "cta": {
+    "text": "COME ASK US! 🙋",
+    "start": 21.55,
+    "end": 23.6
+  },
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  },
   "_zoom_note": "Jump-cut style: wide clips get a slow push, tight clips a static 16% crop ('tight:0.16', added to build_base.py's zoom_filter for this reel), alternating every cut. Clip 0 gets a punch on 'pareshaan' (raw time) under the hero slam.",
   "zoom": {
     "amount": 0.06,
-    "segments": ["in", "tight:0.16", "out", "tight:0.16", "in", "tight:0.16", "out", "tight:0.16", "in"],
+    "segments": [
+      "in",
+      "tight:0.16",
+      "out",
+      "tight:0.16",
+      "in",
+      "tight:0.16",
+      "out",
+      "tight:0.16",
+      "in"
+    ],
     "hits": [
-      { "clip": 0, "at": [11.76, 12.45], "amount": 0.12 }
+      {
+        "clip": 0,
+        "at": [
+          11.76,
+          12.45
+        ],
+        "amount": 0.12
+      }
     ]
   },
-
   "voice_denoise": true,
-
-  "music": { "track": "beauty-flow-kevin-macleod.mp3", "volume": 0.05 },
-
+  "music": {
+    "track": "beauty-flow-kevin-macleod.mp3",
+    "volume": 0.05
+  },
   "sfx": {
     "cues": [
-      { "file": "whoosh-impact.mp3", "at": 4.65, "volume": 0.8 },
-      { "file": "transition-whoosh.mp3", "at": 11.23, "volume": 0.45 },
-      { "file": "pop.mp3", "at": 17.15, "volume": 0.4 },
-      { "file": "success-chime.mp3", "at": 21.65, "volume": 0.7 }
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 4.65,
+        "volume": 0.8
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 11.23,
+        "volume": 0.45
+      },
+      {
+        "file": "pop.mp3",
+        "at": 17.15,
+        "volume": 0.4
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 21.65,
+        "volume": 0.7
+      }
     ]
   },
-
   "thumbnail": {
     "at": 8.5,
     "kicker": "🎓 IN-PERSON SEMINAR · 6–16 OCT",
-    "headline": "VISA CHANGES **STRESSING YOU?**"
+    "headline": "VISA CHANGES **STRESSING YOU?**",
+    "style": "classic"
   },
-
   "caption_txt": {
     "title": "Stressed About the Student Visa Changes? Come and Ask Your Questions — 6–16 October",
     "body": [

@@ -5,10 +5,11 @@ same HyperFrames design language as the B-roll stingers.
 Renders WORK/opener.mp4 (1080x1920/30, bt709-tagged, silent stereo track) which
 build_composite.py prepends ahead of the captioned content when present.
 Delete WORK/opener.mp4 to ship without the cold open."""
-import os, json, shutil, subprocess
+import os, json, shutil
 
 from reel_paths import WORK, hyperframes_cli  # noqa: E402 -- per-reel folders
-from ffmpeg_util import FF, COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
+from ffmpeg_util import COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
+from render_progress import hf_render  # noqa: E402 -- render with a progress bar
 
 DUR = 2.3
 
@@ -210,12 +211,7 @@ def main():
               open(os.path.join(proj, "meta.json"), "w"))
 
     raw = os.path.join(WORK, "opener_raw.mp4")
-    cli = hyperframes_cli()
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
-    subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(raw),
-                    "-f", "30", "-q", "standard", "--quiet"],
-                   cwd=proj, check=True, env=env)
+    hf_render(hyperframes_cli(), proj, raw, 30, "standard")
 
     # bt709 tags + silent stereo bed so the concat demuxer sees uniform streams
     out = os.path.join(WORK, "opener.mp4")

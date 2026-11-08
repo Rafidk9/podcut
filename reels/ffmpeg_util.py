@@ -8,7 +8,8 @@ import os
 import shutil
 import subprocess
 import sys
-import time
+
+from render_progress import Progress
 
 FF = shutil.which("ffmpeg") or "ffmpeg"
 FFPROBE = shutil.which("ffprobe") or "ffprobe"
@@ -66,12 +67,6 @@ def _find_total_duration(args):
     return best
 
 
-def _bar(pct, elapsed, width=28):
-    filled = int(width * pct / 100)
-    eta = (elapsed / pct * (100 - pct)) if pct > 0 else 0
-    return f"[{'#' * filled}{'-' * (width - filled)}] {pct:3d}%  {elapsed:5.1f}s elapsed  ETA {eta:4.0f}s"
-
-
 def run(args, label=None):
     """Run ffmpeg. Shows a live progress bar (percent, elapsed, ETA) whenever
     the render's approximate total duration can be determined; falls back to
@@ -79,26 +74,18 @@ def run(args, label=None):
     grabs, audio extraction) where a bar isn't useful. label defaults to the
     output file's basename (by convention the last element of args), so
     every call site gets an identifying bar for free without having to pass
-    one.
-
-    In a real terminal the bar live-updates on one line (\\r). Redirected to
-    a log file (e.g. this pipeline's backgrounded tool calls) \\r overwrites
-    just pile up as one unreadable line, so that case prints periodic
-    discrete lines instead, throttled to roughly every 5% / 3s so a long
-    render doesn't spam hundreds of them."""
+    one."""
     total = _find_total_duration(args)
     if not total or total <= 0:
         subprocess.run([FF, "-y", "-hide_banner", "-loglevel", "error"] + args, check=True)
         return
 
     tag = label or (os.path.basename(args[-1]) if args else "ffmpeg")
-    interactive = sys.stdout.isatty()
     cmd = [FF, "-y", "-hide_banner", "-loglevel", "error", "-nostats",
            "-progress", "pipe:1"] + args
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              text=True, bufsize=1)
-    t0 = time.time()
-    last_pct, last_print = -1, 0.0
+    bar = Progress(tag, total)
     for line in proc.stdout:
         line = line.strip()
         if not line.startswith("out_time_ms="):
@@ -107,25 +94,11 @@ def run(args, label=None):
             cur = int(line.split("=", 1)[1]) / 1_000_000
         except ValueError:
             continue
-        pct = max(0, min(100, int(cur / total * 100)))
-        elapsed = time.time() - t0
-        if interactive:
-            if pct != last_pct:
-                last_pct = pct
-                sys.stdout.write(f"\r{tag}: {_bar(pct, elapsed)}   ")
-                sys.stdout.flush()
-        elif pct >= last_pct + 5 and elapsed - last_print >= 3:
-            last_pct, last_print = pct, elapsed
-            print(f"{tag}: {_bar(pct, elapsed)}")
+        bar.update(cur)
 
     ret = proc.wait()
     stderr = proc.stderr.read()
-    elapsed = time.time() - t0
-    if interactive:
-        sys.stdout.write(f"\r{tag}: [{'#' * 28}] done in {elapsed:.1f}s" + " " * 20 + "\n")
-        sys.stdout.flush()
-    else:
-        print(f"{tag}: done in {elapsed:.1f}s")
+    bar.finish(ok=ret == 0)
     if ret != 0:
         if stderr:
             print(stderr, file=sys.stderr)

@@ -1,0 +1,109 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liquid Morph motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = '', DEFAULT_SUB = '';
+const DEFAULT_COLORS = { bg: '#e9e8ef', c1: '#ffb3d9', c2: '#9be7ff', c3: '#d6c2ff' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// chrome-pastel metaballs, shaded per pixel at reduced resolution
+const SC = 3, bw = Math.ceil(W / SC), bh = Math.ceil(H / SC);
+const buf = off(bw, bh), bx = buf.getContext('2d'), img = bx.createImageData(bw, bh);
+const A = hexRGB(COL.c1), B = hexRGB(COL.c2), C = hexRGB(COL.c3), BG = hexRGB(COL.bg);
+const NB = 5;
+function balls(t) {
+  const T = t / DUR * TAU, out = [];
+  for (let i = 0; i < NB; i++) {
+    const k = i / NB * TAU;
+    const rr = U * (.085 + .025 * Math.sin(T * 2 + i)) * (i === 0 ? 1.3 : 1);
+    const orb = U * (.2 + .1 * Math.sin(T + i * 1.7)) * (i === 0 ? .15 : 1);
+    out.push([CX + Math.cos(k + T * (i % 2 ? 1 : -1)) * orb, CY + Math.sin(k * 1.3 + T * (i % 2 ? 1 : -1)) * orb * 1.25, rr]);
+  }
+  return out;
+}
+function draw(t) {
+  const bs = balls(t), d = img.data, T = t / DUR * TAU;
+  for (let j = 0; j < bh; j++) {
+    const y = j * SC;
+    for (let i = 0; i < bw; i++) {
+      const x = i * SC; let f = 0, gx = 0, gy = 0;
+      for (const b of bs) { const dx = x - b[0], dy = y - b[1], r2 = dx * dx + dy * dy + 1, v = b[2] * b[2] / r2; f += v; gx += -2 * v * dx / r2; gy += -2 * v * dy / r2; }
+      const o = (j * bw + i) * 4;
+      const edge = clamp((f - 1) / .06);
+      if (edge <= 0) { if (ALPHA) { d[o + 3] = 0; } else { d[o] = BG[0]; d[o + 1] = BG[1]; d[o + 2] = BG[2]; d[o + 3] = 255; } continue; }
+      // heightfield normal: h = sqrt(f-1)
+      const hk = U * .05 / Math.sqrt(Math.max(f - .95, .02));
+      let nx = -gx * hk, ny = -gy * hk, nz = 1; const nl = Math.hypot(nx, ny, nz); nx /= nl; ny /= nl; nz /= nl;
+      // iridescent env: smooth hue from normal + screen position + time
+      const h = nx * .45 - ny * .35 + y / H * .4 + T * .1;
+      const w1 = .5 + .5 * Math.cos(h * TAU), w2 = .5 + .5 * Math.cos((h - .33) * TAU), w3 = .5 + .5 * Math.cos((h - .66) * TAU);
+      const ws = w1 + w2 + w3 + 1e-3;
+      let r = (A[0] * w1 + B[0] * w2 + C[0] * w3) / ws, g = (A[1] * w1 + B[1] * w2 + C[1] * w3) / ws, bl = (A[2] * w1 + B[2] * w2 + C[2] * w3) / ws;
+      const rim = Math.pow(1 - nz, 3), spec = Math.pow(clamp(-nx * .5 - ny * .6 + nz * .62), 40), diff = .82 + .22 * nz;
+      r = r * diff * (1 - rim * .25) + 255 * spec * .95 + 40 * rim; g = g * diff * (1 - rim * .25) + 255 * spec * .95 + 30 * rim; bl = bl * diff * (1 - rim * .2) + 255 * spec * .95 + 60 * rim;
+      if (ALPHA) { d[o] = clamp(r, 0, 255); d[o + 1] = clamp(g, 0, 255); d[o + 2] = clamp(bl, 0, 255); d[o + 3] = 255 * edge; }
+      else { d[o] = lerp(BG[0], clamp(r, 0, 255), edge); d[o + 1] = lerp(BG[1], clamp(g, 0, 255), edge); d[o + 2] = lerp(BG[2], clamp(bl, 0, 255), edge); d[o + 3] = 255; }
+    }
+  }
+  bx.putImageData(img, 0, 0);
+  bg(COL.bg);
+  // soft contact shadow
+  if (!ALPHA) { const g = ctx.createRadialGradient(CX, CY + U * .42, 0, CX, CY + U * .42, U * .35); g.addColorStop(0, 'rgba(60,50,90,.18)'); g.addColorStop(1, 'rgba(60,50,90,0)'); ctx.fillStyle = g; ctx.save(); ctx.translate(0, 0); ctx.scale(1, 1); ctx.fillRect(0, 0, W, H); ctx.restore(); }
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(buf, 0, 0, bw * SC, bh * SC);
+  if (TEXT) { fitFont(TEXT, 800, U * .09, W * .85); ctx.textAlign = 'center'; ctx.fillStyle = '#1b1b24'; ctx.fillText(TEXT, CX, H * .86); }
+  if (SUB) { font(500, U * .032); ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(27,27,36,.6)'; ctx.fillText(SUB, CX, H * .86 + U * .06); }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

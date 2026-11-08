@@ -1,0 +1,109 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neo Brutalism motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'SHIP IT.', DEFAULT_SUB = '96% FASTER';
+const DEFAULT_COLORS = { bg: '#ffe14d', c1: '#ff5fa2', c2: '#6ad1ff', c3: '#ff7a2f' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// neo-brutalist UI: thick black borders, hard offset shadows, cards slam in, button gets pressed, sticker spins
+const INK = '#111', B = () => Math.max(3, U * .009), SH = () => U * .018;
+function box(x, y, w, h, fill, pressed, r) {
+  const o = pressed ? SH() * .2 : SH();
+  rrect(x + SH(), y + SH(), w, h, r || 0); ctx.fillStyle = INK; ctx.fill();
+  rrect(x + SH() - o, y + SH() - o, w, h, r || 0); ctx.fillStyle = fill; ctx.fill(); ctx.lineWidth = B(); ctx.strokeStyle = INK; ctx.stroke();
+  return [x + SH() - o, y + SH() - o];
+}
+function star(x, y, r, n, rot) { ctx.beginPath(); for (let i = 0; i < n * 2; i++) { const a = rot + i / (n * 2) * TAU - Math.PI / 2, rr = i % 2 ? r * .55 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } ctx.closePath(); }
+function slam(t, st) { const p = prog(t, st, st + .32); return [ease.back(p), p]; }
+function draw(t) {
+  bg(COL.bg);
+  if (!ALPHA) { ctx.strokeStyle = 'rgba(0,0,0,.08)'; ctx.lineWidth = 1; const s = U / 18; for (let x = 0; x < W; x += s) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); } for (let y = 0; y < H; y += s) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); } }
+  const cw = Math.min(W * .8, U * .86), x0 = CX - cw / 2, y0 = CY - U * .42;
+  ctx.textBaseline = 'middle';
+  // card 1: headline
+  let [p, raw] = slam(t, .1);
+  if (raw > 0) { ctx.save(); ctx.translate(CX, y0 + U * .12); ctx.rotate(-.04 * (1 - p) - .015); ctx.scale(p, p); ctx.translate(-CX, -(y0 + U * .12));
+    const [bx, by] = box(x0, y0, cw, U * .24, '#fff'); ctx.fillStyle = INK; ctx.textAlign = 'left'; fitFont(TEXT, 900, U * .12, cw * .8, '"Arial Black",' + SANS); ctx.fillText(TEXT, bx + U * .05, by + U * .1);
+    ctx.fillStyle = '#222'; rrect(bx + U * .05, by + U * .17, cw * .55, U * .022, U * .011); ctx.fill(); ctx.restore(); }
+  // card 2: button (gets pressed at 1.6s and 3.8s)
+  [p, raw] = slam(t, .45);
+  if (raw > 0) {
+    const pressed = (t > 1.6 && t < 1.78) || (t > 3.8 && t < 3.98);
+    const bw = cw * .58, bh = U * .13, bx0 = x0 + cw * .08, by0 = y0 + U * .34;
+    ctx.save(); ctx.translate(bx0 + bw / 2, by0 + bh / 2); ctx.scale(p, p); ctx.translate(-(bx0 + bw / 2), -(by0 + bh / 2));
+    const [bx, by] = box(bx0, by0, bw, bh, COL.c1, pressed, U * .02); ctx.fillStyle = INK; ctx.textAlign = 'center'; fitFont('CLICK ME →', 900, U * .045, bw * .8, '"Arial Black",' + SANS); ctx.fillText('CLICK ME →', bx + bw / 2, by + bh / 2);
+    ctx.restore();
+    // cursor
+    const cp = ease.inOut(prog(t, 1.0, 1.55)), cx = lerp(x0 + cw * 1.05, bx0 + bw * .7, cp), cy = lerp(y0 + U * .7, by0 + bh * .7, cp) + (pressed ? U * .006 : 0);
+    if (t > .9 && t < 2.6) { ctx.save(); ctx.translate(cx, cy); const s = U * .06; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, s); ctx.lineTo(s * .28, s * .74); ctx.lineTo(s * .5, s * 1.1); ctx.lineTo(s * .64, s * 1.02); ctx.lineTo(s * .44, s * .68); ctx.lineTo(s * .78, s * .66); ctx.closePath(); ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = B() * .6; ctx.strokeStyle = INK; ctx.stroke(); ctx.restore(); }
+  }
+  // star sticker
+  [p, raw] = slam(t, .7);
+  if (raw > 0) { const sx = x0 + cw * .82, sy = y0 + U * .39; ctx.save(); ctx.translate(sx, sy); ctx.scale(p, p); ctx.rotate(t * .8); star(SH() * .6, SH() * .6, U * .07, 8, 0); ctx.fillStyle = INK; ctx.fill(); star(0, 0, U * .07, 8, 0); ctx.fillStyle = COL.c3; ctx.fill(); ctx.lineWidth = B(); ctx.strokeStyle = INK; ctx.stroke(); ctx.restore(); }
+  // card 3: stat
+  [p, raw] = slam(t, 1.0);
+  if (raw > 0) { const by0 = y0 + U * .55; ctx.save(); ctx.translate(CX, by0 + U * .1); ctx.rotate(.02 + .05 * (1 - p)); ctx.scale(p, p); ctx.translate(-CX, -(by0 + U * .1));
+    const [bx, by] = box(x0 + cw * .15, by0, cw * .85, U * .2, COL.c2);
+    const m = (SUB.match(/\d+/) || ['0'])[0], cnt = Math.round(+m * ease.out(prog(t, 1.2, 2.2))), txt = SUB.replace(m, String(cnt));
+    ctx.fillStyle = INK; ctx.textAlign = 'left'; fitFont(txt, 900, U * .085, cw * .72, '"Arial Black",' + SANS); ctx.fillText(txt, bx + U * .05, by + U * .1); ctx.restore();
+    // badge
+    const bp = ease.back(prog(t, 2.3, 2.6)); if (bp > 0) { ctx.save(); ctx.translate(x0 + cw * .97, by0 + U * .2); ctx.scale(bp, bp); ctx.rotate(-.3 + Math.sin(t * 3) * .05);
+      ctx.beginPath(); ctx.arc(SH() * .5, SH() * .5, U * .06, 0, TAU); ctx.fillStyle = INK; ctx.fill(); ctx.beginPath(); ctx.arc(0, 0, U * .06, 0, TAU); ctx.fillStyle = '#9dff6a'; ctx.fill(); ctx.lineWidth = B(); ctx.stroke();
+      ctx.fillStyle = INK; ctx.textAlign = 'center'; font(900, U * .03, '"Arial Black",' + SANS); ctx.fillText('NEW', 0, 0); ctx.restore(); }
+  }
+  ctx.textBaseline = 'alphabetic';
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

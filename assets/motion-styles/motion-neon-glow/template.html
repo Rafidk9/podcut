@@ -1,0 +1,103 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neon Glow motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'NEON', DEFAULT_SUB = 'OPEN LATE';
+const DEFAULT_COLORS = { bg: '#0a0610', c1: '#ff2bd6', c2: '#2ef2ff', c3: '#ffffff' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// neon sign: frame tube + text tube, power-on flicker, buzz, floor reflection
+const FLICK = [[.05, .09], [.14, .2], [.24, .27], [.31, .7]];   // frame on-intervals (s)
+const FLICK2 = [[.55, .6], [.66, .7], [.78, 99]];               // text
+function on(t, iv) { for (const [a, b] of iv) if (t >= a && t < b) return 1; return 0; }
+function tube(path, col, power, width) {
+  if (power <= 0) { ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = width; path(); ctx.stroke(); return; }
+  ctx.lineCap = ctx.lineJoin = 'round';
+  for (const [blur, w, a] of [[U * .09, width * 3, .35], [U * .04, width * 1.8, .6], [U * .012, width, 1]]) {
+    ctx.shadowColor = col; ctx.shadowBlur = blur * power; ctx.strokeStyle = hexA(col, a * power); ctx.lineWidth = w; path(); ctx.stroke();
+  }
+  ctx.shadowBlur = 0; ctx.strokeStyle = `rgba(255,255,255,${.85 * power})`; ctx.lineWidth = width * .35; path(); ctx.stroke();
+}
+function scene(t, pw1, pw2) {
+  const fw = Math.min(W * .8, U * .9), fh = fw * .55, fx = CX - fw / 2, fy = CY - fh / 2;
+  tube(() => { rrect(fx, fy, fw, fh, U * .04); }, COL.c1, pw1, U * .012);
+  tube(() => { rrect(fx + U * .03, fy + U * .03, fw - U * .06, fh - U * .06, U * .025); }, COL.c2, pw1 * .6, U * .005);
+  const s = fitFont(TEXT, 800, fh * .5, fw * .78); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  for (const [blur, a] of [[U * .08, .5], [U * .03, .8], [U * .008, 1]]) { ctx.shadowColor = COL.c1; ctx.shadowBlur = blur * pw2; ctx.strokeStyle = pw2 ? hexA(COL.c1, a * pw2) : 'rgba(255,255,255,.08)'; ctx.lineWidth = s * .07; ctx.strokeText(TEXT, CX, CY - fh * .05); }
+  ctx.shadowBlur = 0; ctx.fillStyle = pw2 ? `rgba(255,235,250,${.95 * pw2})` : 'rgba(255,255,255,.05)'; ctx.fillText(TEXT, CX, CY - fh * .05);
+  if (SUB) { font(600, fh * .1); ctx.shadowColor = COL.c2; ctx.shadowBlur = U * .03 * pw2; ctx.fillStyle = pw2 ? hexA(COL.c2, pw2) : 'rgba(255,255,255,.06)'; ctx.fillText(SUB.split('').join(' '), CX, CY + fh * .3); ctx.shadowBlur = 0; }
+  return fy + fh;
+}
+function draw(t) {
+  bg(COL.bg);
+  const buzz = .92 + .08 * Math.sin(t * 90) * Math.sin(t * 7.3);
+  let pw1 = on(t, FLICK) || (t >= .7 ? 1 : 0), pw2 = on(t, FLICK2);
+  if (t > 3.6 && t < 3.68) pw2 = .25;             // mid-loop flicker
+  if (t > DUR - .35) pw1 = pw2 = clamp((DUR - t) / .35);
+  pw1 *= buzz; pw2 *= buzz;
+  // wall glow
+  if (!ALPHA) { const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, U * .8); g.addColorStop(0, hexA(COL.c1, .22 * Math.max(pw1, pw2))); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  const bottom = scene(t, pw1, pw2);
+  // floor reflection
+  if (!ALPHA) {
+    const fl = bottom + U * .12;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, fl, W, H - fl); ctx.clip();
+    ctx.translate(0, fl * 2); ctx.scale(1, -1); ctx.globalAlpha = .22; ctx.filter = `blur(${U * .006}px)`; scene(t, pw1, pw2); ctx.restore();
+    const g = ctx.createLinearGradient(0, fl, 0, H); g.addColorStop(0, 'rgba(10,6,16,.2)'); g.addColorStop(.5, COL.bg); ctx.fillStyle = g; ctx.fillRect(0, fl, W, H - fl);
+    ctx.fillStyle = 'rgba(255,255,255,.05)'; ctx.fillRect(0, fl, W, 2);
+  }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

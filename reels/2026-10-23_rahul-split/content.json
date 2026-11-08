@@ -1,0 +1,121 @@
+{
+  "_comment": "Rahul Dhanda (Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640 -- see pfec-presenters) on South Australia's nomination program (23 Oct 2026). SPLIT FORMAT: split.py stacks the longtake motion panel (top_take/, 1080x940, synced to the output timeline) over Rahul cropped into the bottom 980px. Re-run `python split.py` after any build_base.py. onetake NOT used (commercial reel) -- the panel is pfec-longtake.",
+  "gold": [
+    "SOUTH",
+    "AUSTRALIA",
+    "NOMINATION",
+    "PROGRAM",
+    "31ST",
+    "THIRTY-FIRST",
+    "JANUARY",
+    "2027",
+    "ROI",
+    "EOI",
+    "PRIORITIZE",
+    "INVITED",
+    "OVERSEAS",
+    "CONTACT"
+  ],
+  "caption_highlight": true,
+  "_cap_note": "Captions ride the seam between the motion panel (0-940) and Rahul (940-1920): 49% = 941px.",
+  "cap_top": "49%",
+  "name": {
+    "text": "Rahul Dhanda",
+    "role": "Director · PFEC Global Parramatta<br>Registered Migration Agent",
+    "start": 1.0,
+    "end": 4.6
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418640"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "badges": [],
+  "highlights": [],
+  "documents": [],
+  "hero_words": [],
+  "voice_denoise": true,
+  "_music_note": "'Digital Lemonade' (CC BY 4.0, in assets + CREDIT.txt, unused by any current config). Same low bed as the 2026-10-21 Rahul reel.",
+  "music": {
+    "track": "digital-lemonade-kevin-macleod.mp3",
+    "volume": 0.022,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "limiter": {
+    "limit": 0.72
+  },
+  "_sfx_note": "8 cues on the panel's big moves (see top_take/comp.html T): NOW OPEN pop, card->calendar whoosh, '31' slam, ROI press tick, queue jump whoosh, INVITED chime, overseas whoosh, NO SEPARATE ROI stamp.",
+  "sfx": {
+    "cues": [
+      {
+        "file": "pop.mp3",
+        "at": 2.03,
+        "volume": 0.075
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 4.15,
+        "volume": 0.12
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 7.1,
+        "volume": 0.15
+      },
+      {
+        "file": "tick.mp3",
+        "at": 11.18,
+        "volume": 0.09
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 15.4,
+        "volume": 0.12
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 17.5,
+        "volume": 0.15
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 20.45,
+        "volume": 0.12
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 30.08,
+        "volume": 0.15
+      }
+    ]
+  },
+  "thumbnail": {
+    "at": 8.9,
+    "kicker": "",
+    "headline": "",
+    "style": "classic"
+  },
+  "caption_txt": {
+    "title": "South Australia Has Opened Its Nomination Program! 🇦🇺📢",
+    "body": [
+      "South Australia has recently opened its nomination program for this financial year, but only for clients whose visa is going to expire on 31 January 2027. If you are one of them, you can submit your ROI. There is a reason they have mentioned this date: they might prioritise your case, and you can be invited if you meet all other nomination requirements.",
+      "For overseas clients, you don't need to submit an ROI for South Australia. You can submit your EOI and you will be invited through the EOI itself. Want to know more? Our Registered Migration Agent Rahul Dhanda (MARN 2418640) and the PFEC team can help, so get in touch with us today."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #SouthAustralia #SANomination #StateNomination #ROI #EOI #SkillSelect #AustraliaPR #MigrationAgent",
+    "music_credit": "Music: \"Digital Lemonade\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  },
+  "_end_cards_note": "Consultation card dropped as on Rahul's other reels (shared card lists 6 offices, no Parramatta). Disclaimer kept; all 7 offices are in the panel's closing lockup and in caption.txt.",
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  },
+  "_name_note": "Role split over two lines (raw HTML <br>) so Parramatta fits without widening the card; approved by user from a preview still 2026-10-23."
+}

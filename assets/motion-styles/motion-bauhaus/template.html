@@ -1,0 +1,98 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bauhaus motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = '', DEFAULT_SUB = '';
+const DEFAULT_COLORS = { bg: '#f2ead8', c1: '#e3241b', c2: '#f5b700', c3: '#1d4fb8', c4: '#141414' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// Bauhaus grid: primary geometric tiles that rotate, flip and swap on a beat
+const COLSN = 4, ROWSN = Math.max(4, Math.round(4 * H / W));
+const cell = Math.min(W * .88 / COLSN, H * .8 / ROWSN), gw = cell * COLSN, gh = cell * ROWSN;
+const PAL = [COL.c1, COL.c2, COL.c3, COL.c4];
+reseed(16);
+const tiles = []; for (let i = 0; i < COLSN * ROWSN; i++) tiles.push({ k: (rnd() * 6) | 0, c: (rnd() * 4) | 0, c2: (rnd() * 4) | 0, r: (rnd() * 4) | 0, d: rnd() });
+function shape(k, s, col, col2) {
+  const h = s / 2; ctx.fillStyle = col;
+  if (k === 0) { ctx.beginPath(); ctx.arc(0, 0, h * .9, 0, TAU); ctx.fill(); }
+  if (k === 1) { ctx.beginPath(); ctx.arc(-h, h, s, -Math.PI / 2, 0); ctx.lineTo(-h, h); ctx.fill(); }          // quarter circle
+  if (k === 2) { ctx.beginPath(); ctx.arc(0, h, h, Math.PI, 0); ctx.fill(); ctx.fillStyle = col2; ctx.beginPath(); ctx.arc(0, -h, h, 0, Math.PI); ctx.fill(); } // two halves
+  if (k === 3) { ctx.beginPath(); ctx.moveTo(-h, h); ctx.lineTo(h, h); ctx.lineTo(-h, -h); ctx.fill(); }        // triangle
+  if (k === 4) { ctx.fillRect(-h, -h, s, s); ctx.fillStyle = col2 === col ? COL.bg : col2; ctx.beginPath(); ctx.arc(0, 0, h * .45, 0, TAU); ctx.fill(); }
+  if (k === 5) { for (let i = 0; i < 3; i++) ctx.fillRect(-h, -h + i * s / 3 + s / 12, s, s / 6); }               // stripes
+}
+function draw(t) {
+  bg(COL.bg);
+  const x0 = CX - gw / 2, y0 = CY - gh / 2, beat = DUR / 6;
+  tiles.forEach((tl, i) => {
+    const cx = x0 + (i % COLSN + .5) * cell, cy = y0 + (Math.floor(i / COLSN) + .5) * cell;
+    const intro = ease.back(prog(t, tl.d * .6, tl.d * .6 + .45));
+    const b = Math.floor(t / beat), lt = (t % beat) / beat;
+    const turn = ((b + i) % 3 === 0) ? ease.inOut(prog(lt, .1, .45)) : 0;  // rotate 90° on some beats
+    const rot = (tl.r + b * (((i % 3) === 0) ? 1 : 0) + turn) * Math.PI / 2;
+    const flipK = ((i * 7 + b) % 5 === 0);
+    const k = flipK && lt > .5 ? (tl.k + b) % 6 : (tl.k + (flipK ? b - 1 : 0) + 6) % 6;
+    const sx = flipK ? Math.abs(Math.cos(clamp((lt - .3) / .4) * Math.PI)) : 1;
+    ctx.save(); ctx.beginPath(); ctx.rect(cx - cell / 2, cy - cell / 2, cell, cell); ctx.clip();
+    ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(intro * sx, intro);
+    const col = PAL[(tl.c + (flipK && lt > .5 ? 1 : 0)) % 4], col2 = PAL[(tl.c2 + 1) % 4];
+    shape(k, cell * .98, col, col2 === col ? PAL[(tl.c2 + 2) % 4] : col2);
+    ctx.restore();
+  });
+  ctx.strokeStyle = COL.c4; ctx.lineWidth = Math.max(2, U * .006); ctx.strokeRect(x0, y0, gw, gh);
+  if (TEXT) { const s = fitFont(TEXT.toLowerCase(), 800, U * .1, gw); ctx.textAlign = 'left'; ctx.fillStyle = COL.c4; ctx.fillText(TEXT.toLowerCase(), x0, y0 - s * .35); }
+  if (SUB) { font(600, U * .03); ctx.textAlign = 'right'; ctx.fillStyle = COL.c4; ctx.fillText(SUB.toLowerCase(), x0 + gw, y0 + gh + U * .05); }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

@@ -1,0 +1,70 @@
+{
+  "_comment": "Apurva Golani (RMA, MARN 2518793) -- employer sponsorship: 'still not visa-ready' explainer (5 Nov 2026). 8 phone takes, each at a different spot in the same building. HLG HDR portrait, default tone-map path, no flip ('Colliers' sign reads correctly). File order is NOT script order: 105744 (hook) comes before 105715.",
+  "_cut_note": "Explainer format: ONE span per take so every cut is hidden by the window closing. Slates/false starts dropped. 110618 runs to 6.60 so the end lockup holds.",
+  "clips": [
+    {
+      "name": "20261105_105744",
+      "ext": ".mp4",
+      "keep": [
+        2.12,
+        7.02
+      ]
+    },
+    {
+      "name": "20261105_105715",
+      "ext": ".mp4",
+      "keep": [
+        1.9,
+        4.02
+      ]
+    },
+    {
+      "name": "20261105_105913",
+      "ext": ".mp4",
+      "keep": [
+        3.1,
+        7.22
+      ]
+    },
+    {
+      "name": "20261105_110047",
+      "ext": ".mp4",
+      "keep": [
+        0.98,
+        7.38
+      ]
+    },
+    {
+      "name": "20261105_110328",
+      "ext": ".mp4",
+      "keep": [
+        1.68,
+        8.26
+      ]
+    },
+    {
+      "name": "20261105_110410",
+      "ext": ".mp4",
+      "keep": [
+        1.82,
+        3.2
+      ]
+    },
+    {
+      "name": "20261105_110519",
+      "ext": ".mp4",
+      "keep": [
+        2.36,
+        7.88
+      ]
+    },
+    {
+      "name": "20261105_110618",
+      "ext": ".mp4",
+      "keep": [
+        1.78,
+        6.6
+      ]
+    }
+  ]
+}

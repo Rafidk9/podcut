@@ -1,0 +1,182 @@
+{
+  "_comment": "Tushar Chopra (RMA, MARN 2418420 -- see pfec-presenters / 2026-08-19 reel) on the 189 invitation round, Thu 15 Oct 2026 (verified Thursday). Fast-paced jump-cut edit: content segments open at 0.00 / 0.99 / 2.48 / 5.14 / 7.68 / 9.54, end 11.59. Segments 1 and 2 carry baked text-behind-subject type from text_behind.py (re-run it after any build_base.py).",
+  "gold": [
+    "189",
+    "ROUND",
+    "THURSDAY",
+    "FIFTEENTH",
+    "OCTOBER",
+    "LUCK",
+    "EOIS",
+    "ASSISTANCE",
+    "CONTACT"
+  ],
+  "caption_highlight": true,
+  "cap_top": "60%",
+  "name": {
+    "text": "Tushar Chopra",
+    "role": "Registered Migration Agent",
+    "start": 7.75,
+    "end": 10.4
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418420"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "_hook_note": "Banner only over seg 0 ('the long-awaited'), so it clears before the giant 189 plate drops in at 0.99.",
+  "hook_banner": {
+    "text": "🚨 189 INVITATION ROUND",
+    "start": 0.0,
+    "end": 0.97
+  },
+  "_top_zone_note": "Badges/highlights sit at y~232, the same band the text-behind type owns from 0.99 to 5.14, so every top-zone element is anchored after 5.14. Different effects per element (house rule).",
+  "badges": [
+    {
+      "anchor_phrase": "good luck",
+      "text": "GOOD LUCK 🍀",
+      "icon": "star",
+      "color": "green",
+      "pos": "top-left",
+      "effect": "particles"
+    },
+    {
+      "anchor_phrase": "need any assistance",
+      "text": "NEED HELP? 🙋",
+      "icon": "people",
+      "color": "cyan",
+      "pos": "top-right",
+      "effect": "shimmer"
+    }
+  ],
+  "highlights": [
+    {
+      "anchor_phrase": "lodged their EOIs",
+      "text": "EOI LODGED? ✅",
+      "pos": "top-right",
+      "color": "gold"
+    }
+  ],
+  "cta": {
+    "text": "CONTACT US 👇",
+    "start": 10.5,
+    "end": 11.59
+  },
+  "documents": [],
+  "hero_words": [],
+  "zoom": {
+    "amount": 0.1,
+    "segments": [
+      "tight:0.16",
+      "hold",
+      "tight:0.08",
+      "hold",
+      "tight:0.18",
+      "in"
+    ],
+    "hits": [
+      {
+        "clip": 3,
+        "at": [
+          8.68,
+          9.04
+        ],
+        "amount": 0.14
+      },
+      {
+        "clip": 5,
+        "at": [
+          14.16,
+          14.78
+        ],
+        "amount": 0.12
+      }
+    ]
+  },
+  "voice_denoise": true,
+  "_music_note": "'Nonstop' (CC BY 4.0, already in CREDIT.txt, first use in a reel). Measures -17.3 LUFS vs Funky Chunk -14.5 at the 0.05 baseline -> parity ~0.069; 0.09 is ~2 dB over parity for a more driving, fast-paced bed.",
+  "music": {
+    "track": "nonstop-kevin-macleod.mp3",
+    "volume": 0.09,
+    "duck_ratio": 8,
+    "duck_threshold": 0.05
+  },
+  "_sfx_note": "10 cues, so volumes scaled down from stock (see README true-peak note). whoosh-impact cues are offset -0.165 so the thud lands as the 189 digits / the 15 slam settle.",
+  "sfx": {
+    "cues": [
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 1.04,
+        "volume": 0.34
+      },
+      {
+        "file": "pop.mp3",
+        "at": 2.78,
+        "volume": 0.14
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 3.9,
+        "volume": 0.3
+      },
+      {
+        "file": "pop.mp3",
+        "at": 4.46,
+        "volume": 0.14
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 5.14,
+        "volume": 0.22
+      },
+      {
+        "file": "pop.mp3",
+        "at": 5.23,
+        "volume": 0.14
+      },
+      {
+        "file": "tick.mp3",
+        "at": 6.39,
+        "volume": 0.12
+      },
+      {
+        "file": "pop.mp3",
+        "at": 8.17,
+        "volume": 0.12
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 9.54,
+        "volume": 0.22
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 10.5,
+        "volume": 0.3
+      }
+    ]
+  },
+  "thumbnail": {
+    "at": 1.7,
+    "kicker": "🚨 189 ROUND · THU 15 OCT",
+    "headline": "",
+    "style": "classic"
+  },
+  "caption_txt": {
+    "title": "189 Invitation Round This Thursday, 15 October! 🚨🚨",
+    "body": [
+      "The long-awaited 189 (Skilled Independent) invitation round is happening this Thursday, 15 October. If you've lodged your Expression of Interest (EOI), this is the round you've been waiting for.",
+      "Good luck to everyone who has lodged their EOI! If you need any assistance with your EOI or your next steps, our Registered Migration Agent Tushar Chopra (MARN 2418420) and the PFEC team are here to help."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#PFECGlobal #189Visa #SkilledIndependent #InvitationRound #EOI #SkillSelect #SkilledMigration #AustraliaPR #MigrationAgent #AustralianMigration",
+    "music_credit": "Music: \"Nonstop\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)",
+    "_music_credit_note": "Kept although the house caption layout has no credit line: Nonstop is CC BY 4.0 and its attribution must appear somewhere the track is used."
+  }
+}

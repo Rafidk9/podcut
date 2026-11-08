@@ -1,0 +1,150 @@
+{
+  "_comment": "Rahul Dhanda (Director & Registered Migration Agent, PFEC Global Parramatta, MARN 2418640 -- see pfec-presenters) announcing the 190 invitation round is happening now (21 Oct 2026). ASR heard 'one ninety' = subclass 190 (NOT the 189 of the 2026-10-15 take) -- merged into one '190' token in work/raw.transcript.json. 8 segments, content ends 16.56s. Motion graphics/kinetic text/sourced photos are baked into the segments by fx.py -- re-run `python fx.py` after any build_base.py.",
+  "_segment_starts": "0.00 2.66 4.08 6.34 7.84 9.44 11.26 13.92 | end 16.56",
+  "gold": [
+    "190",
+    "INVITATION",
+    "ROUND",
+    "NOW",
+    "RECEIVED",
+    "CONTACT",
+    "TEAM",
+    "VISA",
+    "LODGMENT",
+    "COMMENT",
+    "OCCUPATION",
+    "POINTS",
+    "CONGRATS",
+    "INVITES",
+    "DETAILED",
+    "VIDEO",
+    "SOON"
+  ],
+  "caption_highlight": true,
+  "cap_top": "60%",
+  "name": {
+    "text": "Rahul Dhanda",
+    "role": "Director & Registered Migration Agent",
+    "start": 2.7,
+    "end": 5.9
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2418640"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "_top_zone_note": "No badges/highlights/hook banner: the wall above and right of his head is owned by fx.py's photo cards, notification, stamp, comment bubble and player card for the whole reel.",
+  "badges": [],
+  "highlights": [],
+  "cta": {
+    "text": "COMMENT YOUR OCCUPATION & POINTS 👇",
+    "start": 8.2,
+    "end": 11.2
+  },
+  "documents": [],
+  "hero_words": [],
+  "voice_denoise": true,
+  "_music_note": "'Cheery Monday' (CC BY 4.0, already in assets + CREDIT.txt, unused by current configs). Measured: track -12.2 LUFS, his voice -28.3 LUFS; 0.022 puts the bed ~-45, ~17 dB under him before ducking (the 10-16 Rahul reel got 'music too loud' at ~6 dB under).",
+  "music": {
+    "track": "cheery-monday-kevin-macleod.mp3",
+    "volume": 0.022,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "_limiter_note": "True peak sat at -0.5/-0.8 dBTP even after scaling SFX down -- AAC inter-sample overshoot on the voice, same fix as 2026-10-06_visa-changes-hindi-desk.",
+  "limiter": {
+    "limit": 0.72
+  },
+  "_sfx_note": "12 cues, volumes kept low per the true-peak note. whoosh-impact offset -0.165 so the thud lands on the slam; transition-whoosh ~0.1s before each velocity cut. v2: all cue volumes x0.75 (first build's true peak was -0.8 dBTP).",
+  "sfx": {
+    "cues": [
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 0.5,
+        "volume": 0.18
+      },
+      {
+        "file": "pop.mp3",
+        "at": 2.06,
+        "volume": 0.075
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 2.56,
+        "volume": 0.135
+      },
+      {
+        "file": "pop.mp3",
+        "at": 2.96,
+        "volume": 0.09
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 5.42,
+        "volume": 0.18
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 6.24,
+        "volume": 0.135
+      },
+      {
+        "file": "pop.mp3",
+        "at": 6.96,
+        "volume": 0.075
+      },
+      {
+        "file": "pop.mp3",
+        "at": 8.14,
+        "volume": 0.075
+      },
+      {
+        "file": "tick.mp3",
+        "at": 10.8,
+        "volume": 0.09
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 11.3,
+        "volume": 0.18
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 13.82,
+        "volume": 0.135
+      },
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 15.78,
+        "volume": 0.165
+      }
+    ]
+  },
+  "thumbnail": {
+    "at": 2.3,
+    "kicker": "",
+    "headline": "",
+    "style": "classic"
+  },
+  "caption_txt": {
+    "title": "The 190 Invitation Round Is Happening Now! 🚨🎉",
+    "body": [
+      "Finally, the 190 (Skilled Nominated) invitation round is happening now. Received an invite? Comment your occupation and points below in the comment section, and we'll be back very soon with a detailed video on this round.",
+      "Congratulations to everyone who received an invitation! Our Registered Migration Agent Rahul Dhanda (MARN 2418640) and the PFEC team can help you with your visa lodgment and next steps, so get in touch with us today."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #190Visa #SkilledNominated #InvitationRound #StateNomination #EOI #SkillSelect #AustraliaPR #MigrationAgent",
+    "music_credit": "Music: \"Cheery Monday\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)\nPhoto: \"Parliament House Canberra\" by Andrea Schaffer, CC BY 2.0 (via Wikimedia Commons)\nPhoto: \"Sydney new years 2008-9\" by Adam.J.W.C., CC BY 3.0 (via Wikimedia Commons)"
+  },
+  "_end_cards_note": "Consultation card dropped as on Rahul's other reels (shared card lists 6 offices, no Parramatta). Disclaimer kept; all 7 offices are in caption.txt.",
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": false
+  }
+}

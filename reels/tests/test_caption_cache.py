@@ -89,13 +89,12 @@ def test_render_element_no_cache_bypasses_and_does_not_write(tmp_path, monkeypat
     and must never write to the cache dir."""
     calls = []
 
-    def fake_run(cmd, cwd, check, env):
-        # simulate HyperFrames writing the requested -o output file
-        out_idx = cmd.index("-o") + 1
-        open(cmd[out_idx], "wb").write(b"fake webm bytes")
-        calls.append(cmd)
+    def fake_render(cli, proj, out, fps, quality, fmt=None, on_progress=None):
+        # simulate HyperFrames writing the requested output file
+        open(out, "wb").write(b"fake webm bytes")
+        calls.append(out)
 
-    monkeypatch.setattr(caption_cache.subprocess, "run", fake_run)
+    monkeypatch.setattr(caption_cache, "hf_render", fake_render)
 
     cache_dir = str(tmp_path / "cache")
     work_dir = str(tmp_path / "work")
@@ -124,12 +123,11 @@ def test_render_element_no_cache_bypasses_and_does_not_write(tmp_path, monkeypat
 def test_render_element_cache_hit_skips_render(tmp_path, monkeypatch):
     calls = []
 
-    def fake_run(cmd, cwd, check, env):
-        out_idx = cmd.index("-o") + 1
-        open(cmd[out_idx], "wb").write(b"fake webm bytes")
-        calls.append(cmd)
+    def fake_render(cli, proj, out, fps, quality, fmt=None, on_progress=None):
+        open(out, "wb").write(b"fake webm bytes")
+        calls.append(out)
 
-    monkeypatch.setattr(caption_cache.subprocess, "run", fake_run)
+    monkeypatch.setattr(caption_cache, "hf_render", fake_render)
 
     cache_dir = str(tmp_path / "cache")
     work_dir = str(tmp_path / "work")

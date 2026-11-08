@@ -1,0 +1,119 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retro Vhs motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = 'PLAY ▶', DEFAULT_SUB = 'SP 0:04:12';
+const DEFAULT_COLORS = { bg: '#12021f', c1: '#ff2bd1', c2: '#ffb347', c3: '#33e8ff' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// synthwave VHS: striped sun, scrolling neon grid, mountains, OSD text, tracking noise, chroma split
+const sceneC = off(W, H), sx = sceneC.getContext('2d'), rC = off(W, H), bC = off(W, H);
+function scene(t) {
+  const g = sx, hz = H * .58;
+  const sky = g.createLinearGradient(0, 0, 0, hz); sky.addColorStop(0, COL.bg); sky.addColorStop(.6, '#3b0a5a'); sky.addColorStop(1, '#ff4fa0');
+  g.fillStyle = sky; g.fillRect(0, 0, W, hz);
+  // stars
+  reseed(9); g.fillStyle = 'rgba(255,255,255,.8)'; for (let i = 0; i < 70; i++) { const x = rnd() * W, y = rnd() * hz * .7, s = rnd() * U * .003 + 1; g.globalAlpha = .4 + .6 * Math.abs(Math.sin(t * 2 + i)); g.fillRect(x, y, s, s); } g.globalAlpha = 1;
+  // sun with stripes
+  const sr = U * .26, sy = hz - sr * .35 + Math.sin(t / DUR * TAU) * U * .01;
+  const sg = g.createLinearGradient(0, sy - sr, 0, sy + sr); sg.addColorStop(0, COL.c2); sg.addColorStop(.6, COL.c1); sg.addColorStop(1, '#a1008f');
+  g.save(); g.beginPath(); g.arc(CX, sy, sr, 0, TAU); g.clip(); g.fillStyle = sg; g.fillRect(CX - sr, sy - sr, sr * 2, sr * 2);
+  for (let k = 0; k < 7; k++) { const yy = sy + sr * (.05 + k * .14) + ((t * U * .02) % (sr * .14)); g.fillStyle = '#3b0a5a'; g.fillRect(CX - sr, yy, sr * 2, sr * .02 + k * sr * .012); }
+  g.restore();
+  g.shadowColor = COL.c1; g.shadowBlur = U * .08; g.fillStyle = 'rgba(0,0,0,0)'; g.beginPath(); g.arc(CX, sy, sr, 0, TAU); g.fill(); g.shadowBlur = 0;
+  // mountains
+  g.fillStyle = '#1a0530'; g.beginPath(); g.moveTo(0, hz);
+  for (let i = 0; i <= 24; i++) { const x = i / 24 * W, m = Math.abs(Math.sin(i * 1.7) * .6 + Math.sin(i * .6) * .4); g.lineTo(x, hz - m * U * .16 - (Math.abs(x - CX) > sr ? U * .03 : -U * .06)); }
+  g.lineTo(W, hz); g.closePath(); g.fill(); g.strokeStyle = COL.c3; g.lineWidth = U * .003; g.stroke();
+  // ground + grid
+  const gg = g.createLinearGradient(0, hz, 0, H); gg.addColorStop(0, '#2a0040'); gg.addColorStop(1, '#090012'); g.fillStyle = gg; g.fillRect(0, hz, W, H - hz);
+  g.strokeStyle = COL.c1; g.shadowColor = COL.c1; g.shadowBlur = U * .02; g.lineWidth = U * .004;
+  for (let k = -14; k <= 14; k++) { g.beginPath(); g.moveTo(CX + k * U * .02, hz); g.lineTo(CX + k * U * .35, H); g.stroke(); }
+  const sp = (t * 1.2) % 1;
+  for (let k = 0; k < 14; k++) { const z = (k + sp) / 14, y = hz + (H - hz) * Math.pow(z, 2.2); g.globalAlpha = clamp(z * 2); g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+  g.globalAlpha = 1; g.shadowBlur = 0;
+}
+function draw(t) {
+  scene(t);
+  bg('#000');
+  // chromatic aberration: draw scene 3x with channel tints in lighter mode
+  const ab = U * (.004 + (t % 2 < .12 ? .01 : 0));
+  ctx.drawImage(sceneC, 0, 0);
+  // chromatic aberration: red copy shifted left, blue copy shifted right, added on top
+  for (const [cc, col, dx] of [[rC, 'rgb(255,0,40)', -ab], [bC, 'rgb(0,90,255)', ab]]) {
+    const g = cc.getContext('2d'); g.globalCompositeOperation = 'source-over'; g.drawImage(sceneC, 0, 0);
+    g.globalCompositeOperation = 'multiply'; g.fillStyle = col; g.fillRect(0, 0, W, H);
+    g.globalCompositeOperation = 'destination-in'; g.drawImage(sceneC, 0, 0);
+    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .35; ctx.drawImage(cc, dx, 0);
+  }
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+  // tracking band + horizontal jitter slices
+  const by = ((t * .23) % 1.3 - .15) * H;
+  ctx.fillStyle = 'rgba(255,255,255,.06)'; ctx.fillRect(0, by, W, U * .05);
+  reseed(Math.floor(t * 24)); for (let k = 0; k < 4; k++) { const y = by + rnd() * U * .05, h = U * (.003 + rnd() * .01); ctx.drawImage(cv, 0, y, W, h, (rnd() - .5) * U * .04, y, W, h); }
+  ctx.fillStyle = 'rgba(0,0,0,.22)'; for (let y = 0; y < H; y += 3) ctx.fillRect(0, y, W, 1);
+  // noise
+  reseed(Math.floor(t * 30) + 77); ctx.fillStyle = 'rgba(255,255,255,.08)'; for (let k = 0; k < 220; k++) ctx.fillRect(rnd() * W, rnd() * H, U * .004, 1);
+  // OSD
+  font(700, U * .05, MONO); ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  const osd = (s, x, y, al) => { ctx.textAlign = al; ctx.fillStyle = 'rgba(255,0,80,.6)'; ctx.fillText(s, x - U * .003, y); ctx.fillStyle = 'rgba(0,255,255,.6)'; ctx.fillText(s, x + U * .003, y); ctx.fillStyle = '#fff'; ctx.fillText(s, x, y); };
+  if (Math.floor(t * 1.5) % 2 === 0 || t < 2) osd(TEXT, W * .07, H * .06, 'left');
+  const sec = 4 * 60 + 12 + Math.floor(t); const tc = `${String(Math.floor(t * 30) % 30).padStart(2, '0')}`;
+  font(700, U * .036, MONO); osd(SUB || `SP 0:${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`, W * .07, H * .92, 'left');
+  osd(`${tc}`, W * .93, H * .92, 'right');
+  font(700, U * .032, MONO); osd('AUG 14 1989', W * .93, H * .06, 'right');
+  ctx.textBaseline = 'alphabetic';
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

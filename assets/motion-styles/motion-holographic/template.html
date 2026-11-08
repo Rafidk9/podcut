@@ -1,0 +1,112 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Holographic motion template</title>
+<style>html,body{margin:0;background:#111;height:100%}body{display:flex;align-items:center;justify-content:center}
+canvas{display:block;max-width:100vw;max-height:100vh;width:auto;height:auto}body.render canvas{max-width:none;max-height:none}</style>
+</head><body><canvas id="c"></canvas>
+<script>
+if (new URLSearchParams(location.search).has('render')) document.body.classList.add('render');
+// ===== STYLE DEFAULTS (edit or override with URL params) =====
+const DEFAULT_DUR = 6, DEFAULT_TEXT = '', DEFAULT_SUB = '';
+const DEFAULT_COLORS = { bg: '#f3eefa', c1: '#ff5fd2', c2: '#4de8ff', c3: '#fff36b' };
+// ---- shared harness (identical in every template) ----
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') || 1080), H = +(P.get('h') || 1920);
+const DUR = +(P.get('dur') || DEFAULT_DUR);
+const ALPHA = P.get('alpha') === '1';
+const TEXT = P.get('text') ?? DEFAULT_TEXT;
+const SUB = P.get('sub') ?? DEFAULT_SUB;
+const COL = Object.assign({}, DEFAULT_COLORS);
+for (const k in COL) if (P.get(k)) COL[k] = '#' + P.get(k).replace('#', '');
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const ctx = cv.getContext('2d');
+const U = Math.min(W, H), CX = W / 2, CY = H / 2;
+const SANS = '"Inter","Helvetica Neue",Arial,sans-serif';
+const MONO = '"JetBrains Mono","DejaVu Sans Mono",Menlo,Consolas,monospace';
+const SERIF = '"Playfair Display","Didot","Bodoni 72",Georgia,serif';
+let _s = 1;
+const reseed = s => { _s = (s % 2147483646) + 1; };
+const rnd = () => (_s = (_s * 16807) % 2147483647, (_s - 1) / 2147483646);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const TAU = Math.PI * 2;
+const ease = {
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  inOut: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+  elastic: t => t === 0 || t === 1 ? t : Math.pow(2, -10 * t) * Math.sin((t * 10 - .75) * TAU / 3) + 1,
+};
+function bg(c) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none'; ctx.shadowBlur = 0; if (ALPHA) ctx.clearRect(0, 0, W, H); else { ctx.fillStyle = c; ctx.fillRect(0, 0, W, H); } }
+function font(wt, size, fam) { ctx.font = `${wt} ${Math.round(size)}px ${fam || SANS}`; }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function off(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, w | 0); c.height = Math.max(1, h | 0); return c; }
+function hexA(hex, a) { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; }
+function hexRGB(hex) { const n = parseInt(hex.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+// fit a line of text to a max width
+function fitFont(txt, wt, maxSize, maxW, fam) { let s = maxSize; font(wt, s, fam); const m = ctx.measureText(txt).width; if (m > maxW) s *= maxW / m; font(wt, s, fam); return s; }
+// ---- end harness head ----
+
+// ===== STYLE =====
+// iridescent foil ring: a twisting torus with rainbow bands, shaded per pixel
+const SC = 3, bw = Math.ceil(W / SC), bh = Math.ceil(H / SC);
+const buf = off(bw, bh), bx = buf.getContext('2d'), img = bx.createImageData(bw, bh);
+const BG = hexRGB(COL.bg), K = [hexRGB(COL.c1), hexRGB(COL.c2), hexRGB(COL.c3), [150, 110, 255]];
+function pal(h) { h = ((h % 1) + 1) % 1 * 4; const i = h | 0, f = h - i, a = K[i % 4], b = K[(i + 1) % 4]; const s = f * f * (3 - 2 * f); return [lerp(a[0], b[0], s), lerp(a[1], b[1], s), lerp(a[2], b[2], s)]; }
+function draw(t) {
+  const T = t / DUR * TAU, d = img.data;
+  const R0 = U * .3, th = U * .1, tilt = .55 + .12 * Math.sin(T);
+  const ox = CX / SC, oy = CY / SC;
+  for (let j = 0; j < bh; j++) for (let i = 0; i < bw; i++) {
+    const o = (j * bw + i) * 4;
+    const x = (i - ox) * SC, y = (j - oy) * SC / tilt;   // squash = tilt toward viewer
+    const a = Math.atan2(y, x), r = Math.hypot(x, y);
+    const wob = Math.sin(a * 3 + T * 2) * U * .028 + Math.sin(a * 5 - T * 3) * U * .012;
+    const tk = th * (1 + .35 * Math.sin(a * 2 - T));
+    const dr = (r - R0 - wob) / tk;
+    const inside = 1 - dr * dr;
+    if (inside <= 0) { if (ALPHA) d[o + 3] = 0; else { d[o] = BG[0]; d[o + 1] = BG[1]; d[o + 2] = BG[2]; d[o + 3] = 255; } continue; }
+    const nz = Math.sqrt(inside);                   // tube cross-section normal
+    const hue = a / TAU * 2 + dr * .35 + T * .15 + nz * .25;
+    const c = pal(hue);
+    const band = .5 + .5 * Math.sin((dr * 6 + a * 8 + T * 4));           // foil striations
+    const spec = Math.pow(clamp(-dr * .6 * Math.sin(a) + nz * .8 - .1), 14);
+    const sh = .78 + .3 * nz;
+    const edge = clamp(inside / .08);
+    const rr = clamp(c[0] * sh + band * 25 + spec * 230, 0, 255), gg = clamp(c[1] * sh + band * 25 + spec * 230, 0, 255), bb = clamp(c[2] * sh + band * 25 + spec * 230, 0, 255);
+    if (ALPHA) { d[o] = rr; d[o + 1] = gg; d[o + 2] = bb; d[o + 3] = 255 * edge; }
+    else { d[o] = lerp(BG[0], rr, edge); d[o + 1] = lerp(BG[1], gg, edge); d[o + 2] = lerp(BG[2], bb, edge); d[o + 3] = 255; }
+  }
+  bx.putImageData(img, 0, 0);
+  bg(COL.bg);
+  if (!ALPHA) { // pastel holo wash in background
+    const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, hexA(COL.c2, .12)); g.addColorStop(.5, hexA(COL.c1, .08)); g.addColorStop(1, hexA(COL.c3, .14)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+  ctx.save(); ctx.translate(CX, CY); ctx.rotate(Math.sin(T) * .12); ctx.translate(-CX, -CY);
+  ctx.imageSmoothingQuality = 'high'; ctx.drawImage(buf, 0, 0, bw * SC, bh * SC); ctx.restore();
+  // sparkles
+  reseed(3); ctx.globalCompositeOperation = ALPHA ? 'source-over' : 'lighter';
+  for (let k = 0; k < 14; k++) {
+    const sx = CX + (rnd() - .5) * U * .9, sy = CY + (rnd() - .5) * U * .7, ph = rnd() * TAU, s = (.5 + .5 * Math.sin(T * 3 + ph)) * U * .02;
+    ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.moveTo(sx, sy - s * 2); ctx.lineTo(sx + s * .3, sy); ctx.lineTo(sx, sy + s * 2); ctx.lineTo(sx - s * .3, sy); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(sx - s * 2, sy); ctx.lineTo(sx, sy + s * .3); ctx.lineTo(sx + s * 2, sy); ctx.lineTo(sx, sy - s * .3); ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+  if (TEXT) {
+    fitFont(TEXT, 900, U * .11, W * .85); ctx.textAlign = 'center';
+    const g = ctx.createLinearGradient(CX - U * .4 + Math.sin(T) * U * .3, 0, CX + U * .4 + Math.sin(T) * U * .3, 0);
+    g.addColorStop(0, COL.c1); g.addColorStop(.5, COL.c2); g.addColorStop(1, COL.c3); ctx.fillStyle = g; ctx.fillText(TEXT, CX, CY + U * .5);
+  }
+  if (SUB) { font(600, U * .03); ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(40,30,70,.6)'; ctx.fillText(SUB.toUpperCase(), CX, CY + U * .57); }
+}
+// ---- shared harness foot ----
+window.__dur = DUR;
+window.renderFrame = t => { draw(t); return true; };
+if (!P.has('render')) {
+  const t0 = performance.now();
+  const loop = () => { draw(((performance.now() - t0) / 1000) % DUR); requestAnimationFrame(loop); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(loop); else loop();
+}
+</script>
+</body></html>

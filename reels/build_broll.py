@@ -14,7 +14,7 @@ workers: min(4, cpu count); override with --workers N."""
 import concurrent.futures, os, shutil, subprocess, sys, json, importlib.util
 
 from reel_paths import WORK, REEL, HF_QUALITY, HF_FPS, hyperframes_cli  # noqa: E402 -- per-reel folders
-FF = shutil.which("ffmpeg") or "ffmpeg"
+from render_progress import Progress, hf_render  # noqa: E402 -- terminal progress bars
 
 
 def _workers_from_argv(default):
@@ -48,6 +48,9 @@ def load_stingers():
         plan = json.load(open(plan_cfg, encoding="utf-8")).get("plan", {})
         if not plan:
             return []  # explicit opt-out: this reel has no B-roll
+        import build_motion
+        if set(plan.values()) <= build_motion.broll_names():
+            return []  # every cutaway is a motion-style clip (build_motion.py renders them)
 
     raise SystemExit(
         f"No {override} found for this reel, and broll_plan.json doesn't "
@@ -58,7 +61,7 @@ def load_stingers():
         '"plan": {} and "boundaries": {}. There is no cross-reel default.')
 
 
-def render(name, dur, body_html, extra_css=""):
+def render(name, dur, body_html, extra_css="", on_progress=None):
     proj = os.path.join(WORK, f"broll_proj_{name}")
     if os.path.exists(proj):
         shutil.rmtree(proj)
@@ -83,21 +86,17 @@ def render(name, dur, body_html, extra_css=""):
     json.dump({"id": name, "name": name}, open(os.path.join(proj, "meta.json"), "w"))
 
     out = os.path.join(WORK, f"{name}.mp4")
-    cli = hyperframes_cli()
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
     # Output captured (not inherited) -- with several of these running at
     # once, letting each subprocess write straight to the shared terminal
-    # would interleave their output into an unreadable mess. Only printed
-    # (in full, clearly attributed) if this stinger's render actually fails.
-    result = subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(out),
-                             "-f", str(HF_FPS), "-q", HF_QUALITY, "--quiet"],
-                            cwd=proj, env=env, capture_output=True, text=True)
-    if result.returncode != 0:
+    # would interleave their output into an unreadable mess. Progress goes to
+    # on_progress for main()'s combined bar; the CLI's output is only printed
+    # (clearly attributed) if this stinger's render actually fails.
+    try:
+        hf_render(hyperframes_cli(), proj, out, HF_FPS, HF_QUALITY,
+                  on_progress=on_progress or (lambda pct, stage: None))
+    except subprocess.CalledProcessError as e:
         raise RuntimeError(
-            f"B-roll render failed for stinger {name!r} (exit {result.returncode})\n"
-            f"--- stdout ---\n{result.stdout}\n--- stderr ---\n{result.stderr}")
-    print("rendered", out)
+            f"B-roll render failed for stinger {name!r} (exit {e.returncode})\n{e.output}") from e
     return out
 
 
@@ -110,8 +109,22 @@ def main():
     print(f"[build_broll] rendering {len(stingers)} stinger(s), "
           f"up to {n_workers} concurrently")
 
+    # One bar across all stingers: each running render reports its own percent
+    # and the bar shows the average, so concurrent renders can't fight over
+    # the line.
+    bar = Progress("[build_broll]", 100 * len(stingers))
+    percents = {name: 0 for name, _, _ in stingers}
+
+    def reporter(name):
+        def report(pct, stage):
+            percents[name] = pct
+            finished = sum(p == 100 for p in percents.values())
+            bar.update(sum(percents.values()), f"{finished}/{len(stingers)} stingers")
+        return report
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=n_workers) as ex:
-        futures = {ex.submit(render, name, dur, html): name for name, dur, html in stingers}
+        futures = {ex.submit(render, name, dur, html, on_progress=reporter(name)): name
+                   for name, dur, html in stingers}
         errors = []
         for fut in concurrent.futures.as_completed(futures):
             name = futures[fut]
@@ -119,6 +132,7 @@ def main():
                 fut.result()
             except Exception as e:
                 errors.append((name, e))
+    bar.finish(ok=not errors)
 
     if errors:
         # Fail the WHOLE stage on any single failure -- no silent partial

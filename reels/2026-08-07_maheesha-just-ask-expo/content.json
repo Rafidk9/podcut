@@ -2,23 +2,76 @@
   "_comment": "Maheesha Samaraweera (PFEC Education Counsellor, NOT a registered migration agent -- mara.mode:none, see build_captions.py) -- 'Countdown Hook: 3 Reasons You're Coming' promo for the Just Ask Expo (25 Aug, 2-5PM, Melbourne/Sydney/Adelaide offices). 4 segments in countdown order (P1 hook, P3 'number three', P2 'number two', P4 'number one') -- see clips.json for why playback order isn't alphabetical. User asked for fast-paced/energetic/motion-graphics-heavy -- the 3-2-1 structure itself drives big hero-word number slams; bg_swap.py adds a rapid Melbourne->Sydney->Adelaide background-behind-subject flash on the one line that names all three cities; documents shows the actual Just Ask Expo flyer the user supplied.",
   "_perf_note": "build_captions.py's main overlay needed ~20 retries to get past its encode phase (always completed capture ~45s, then died mid-encode within the 600s tool ceiling). Tested and RULED OUT emoji-rendering cost as the cause -- temporarily stripped hook_banner/cta's emoji and the exact same failure point recurred, so it's genuine system-wide memory pressure (confirmed via Memory Compression climbing to 1.6GB+ over the session), not a content issue. Emoji restored since removing them didn't help.",
   "_asr_note": "asr_fix needed: 'Just Ask Expo' was misheard as 'Just Us Expo' ('Ask'->'Us', 0.99 confidence but clearly wrong given the campaign name is established across every other script/doc found for this campaign). P1 and P3 both open with a crew cue ('And go.' / 'And good') on a second detected speaker -- not asr error, just crew chatter caught on mic before she starts; trimmed via clips.json keep ranges, not asr_fix.",
-  "asr_fix": { "just us expo": "Just Ask Expo" },
+  "asr_fix": {
+    "just us expo": "Just Ask Expo"
+  },
   "_accent_note": "Left on default gold/red -- this is a standalone campaign reel (Just Ask Expo), not part of the Migration 360 roadshow city set that owns cyan/green as per-city accents, so there's no collision to avoid and no reason to opt in to a different lead colour.",
-  "gold": ["JUST", "ASK", "EXPO", "FREE", "REGISTER", "MELBOURNE", "SYDNEY", "ADELAIDE",
-           "AUGUST", "CLARITY"],
-  "name": { "text": "Maheesha Samaraweera", "role": "Education Counsellor",
-            "start": 0.6, "end": 4.0 },
-  "mara": { "mode": "none" },
-  "info": { "kicker": "", "line1": "", "line2": "", "start": 9999, "end": 9999.1 },
-  "hook_banner": { "text": "3 REASONS TO GO 🎯", "start": 0.0, "end": 1.4 },
-  "cta": { "text": "REGISTER NOW! 🎉", "start": 23.9, "end": 24.9 },
+  "gold": [
+    "JUST",
+    "ASK",
+    "EXPO",
+    "FREE",
+    "REGISTER",
+    "MELBOURNE",
+    "SYDNEY",
+    "ADELAIDE",
+    "AUGUST",
+    "CLARITY"
+  ],
+  "name": {
+    "text": "Maheesha Samaraweera",
+    "role": "Education Counsellor",
+    "start": 0.6,
+    "end": 4.0
+  },
+  "mara": {
+    "mode": "none"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "hook_banner": {
+    "text": "3 REASONS TO GO 🎯",
+    "start": 0.0,
+    "end": 1.4
+  },
+  "cta": {
+    "text": "REGISTER NOW! 🎉",
+    "start": 23.9,
+    "end": 24.9
+  },
   "caption_highlight": true,
   "_cap_top_note": "Default 62% -- single consistent framing across all 4 clips (same setup, same session, unlike the multi-backdrop Melbourne reel), no per-reel override needed. Verified against a frame grab before committing.",
   "hero_words": [
-    { "anchor_phrase": "three reasons", "text": "", "pad_after": 0.85, "hold": 0.25, "silent": true },
-    { "anchor_phrase": "number three", "text": "3", "pad_after": 0.1, "hold": 0.05 },
-    { "anchor_phrase": "number two", "text": "2", "pad_after": 0.1, "hold": 0.05 },
-    { "anchor_phrase": "number one", "text": "1", "pad_after": 0.1, "hold": 0.05 }
+    {
+      "anchor_phrase": "three reasons",
+      "text": "",
+      "pad_after": 0.85,
+      "hold": 0.25,
+      "silent": true
+    },
+    {
+      "anchor_phrase": "number three",
+      "text": "3",
+      "pad_after": 0.1,
+      "hold": 0.05
+    },
+    {
+      "anchor_phrase": "number two",
+      "text": "2",
+      "pad_after": 0.1,
+      "hold": 0.05
+    },
+    {
+      "anchor_phrase": "number one",
+      "text": "1",
+      "pad_after": 0.1,
+      "hold": 0.05
+    }
   ],
   "badges": [
     {
@@ -47,8 +100,18 @@
     }
   ],
   "highlights": [
-    { "anchor_phrase": "25th august", "text": "25 AUGUST", "pos": "top-left", "color": "gold" },
-    { "anchor_phrase": "2:00 pm to 5:00 pm", "text": "2–5 PM", "pos": "top-right", "color": "cyan" }
+    {
+      "anchor_phrase": "25th august",
+      "text": "25 AUGUST",
+      "pos": "top-left",
+      "color": "gold"
+    },
+    {
+      "anchor_phrase": "2:00 pm to 5:00 pm",
+      "text": "2–5 PM",
+      "pos": "top-right",
+      "color": "cyan"
+    }
   ],
   "documents": [
     {
@@ -67,37 +130,123 @@
   "_zoom_note": "hits[].at is RAW clip-local time, NOT output timeline -- clip index = position in clips.json (0:P1 1:P3 2:P2 3:P4). amount 0.15-0.16, punchier than a normal reel to match the fast-paced/energetic brief -- one hit per number reveal plus the opening 'Just Ask Expo' and closing 'completely free' beats. Deliberately NO hit during the Melbourne/Sydney/Adelaide window (P4, ~9.3-10.7 raw) -- that's bg_swap.py's compositing window and a simultaneous zoom would fight the background snap-cuts rather than support them.",
   "zoom": {
     "amount": 0.1,
-    "segments": ["in", "out", "in", "in"],
+    "segments": [
+      "in",
+      "out",
+      "in",
+      "in"
+    ],
     "hits": [
-      { "clip": 0, "at": [4.239, 5.359], "amount": 0.15 },
-      { "clip": 1, "at": [2.220, 2.759], "amount": 0.16 },
-      { "clip": 2, "at": [1.139, 1.679], "amount": 0.16 },
-      { "clip": 3, "at": [1.5, 1.979], "amount": 0.16 },
-      { "clip": 3, "at": [2.639, 3.480], "amount": 0.14 }
+      {
+        "clip": 0,
+        "at": [
+          4.239,
+          5.359
+        ],
+        "amount": 0.15
+      },
+      {
+        "clip": 1,
+        "at": [
+          2.22,
+          2.759
+        ],
+        "amount": 0.16
+      },
+      {
+        "clip": 2,
+        "at": [
+          1.139,
+          1.679
+        ],
+        "amount": 0.16
+      },
+      {
+        "clip": 3,
+        "at": [
+          1.5,
+          1.979
+        ],
+        "amount": 0.16
+      },
+      {
+        "clip": 3,
+        "at": [
+          2.639,
+          3.48
+        ],
+        "amount": 0.14
+      }
     ]
   },
   "voice_denoise": true,
   "_music_note": "Reused Upbeat Forever (164bpm, Bass/Guitar/Drums/Horns) -- already sourced/licensed this project and its fast tempo directly matches the 'energetic, fast-paced' brief without needing a fresh search. Ducking settings carried over from the last reel's proven-safe config as a starting point (not yet re-measured against THIS presenter's specific voice level) -- re-check qa_reel's true-peak/loudness and listen back before final delivery.",
-  "music": { "track": "upbeat-forever-kevin-macleod.mp3", "volume": 0.32, "duck_ratio": 1.3, "duck_threshold": 0.4 },
+  "music": {
+    "track": "upbeat-forever-kevin-macleod.mp3",
+    "volume": 0.32,
+    "duck_ratio": 1.3,
+    "duck_threshold": 0.4
+  },
   "_sfx_note": "Denser Tier-1+ pass matching the 'full of energetic transitions' brief: transition-whoosh on each of the 3 cuts, pop.mp3 on each of the 3 number-reveal hero slams (crisp UI pop suits a countdown better than the heavier whoosh-impact), tick.mp3 on each of the 3 city background snap-cuts (Melbourne/Sydney/Adelaide), success-chime on the closing 'Register' CTA. 10 cues in a 26.6s reel -- denser per-second than prior reels; cue volumes kept low (0.22-0.32) since it's a short, already-busy edit -- re-check qa_reel's true-peak carefully.",
   "sfx": {
     "cues": [
-      { "file": "transition-whoosh.mp3", "at": 3.7, "volume": 0.32 },
-      { "file": "transition-whoosh.mp3", "at": 8.9, "volume": 0.32 },
-      { "file": "transition-whoosh.mp3", "at": 13.6, "volume": 0.32 },
-      { "file": "pop.mp3", "at": 3.85, "volume": 0.35 },
-      { "file": "pop.mp3", "at": 9.05, "volume": 0.35 },
-      { "file": "pop.mp3", "at": 13.85, "volume": 0.35 },
-      { "file": "tick.mp3", "at": 21.85, "volume": 0.28 },
-      { "file": "tick.mp3", "at": 22.30, "volume": 0.28 },
-      { "file": "tick.mp3", "at": 22.70, "volume": 0.28 },
-      { "file": "success-chime.mp3", "at": 23.9, "volume": 0.5 }
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 3.7,
+        "volume": 0.32
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 8.9,
+        "volume": 0.32
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 13.6,
+        "volume": 0.32
+      },
+      {
+        "file": "pop.mp3",
+        "at": 3.85,
+        "volume": 0.35
+      },
+      {
+        "file": "pop.mp3",
+        "at": 9.05,
+        "volume": 0.35
+      },
+      {
+        "file": "pop.mp3",
+        "at": 13.85,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 21.85,
+        "volume": 0.28
+      },
+      {
+        "file": "tick.mp3",
+        "at": 22.3,
+        "volume": 0.28
+      },
+      {
+        "file": "tick.mp3",
+        "at": 22.7,
+        "volume": 0.28
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 23.9,
+        "volume": 0.5
+      }
     ]
   },
   "thumbnail": {
     "at": 4.3,
     "kicker": "🎯 JUST ASK EXPO · 25 AUG",
-    "headline": "3 REASONS TO **GO**"
+    "headline": "3 REASONS TO **GO**",
+    "style": "classic"
   },
   "caption_txt": {
     "title": "3 Reasons You Need to Be at the Just Ask Expo",

@@ -12,6 +12,7 @@ import os, json, shutil, subprocess, sys
 from reel_paths import WORK, REEL, ASSETS_ROOT, HF_QUALITY, HF_FPS, X264_PRESET, hyperframes_cli  # noqa: E402 -- per-reel folders
 from anchor_phrase import resolve_anchor  # noqa: E402 -- per-reel folders
 from ffmpeg_util import FF, FFPROBE, COLOR_TAGS, run  # noqa: E402 -- shared ffmpeg wrappers
+from render_progress import Progress, hf_render  # noqa: E402 -- terminal progress bars
 import caption_cache  # noqa: E402 -- per-reel folders
 
 FILLERS = {"um", "uh", "erm", "er", "ah", "hmm", "mm", "mm-hmm", "mmhmm", "uh-huh"}
@@ -511,7 +512,11 @@ def make_proj(base):
                            "silent": bool(spec.get("silent", False)),
                            # "size" (opt-in, px): override the 150px slam font
                            # for a long word that would overflow 1080px wide.
-                           "size": spec.get("size")})
+                           "size": spec.get("size"),
+                           # "top" (opt-in, CSS length): move the slam off the
+                           # default 50% centre line when that lands on the
+                           # presenter's face. Absent = unchanged.
+                           "top": spec.get("top")})
         print(f"  [hero] {spec['text']!r} -> {hstart:.2f}s-{hend + hold:.2f}s (anchor match {score:.2f})")
 
     def _in_hero_window(t):
@@ -538,7 +543,10 @@ def make_proj(base):
                        "bg": bg, "fg": fg, "center": pos.get("center", False),
                        "left": pos.get("left"), "right": pos.get("right"), "top": 232,
                        "effect": spec.get("effect"),
-                       "start": round(bstart, 3), "end": round(bend + 0.6, 3)})
+                       "start": round(bstart, 3),
+                       # "until" (opt-in, absolute s): hard stop, so a badge can't
+                       # outlive its beat and overlap the next one.
+                       "end": round(min(bend + 0.6, spec.get("until", bend + 0.6)), 3)})
         print(f"  [badges] {spec['text']!r} -> {bstart:.2f}s (anchor match {score:.2f})")
 
     # Marker-swipe highlighter text (content.json "highlights"): same anchor/
@@ -559,7 +567,9 @@ def make_proj(base):
         highlights.append({"text": spec["text"], "bg": bg, "fg": fg,
                            "center": pos.get("center", False), "left": pos.get("left"),
                            "right": pos.get("right"), "top": 232,
-                           "start": round(hlstart, 3), "end": round(hlend + 0.8, 3)})
+                           "start": round(hlstart, 3),
+                           # "until": same opt-in hard stop as badges.
+                           "end": round(min(hlend + 0.8, spec.get("until", hlend + 0.8)), 3)})
         print(f"  [highlights] {spec['text']!r} -> {hlstart:.2f}s (anchor match {score:.2f})")
 
     # DM/notification mockup: resolves the same way as badges (anchor_phrase ->
@@ -971,7 +981,8 @@ def _card_element(card, cap_top, highlight_class):
 def _hero_element(hero):
     D = round(hero["end"] - hero["start"], 3)
     size_style = f' style="font-size:{int(hero["size"])}px"' if hero.get("size") else ""
-    body = (f'<div id="heroHost"><div class="hero-slam" id="elHero">'
+    top_style = f' style="top:{hero["top"]}"' if hero.get("top") else ""
+    body = (f'<div id="heroHost"><div class="hero-slam" id="elHero"{top_style}>'
             f'<span{size_style}>{hero["text"]}</span></div></div>')
     js = ("""
   var el = document.getElementById("elHero");
@@ -982,6 +993,8 @@ def _hero_element(hero):
   tl.set(el, {visibility:"hidden"}, __D__);
 """).replace("__D__", f"{D:.3f}")
     content = {"text": hero["text"], "size": hero.get("size")}
+    if hero.get("top"):      # only when set, so existing reels keep their cache keys
+        content["top"] = hero["top"]
     return content, D, body, js
 
 
@@ -1411,6 +1424,11 @@ def _shared_css():
     return _CAP_BLOCK.split("<style>", 1)[1].split("</style>", 1)[0]
 
 
+# One bar for the whole element loop: a reel can have hundreds of sub-second
+# renders, so a bar each would just scroll past.
+_element_bar = None
+
+
 def _render_cacheable(element_type, content, duration, body_html, js_body, cache_dir, no_cache):
     css = (_shared_css()
            .replace("__CAP_TOP__", str(content.get("cap_top", "62%")))
@@ -1423,6 +1441,7 @@ def _render_cacheable(element_type, content, duration, body_html, js_body, cache
     path, hit = caption_cache.render_element(
         element_type, content, duration, css, body_html, js_body,
         WORK, cache_dir, hyperframes_cli(), HF_QUALITY, HF_FPS, no_cache=no_cache)
+    _element_bar.tick(f"{_element_bar.done + 1}/{_element_bar.total} {element_type}")
     return path, hit
 
 
@@ -1435,13 +1454,8 @@ def build(no_cache=False, clear_cache=False):
     proj, n_cards, cacheable = make_proj(base)
 
     overlay = os.path.join(WORK, "captions_overlay.webm")
-    cli = hyperframes_cli()
-    env = dict(os.environ)
-    env["PATH"] = os.path.dirname(FF) + os.pathsep + env.get("PATH", "")
     print(f"rendering {n_cards} caption cards + overlay cards (transparent)...")
-    subprocess.run(["node", cli, "render", ".", "-o", os.path.abspath(overlay),
-                    "-f", str(HF_FPS), "--format", "webm", "-q", HF_QUALITY, "--quiet"],
-                   cwd=proj, check=True, env=env)
+    hf_render(hyperframes_cli(), proj, overlay, HF_FPS, HF_QUALITY, fmt="webm", label="captions overlay")
 
     # Cache-eligible elements: each renders (or reuses a cache hit for) its
     # own short clip, then gets positioned onto the footage at its resolved
@@ -1449,6 +1463,11 @@ def build(no_cache=False, clear_cache=False):
     # overlay_wipes() already uses for the grid-wipe transition.
     layers = []  # (webm_path, abs_start, abs_end)
     hits = misses = 0
+    global _element_bar
+    n_elements = (sum(len(cacheable[k]) for k in
+                      ("cards", "hero_words", "badges", "highlights", "lists", "dm_bubbles"))
+                  + bool(cacheable.get("pathway")) + bool(cacheable["roadshow"]["cities"]))
+    _element_bar = Progress("caption elements", n_elements)
 
     for card in cacheable["cards"]:
         content, D, body, js = _card_element(
@@ -1502,6 +1521,7 @@ def build(no_cache=False, clear_cache=False):
         hits += hit; misses += not hit
 
     if hits or misses:
+        _element_bar.finish()
         print(f"  [cache] {hits} hit(s), {misses} miss(es) "
               f"({len(layers)} cache-eligible element(s) total)")
 

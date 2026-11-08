@@ -1,0 +1,18 @@
+{
+  "_comment": "Rahul Dhanda (Director & RMA, MARN 2418640) -- South Australia nomination program (23 Oct 2026). Two iPhone 4K120 HLG portrait takes: IMG_0091 -> input/clip2.mov plays FIRST (SA opened, 31 Jan 2027 expiry, ROI, priority), IMG_0090 -> input/clip1.mov SECOND (overseas: no ROI, EOI, contact us). Desk + white wall, no backdrop text, no flip. 'Sure.' and trailing 'All' dropped; pauses >0.3s cut inside word gaps. Split layout baked by split.py after build_base.",
+  "clips": [
+    { "name": "clip2", "ext": ".mov", "keep": [1.34, 5.46] },
+    { "name": "clip2", "ext": ".mov", "keep": [5.54, 10.48] },
+    { "name": "clip2", "ext": ".mov", "keep": [10.76, 11.78] },
+    { "name": "clip2", "ext": ".mov", "keep": [11.88, 13.46] },
+    { "name": "clip2", "ext": ".mov", "keep": [14.52, 19.34] },
+    { "name": "clip2", "ext": ".mov", "keep": [19.52, 20.30] },
+    { "name": "clip2", "ext": ".mov", "keep": [20.94, 24.10] },
+    { "name": "clip1", "ext": ".mov", "keep": [1.14, 5.08] },
+    { "name": "clip1", "ext": ".mov", "keep": [5.38, 7.06] },
+    { "name": "clip1", "ext": ".mov", "keep": [7.36, 9.62] },
+    { "name": "clip1", "ext": ".mov", "keep": [9.66, 11.02] },
+    { "name": "clip1", "ext": ".mov", "keep": [11.32, 12.54] },
+    { "name": "clip1", "ext": ".mov", "keep": [12.74, 15.26] }
+  ]
+}

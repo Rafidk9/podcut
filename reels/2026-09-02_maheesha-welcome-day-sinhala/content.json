@@ -215,7 +215,8 @@
   "thumbnail": {
     "at": 10.56,
     "kicker": "🚢 WELCOME DAY · SAT 19 SEPT",
-    "headline": "3 HOURS ON A **PRIVATE CRUISE**"
+    "headline": "3 HOURS ON A **PRIVATE CRUISE**",
+    "style": "classic"
   },
   "caption_txt": {
     "title": "PFEC Global Welcome Day — 19 September, on the water",
