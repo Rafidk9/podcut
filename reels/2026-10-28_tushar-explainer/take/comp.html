@@ -1,0 +1,544 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Tushar SA trade courses - explainer take</title>
+<!--
+  2026-10-28 Tushar Chopra reel: the South Australian Skills Commission drops the
+  approved-apprenticeship-agreement rule for schools teaching trade courses.
+  One continuous take over the whole talking-head timeline (work/base.mp4, 27.06 s).
+
+  Tushar shows through #win, a window whose matte comes from this same file:
+  mask.html is a copy that sets MASK (everything black, #win white), and
+  ../composite_take.py merges comp.mp4 / Tushar / mask.mp4. At each take change
+  the window closes into a dot that IS the next graphic's anchor, so the jump
+  cut happens while he is hidden, then the window reopens out of that graphic:
+
+    FULL (hook) -> SPLIT on "planning" -> closes into the Adelaide pin (4.38 cut)
+    -> reopens as a CARD from the pin: Commission builds a column per word
+    -> closes into a dot (8.02) that grows into the rewind clock -> reopens SPLIT
+    -> the rule document's seal swallows the window (12.45) -> reopens CARD:
+    APPROVED stamp -> window closes into the stamp (16.09), red X, rule falls
+    -> reopens SPLIT: padlock opens, EXISTING + NEW -> closes into NEW's tick
+    (22.12) -> reopens CARD: recap row -> PFEC lockup -> window becomes the
+    gold underline under VISIT PFEC GLOBAL.
+
+  Every spoken word pops in the caption line (#caps), timed from words.js.
+  Copy is only what Tushar says. Text clear of the logo chip (top 240 px).
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 600; src: url(fonts/Poppins-SemiBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(fonts/Poppins-Bold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(fonts/Poppins-ExtraBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 900; src: url(fonts/Poppins-Black.ttf); }
+  html, body { margin: 0; padding: 0; }
+  body.preview { background: #1b1b1f; }
+  #stage { position: relative; overflow: hidden; font-family: Poppins, sans-serif; background: #0a0560; }
+  #bg, #world, #fx, #caps { position: absolute; left: 0; top: 0; }
+  #bg { width: 1500px; height: 2400px; left: -210px; top: -240px;
+        background-color: #0a0560;
+        background-image: linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
+                          linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px);
+        background-size: 90px 90px; }
+  #glow { position: absolute; width: 900px; height: 900px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(0,179,227,.22), rgba(0,179,227,0) 65%); }
+  .lt { position: absolute; left: 0; top: 0; white-space: nowrap; text-align: center; }
+  #lt-scrub { width: 100%; margin-top: 8px; }
+  #win { background: #FFC500; }
+  #edge { border: 7px solid #FFC500; box-sizing: border-box; background: transparent; }
+
+  .pill { font-weight: 900; color: #fff; background: #100796; border-radius: 60px; padding: 10px 34px; }
+  .pill b { color: #FFC500; }
+  .lbl { font-weight: 900; font-size: 54px; letter-spacing: 2px; color: #fff; line-height: 1.1; }
+  .lbl b { color: #FFC500; }
+  .ico { overflow: visible; }
+  #chip { background: #FFC500; border-radius: 75px; box-shadow: 0 14px 30px rgba(0,0,0,.3); }
+  #bigTxt { font-weight: 900; font-size: 92px; letter-spacing: 2px; color: #100796; }
+  #bigTxt span { display: inline-block; }
+  #major { font-weight: 900; font-size: 128px; line-height: 1; color: #fff; background: #E84B37;
+           padding: 4px 40px; border-radius: 22px; }
+  #change { font-weight: 900; font-size: 128px; line-height: 1; color: #100796; background: #FFC500;
+            padding: 4px 40px; border-radius: 22px; }
+  #doc { background: #fbfbf7; border-radius: 14px; box-shadow: 0 18px 40px rgba(0,0,0,.35); overflow: hidden; }
+  #docHead { font-weight: 900; font-size: 46px; letter-spacing: 6px; color: #100796; }
+  .docLine { background: #c9cde0; border-radius: 6px; }
+  .docT { font-weight: 900; font-size: 34px; letter-spacing: 1px; color: #100796; }
+  #seal { background: #FFC500; border-radius: 50%; }
+  #stamp { font-weight: 900; font-size: 46px; letter-spacing: 4px; color: #E84B37; border: 8px solid #E84B37;
+           padding: 4px 22px; border-radius: 14px; background: rgba(255,255,255,.92); }
+  .card { background: #fff; border-radius: 26px; box-shadow: 0 14px 30px rgba(0,0,0,.3); }
+  .cardT { font-weight: 900; font-size: 48px; letter-spacing: 2px; color: #100796; }
+  #enrol { font-weight: 900; font-size: 50px; letter-spacing: 6px; color: #07043a; background: #00B3E3;
+           border-radius: 50px; padding: 8px 36px; }
+  #logo { width: 520px; }
+  #visit { font-weight: 900; font-size: 84px; line-height: 1; color: #fff; }
+  #visit span { display: inline-block; }
+  #visit .g { color: #FFC500; }
+  #offices { font-weight: 700; font-size: 31px; line-height: 1.45; color: rgba(255,255,255,.92); }
+  #site { font-weight: 800; font-size: 38px; color: #00B3E3; letter-spacing: 1px; }
+  #name { text-align: left; background: rgba(16,7,150,.92); border-left: 10px solid #FFC500; border-radius: 10px;
+          padding: 14px 30px; color: #fff; }
+  #name .n { font-weight: 900; font-size: 46px; line-height: 1.1; }
+  #name .r { font-weight: 700; font-size: 27px; color: #FFC500; letter-spacing: 1px; }
+
+  .cap { font-weight: 900; font-size: 70px; letter-spacing: 1px; color: #fff; text-transform: uppercase;
+         text-shadow: 0 4px 0 rgba(0,0,0,.55), 0 0 18px rgba(0,0,0,.55); }
+  .cap span { display: inline-block; margin: 0 6px; padding: 0 16px; border-radius: 14px; background: rgba(10,5,96,.82); }
+  .cap span.hot { background: #FFC500; color: #100796; text-shadow: none; }
+  .cap span.gold { color: #FFC500; }
+  .cap span.hot.gold { color: #100796; }
+
+  body.mask #stage { background: #000; }
+  body.mask #bg, body.mask #glow { display: none; }
+  body.mask #world, body.mask #fx, body.mask #caps { filter: brightness(0); }
+</style>
+<script src="longtake.js"></script>
+<script src="words.js"></script>
+</head><body>
+<div id="stage">
+  <div id="bg"></div>
+  <div id="glow"></div>
+  <div class="lt" id="win" data-lt="win"></div>
+  <div id="world">
+
+    <!-- A hook -->
+    <div class="lt" id="chip" data-lt="chip"></div>
+    <div class="lt" id="bigTxt" data-lt="bigTxt"><span>BIG</span> <span>NEWS</span></div>
+    <svg class="lt ico" id="cap" data-lt="cap" width="230" height="170" viewBox="0 0 230 170">
+      <path d="M115 10 L222 58 L115 106 L8 58 Z" fill="#100796" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M52 78 V128 Q115 168 178 128 V78" fill="#100796" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M200 66 V124" stroke="#FFC500" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="200" cy="132" r="11" fill="#FFC500"/>
+    </svg>
+    <div class="lt pill lbl" id="intl" data-lt="intl" style="font-size:44px">INTERNATIONAL <b>STUDENTS</b></div>
+
+    <svg class="lt ico tool" id="hat" data-lt="hat" width="170" height="130" viewBox="0 0 170 130">
+      <path d="M22 96 Q22 22 85 18 Q148 22 148 96 Z" fill="#FFC500" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M8 96 H162 V114 H8 Z" fill="#FFC500" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M70 20 V54 M100 20 V54" stroke="#000" stroke-width="7"/>
+    </svg>
+    <svg class="lt ico tool" id="wrench" data-lt="wrench" width="150" height="150" viewBox="0 0 150 150">
+      <path d="M100 12 a34 34 0 0 0 -38 44 L14 104 a14 14 0 0 0 0 20 l12 12 a14 14 0 0 0 20 0 L94 88 a34 34 0 0 0 44 -38 l-22 22 -24 -6 -6 -24 Z"
+            fill="#00B3E3" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+    </svg>
+    <svg class="lt ico tool" id="gear" data-lt="gear" width="150" height="150" viewBox="-75 -75 150 150">
+      <g id="gearG"><path id="gearP" fill="#31EB7C" stroke="#000" stroke-width="7" stroke-linejoin="round"/>
+      <circle r="20" fill="#0a0560" stroke="#000" stroke-width="7"/></g>
+    </svg>
+    <div class="lt lbl" id="tradeL" data-lt="tradeL"><b>TRADE</b> <span>COURSES</span></div>
+
+    <svg class="lt ico" id="map" data-lt="map" width="360" height="330" viewBox="-10 -10 330 310">
+      <path id="saPath" d="M0 0 H300 V290 H262 L246 252 L232 228 L222 262 L206 236 L196 186 L176 214 L160 236 L140 200 L120 206 L84 170 L40 156 L0 150 Z"
+            fill="rgba(255,255,255,.08)" stroke="#FFC500" stroke-width="7" stroke-linejoin="round"
+            pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+    <div class="lt" id="pin" data-lt="pin" style="background:#E84B37;border-radius:50%;border:6px solid #fff;box-sizing:border-box"></div>
+    <div class="lt lbl" id="saL" data-lt="saL">SOUTH <b>AUSTRALIA</b></div>
+
+    <!-- B commission -->
+    <svg class="lt ico" id="bld" data-lt="bld" width="360" height="300" viewBox="0 0 360 300">
+      <path id="ped" d="M20 92 L180 14 L340 92 Z" fill="#fff" stroke="#FFC500" stroke-width="8" stroke-linejoin="round"/>
+      <rect id="col1" x="58" y="104" width="44" height="150" rx="6" fill="#fff"/>
+      <rect id="col2" x="158" y="104" width="44" height="150" rx="6" fill="#fff"/>
+      <rect id="col3" x="258" y="104" width="44" height="150" rx="6" fill="#fff"/>
+      <rect id="bBase" x="20" y="262" width="320" height="26" rx="6" fill="#FFC500"/>
+    </svg>
+    <div class="lt lbl" id="comL" data-lt="comL" style="font-size:50px">SOUTH AUSTRALIAN<br><b>SKILLS COMMISSION</b></div>
+    <svg class="lt ico" id="mega" data-lt="mega" width="260" height="200" viewBox="0 0 260 200">
+      <path d="M20 76 H62 L150 26 V174 L62 124 H20 Z" fill="#00B3E3" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M62 124 L78 178 H104 L92 132" fill="#00B3E3" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+      <path id="w1" d="M178 70 Q196 100 178 130" fill="none" stroke="#FFC500" stroke-width="9" stroke-linecap="round"/>
+      <path id="w2" d="M204 48 Q234 100 204 152" fill="none" stroke="#FFC500" stroke-width="9" stroke-linecap="round"/>
+      <path id="w3" d="M230 26 Q272 100 230 174" fill="none" stroke="#FFC500" stroke-width="9" stroke-linecap="round"/>
+    </svg>
+    <div class="lt" id="major" data-lt="major">MAJOR</div>
+    <div class="lt" id="change" data-lt="change">CHANGE</div>
+
+    <!-- C previously / rule / schools -->
+    <svg class="lt ico" id="clock" data-lt="clock" width="300" height="300" viewBox="-150 -150 300 300">
+      <circle r="138" fill="#FFC500"/>
+      <circle r="112" fill="#100796"/>
+      <path id="hrH" d="M0 0 V-58" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+      <path id="mnH" d="M0 0 V-88" stroke="#FFC500" stroke-width="10" stroke-linecap="round"/>
+      <path d="M-128 -36 L-150 -86 M-128 -36 L-78 -50" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div class="lt lbl" id="prevL" data-lt="prevL" style="font-size:66px"><b>PREVIOUSLY</b></div>
+    <div class="lt" id="doc" data-lt="doc"></div>
+    <div class="lt" id="docHead" data-lt="docHead">RULE</div>
+    <div class="lt docLine" id="dl1" data-lt="dl1"></div>
+    <div class="lt docLine" id="dl2" data-lt="dl2"></div>
+    <div class="lt docLine" id="dl3" data-lt="dl3"></div>
+    <div class="lt docT" id="docT1" data-lt="docT1">APPRENTICESHIP</div>
+    <div class="lt docT" id="docT2" data-lt="docT2">AGREEMENT</div>
+    <div class="lt" id="seal" data-lt="seal"></div>
+    <svg class="lt ico" id="school" data-lt="school" width="300" height="270" viewBox="0 0 300 270">
+      <path d="M150 6 V52" stroke="#fff" stroke-width="7"/>
+      <path d="M150 8 H200 L190 22 L200 36 H150 Z" fill="#E84B37"/>
+      <path d="M24 120 L150 52 L276 120 Z" fill="#E84B37" stroke="#fff" stroke-width="7" stroke-linejoin="round"/>
+      <rect x="40" y="120" width="220" height="140" fill="#fff"/>
+      <rect x="64" y="146" width="44" height="40" rx="4" fill="#00B3E3"/>
+      <rect x="192" y="146" width="44" height="40" rx="4" fill="#00B3E3"/>
+      <rect x="126" y="186" width="48" height="74" rx="4" fill="#100796"/>
+    </svg>
+    <svg class="lt ico" id="lock" data-lt="lock" width="120" height="150" viewBox="0 0 120 150">
+      <path id="shackle" d="M30 66 V42 a30 30 0 0 1 60 0 V66" fill="none" stroke="#FFC500" stroke-width="12" stroke-linecap="round"/>
+      <rect x="12" y="62" width="96" height="80" rx="14" fill="#FFC500" stroke="#000" stroke-width="6"/>
+      <circle cx="60" cy="100" r="10" fill="#000"/>
+    </svg>
+    <svg class="lt ico" id="arrow" data-lt="arrow" width="260" height="80" viewBox="0 0 260 80">
+      <path id="arrowP" d="M10 40 H220 M190 12 L230 40 L190 68" fill="none" stroke="#FFC500" stroke-width="12"
+            stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+    <div class="lt" id="stamp" data-lt="stamp">APPROVED</div>
+    <svg class="lt ico" id="xmark" data-lt="xmark" width="420" height="520" viewBox="0 0 420 520">
+      <path id="x1" d="M30 40 L390 480" stroke="#E84B37" stroke-width="30" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1"/>
+      <path id="x2" d="M390 40 L30 480" stroke="#E84B37" stroke-width="30" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+
+    <!-- E both existing and new -->
+    <div class="lt card" id="cardA" data-lt="cardA"></div>
+    <div class="lt card" id="cardB" data-lt="cardB"></div>
+    <div class="lt cardT" id="cardAT" data-lt="cardAT">EXISTING</div>
+    <div class="lt cardT" id="cardBT" data-lt="cardBT">NEW</div>
+    <svg class="lt ico" id="tickA" data-lt="tickA" width="110" height="110" viewBox="0 0 110 110">
+      <circle cx="55" cy="55" r="52" fill="#31EB7C"/>
+      <path id="tickAP" d="M28 57 L48 76 L84 36" fill="none" stroke="#100796" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+    <svg class="lt ico" id="tickB" data-lt="tickB" width="110" height="110" viewBox="0 0 110 110">
+      <circle cx="55" cy="55" r="52" fill="#31EB7C"/>
+      <path id="tickBP" d="M28 57 L48 76 L84 36" fill="none" stroke="#100796" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+    <div class="lt" id="enrol" data-lt="enrol">ENROLMENTS</div>
+
+    <!-- F lockup -->
+    <img class="lt" id="logo" data-lt="logo" src="logo/pfec-logo-white.svg" alt="PFEC">
+    <div class="lt" id="visit" data-lt="visit"><span>VISIT</span> <span class="g">PFEC</span> <span class="g">GLOBAL</span></div>
+    <div class="lt" id="offices" data-lt="offices">Melbourne · Sydney · Lakemba · Adelaide<br>Perth · Brisbane · Parramatta</div>
+    <div class="lt" id="site" data-lt="site">www.pfecglobal.com.au</div>
+  </div>
+  <div id="fx">
+    <div class="lt" id="edge" data-lt="edge"></div>
+    <div class="lt" id="name" data-lt="name"><div class="n">Tushar Chopra</div>
+      <div class="r">Registered Migration Agent · MARN 2418420</div></div>
+  </div>
+  <div id="caps"></div>
+</div>
+<script>
+const { key, morph, set, el, pop, springEase, prog, ease, clamp, lerp, BRAND: B } = LT;
+const MASK = /mask\.html$/.test(location.pathname);
+if (MASK) document.body.classList.add("mask");
+const W = 1080, H = 1920, DUR = 27.06;
+const $ = id => document.getElementById(id);
+const settle = springEase(1.8, 0.72);
+const snappy = springEase(2.6, 0.62);
+const P = (t, t0, f = 2.6, d = 0.5) => pop(t, t0, { freq: f, damp: d });
+// alpha envelope: in over fi from a, out over fo ending at b
+const env = (t, a, b, fi = 0.2, fo = 0.25) => Math.min(prog(t, a, a + fi), 1 - prog(t, b - fo, b));
+const draw = (id, k) => { $(id).style.strokeDashoffset = 1 - clamp(k); };
+
+// gear outline (8 teeth), built once
+(() => { let d = ""; for (let i = 0; i < 16; i++) { const a0 = i * Math.PI / 8, a1 = a0 + Math.PI / 8, r = i % 2 ? 46 : 64;
+  d += `${i ? "L" : "M"}${(Math.cos(a0) * r).toFixed(1)} ${(Math.sin(a0) * r).toFixed(1)} L${(Math.cos(a1) * r).toFixed(1)} ${(Math.sin(a1) * r).toFixed(1)} `; }
+  $("gearP").setAttribute("d", d + "Z"); })();
+
+// ---------------- captions: every word pops on its own start time ----------------
+const GOLD = new Set(["BIG","NEWS","INTERNATIONAL","STUDENTS","TRADE","COURSES","SOUTH","AUSTRALIA","AUSTRALIAN","SKILLS",
+  "COMMISSION","MAJOR","CHANGE","PREVIOUSLY","RULE","SCHOOLS","APPROVED","APPRENTICESHIP","AGREEMENT","NO","LONGER",
+  "EXISTING","NEW","ENROLMENTS","PFEC","GLOBAL"]);
+const chunks = [];
+{
+  let cur = [];
+  WORDS.forEach((w, i) => {
+    const prev = WORDS[i - 1];
+    const brk = cur.length && (cur.length >= 3 || /[,.?]$/.test(prev[0]) || w[1] - prev[2] > 0.22 ||
+                 cur.reduce((n, x) => n + x[0].length, 0) + w[0].length > 15);
+    if (brk) { chunks.push(cur); cur = []; }
+    cur.push(w);
+  });
+  chunks.push(cur);
+  chunks.forEach((c, i) => {
+    const d = document.createElement("div");
+    d.className = "lt cap"; d.dataset.lt = "cap" + i;
+    c.forEach(w => { const s = document.createElement("span"); s.textContent = w[0].replace(/[,.?]$/, "");
+      if (GOLD.has(s.textContent.toUpperCase())) s.classList.add("gold"); d.appendChild(s); });
+    $("caps").appendChild(d);
+    c.el = d; c.spans = [...d.children]; c.t0 = c[0][1] - 0.04;
+  });
+  chunks.forEach((c, i) => { c.t1 = i + 1 < chunks.length ? chunks[i + 1].t0 : DUR; });
+}
+function captions(t) {
+  for (const c of chunks) {
+    const on = t >= c.t0 && t < c.t1;
+    c.el.style.visibility = on ? "visible" : "hidden";
+    if (!on) continue;
+    const lift = (1 - settle(prog(t, c.t0, c.t0 + 0.35))) * 30;
+    set(c.el, { x: 540, y: 1565 + lift, alpha: 1 });
+    c.spans.forEach((s, j) => {
+      const w = c[j], q = P(t, w[1] - 0.03, 3.2, 0.5);
+      s.style.transform = `scale(${(0.55 + 0.45 * q.scale) * q.sx},${(0.55 + 0.45 * q.scale) * q.sy})`;
+      s.style.opacity = q.alpha;
+      s.classList.toggle("hot", t >= w[1] - 0.03 && t < w[2] + 0.06);
+    });
+  }
+}
+
+// ---------------- window geometry ----------------
+const C1 = 4.38, C2 = 8.02, C3 = 12.453, C4 = 16.087, C5 = 22.12;
+const FULL = { x: 540, y: 1080, w: 1080, h: 1680, r: 0 };
+const SPLIT = { x: 540, y: 1395, w: 1080, h: 1050, r: 0 };
+const CARD = { x: 540, y: 1405, w: 960, h: 1010, r: 46 };
+const dot = (x, y, s = 56) => ({ x, y, w: s, h: s, r: s / 2 });
+const PIN = { x: 625, y: 632 };            // Adelaide on the SA map
+const SEAL = { x: 430, y: 690 };           // seal on the rule document
+const STAMP = { x: 640, y: 640 };          // APPROVED stamp
+const TICKB = { x: 780, y: 520 };          // NEW card's tick
+const win = t => morph(t, [
+  [0, FULL],
+  [1.72, FULL], [2.32, SPLIT, settle],
+  [4.0, SPLIT], [4.36, dot(PIN.x, PIN.y), "inOutQuint"],
+  [4.42, dot(PIN.x, PIN.y)], [5.0, CARD, settle],
+  [7.82, CARD], [8.02, dot(540, 560), "inQuint"],
+  [8.66, { x: 540, y: 1930, w: 1080, h: 20, r: 0 }], [9.25, SPLIT, settle],
+  [12.18, SPLIT], [12.44, dot(SEAL.x, SEAL.y, 40), "inOutQuint"],
+  [12.52, dot(SEAL.x, SEAL.y, 40)], [13.1, CARD, settle],
+  [15.86, CARD], [16.08, dot(STAMP.x, STAMP.y), "inQuint"],
+  [16.98, dot(TICKB.x, 1700, 30)], [17.5, SPLIT, settle],
+  [21.9, SPLIT], [22.11, dot(TICKB.x, TICKB.y), "inQuint"],
+  [22.2, dot(TICKB.x, TICKB.y)], [22.8, CARD, settle],
+  [26.62, CARD], [27.0, { x: 540, y: 640, w: 520, h: 10, r: 5 }, "inOutQuint"],
+]);
+
+// rule document geometry (C/D/E)
+const docS = t => morph(t, [
+  [8.95, { x: 400, y: 720, w: 230, h: 290, rot: -0.06, alpha: 0 }],
+  [9.35, { x: 420, y: 580, w: 250, h: 310, rot: -0.04, alpha: 1 }, settle],
+  [12.45, { x: 420, y: 580, w: 250, h: 310, rot: -0.04 }],
+  [13.0, { x: 640, y: 560, w: 360, h: 470, rot: 0.02 }, settle],
+  [16.86, { x: 640, y: 560, w: 360, h: 470, rot: 0.02, alpha: 1 }],
+  [17.5, { x: 700, y: 1150, w: 360, h: 470, rot: 0.5, alpha: 0 }, "inQuint"],
+]);
+
+function render(t) {
+  // ---- window (+ its gold edge). Shrinking, it turns from video into a gold dot.
+  const w = win(t);
+  const k = clamp((Math.min(w.w, w.h) - 70) / 130);
+  set(el("win"), { ...w, alpha: 1 });
+  $("win").style.background = MASK ? `rgb(${255 * k},${255 * k},${255 * k})` : B.gold;
+  set(el("edge"), { ...w, alpha: k });
+
+  // ---- camera on the graphics only (window + captions stay screen-locked)
+  const cam = LT.camera(t, [
+    { t: 0, x: 540, y: 960, zoom: 1 },
+    { t: 7.5, x: 540, y: 960, zoom: 1 }, { t: 7.7, x: 540, y: 900, zoom: 1.06, ease: snappy },
+    { t: 8.1, x: 540, y: 960, zoom: 1, ease: settle },
+    { t: 14.3, x: 540, y: 960, zoom: 1 }, { t: 14.55, x: 600, y: 930, zoom: 1.05, ease: snappy },
+    { t: 15.6, x: 540, y: 960, zoom: 1, ease: settle },
+    { t: 25.6, x: 540, y: 960, zoom: 1 }, { t: 26.6, x: 540, y: 950, zoom: 1.03, ease: settle },
+  ], { hand: 4, handSeed: 9, hits: [{ t: 7.56, amp: 16, dur: 0.4 }, { t: 14.42, amp: 18, dur: 0.4 }, { t: 16.66, amp: 10, dur: 0.3 }] });
+  LT.applyCamera($("world"), cam, W, H);
+  set($("glow"), { x: 540 + LT.drift(t, 0.12, 3) * 170, y: 560 + LT.drift(t, 0.1, 5) * 120 });
+
+  // ---- name tag (hook only)
+  const nt = env(t, 0.55, 3.9, 0.35, 0.3);
+  set(el("name"), { x: 360 + (1 - ease.outQuint(prog(t, 0.55, 1.0))) * -120, y: 1420, alpha: nt });
+
+  // =============== A: hook ===============
+  const aOut = 1 - prog(t, 3.35, 3.6);
+  const chipS = morph(t, [
+    [0.06, { x: 540, y: 470, w: 40, h: 40, r: 20 }],
+    [0.4, { x: 540, y: 470, w: 560, h: 150, r: 75 }, snappy],
+    [1.72, { x: 540, y: 470, w: 560, h: 150 }],
+    [2.3, { x: 540, y: 330, w: 400, h: 108, r: 54 }, settle],
+  ]);
+  set(el("chip"), { ...chipS, alpha: (t > 0.06 ? 1 : 0) * aOut });
+  const bigSp = $("bigTxt").children;
+  [0.16, 0.36].forEach((t0, i) => { const q = P(t, t0, 3, 0.45); bigSp[i].style.transform = `scale(${q.scale * q.sx},${q.scale * q.sy})`; bigSp[i].style.opacity = q.alpha; });
+  set(el("bigTxt"), { x: chipS.x, y: chipS.y + 4, scale: chipS.h / 150, alpha: (t > 0.1 ? 1 : 0) * aOut });
+
+  const cp = P(t, 0.76, 2.4, 0.55);
+  set(el("cap"), { x: key(t, [[1.72, 540], [2.3, 540, settle]]), y: key(t, [[1.72, 660], [2.3, 520, settle]]),
+                   scale: cp.scale * key(t, [[1.72, 1], [2.3, 0.85, settle]]), sx: cp.sx, sy: cp.sy,
+                   alpha: cp.alpha * (1 - prog(t, 2.55, 2.75)), rot: LT.drift(t, 0.4, 2) * 0.06 });
+  const ip = P(t, 1.36, 2.6, 0.6);
+  set(el("intl"), { x: 540, y: key(t, [[1.72, 800], [2.3, 680, settle]]), scale: ip.scale, alpha: ip.alpha * (1 - prog(t, 2.55, 2.75)) });
+
+  // tools: one per beat of "trade courses"; reused in C, E, F
+  const tools = [["hat", 2.7, 330], ["wrench", 2.86, 540], ["gear", 3.0, 750]];
+  tools.forEach(([id, t0, x]) => {
+    const q = P(t, t0, 2.8, 0.5);
+    let X = x, Y = 540, s = q.scale, a = q.alpha * (1 - prog(t, 3.4, 3.6));
+    // C: tiny badges on the school (11.48 trade / 11.8 courses), D: three chips left of the doc
+    if (t > 11.3 && t < 12.6) {
+      const r = { hat: [11.48, 650, 690], wrench: [11.64, 790, 690], gear: [11.8, 930, 690] }[id], qc = P(t, r[0], 2.8, 0.5);
+      X = r[1]; Y = r[2]; s = 0.55 * qc.scale; a = qc.alpha;
+      const m = settle(prog(t, 12.45, 12.95));
+      Y = lerp(Y, { hat: 410, wrench: 560, gear: 710 }[id], m); X = lerp(X, 230, m); s = lerp(s, 0.75 * qc.scale, m);
+    }
+    if (t >= 12.6 && t < 17.3) {
+      const r = { hat: [12.58, 410], wrench: [13.0, 560], gear: [13.32, 710] }[id];
+      const lit = prog(t, r[0], r[0] + 0.15);
+      X = 230; Y = r[1]; s = 0.75 * (1 + 0.15 * Math.exp(-6 * Math.max(0, t - r[0])) * (t > r[0] ? 1 : 0));
+      a = (0.35 + 0.65 * lit) * (1 - prog(t, 16.9, 17.3));
+    }
+    // E: flank the school on "trade" / "courses"
+    if (t >= 18.8 && t < 22.3) {
+      const r = { hat: [18.94, 300], wrench: [19.24, 780], gear: [19.24, 9999] }[id], qe = P(t, r[0], 2.8, 0.5);
+      X = r[1]; Y = 600; s = 0.8 * qe.scale; a = qe.alpha * (id === "gear" ? 0 : 1);
+      const up = settle(prog(t, 19.85, 20.4));
+      Y = lerp(Y, 330, up); X = lerp(X, 540 + (X - 540) * 0.42, up); s *= lerp(1, 0.55, up);
+      a *= 1 - prog(t, 21.85, 22.1);
+    }
+    // F: recap row
+    if (t >= 22.9 && t < 25.9) {
+      const r = { hat: [23.32, 470], wrench: [23.5, 610], gear: [23.66, 9999] }[id], qf = P(t, r[0], 2.8, 0.5);
+      X = r[1]; Y = 470; s = 0.72 * qf.scale; a = qf.alpha * (id === "gear" ? 0 : 1);
+      const col = settle(prog(t, 25.15, 25.75));
+      X = lerp(X, 540, col); s *= 1 - col; a *= 1 - prog(t, 25.6, 25.8);
+    }
+    if (t >= 3.6 && t < 11.3) a = 0;
+    if (t >= 17.3 && t < 18.8) a = 0;
+    if (t >= 22.3 && t < 22.9) a = 0;
+    if (t >= 25.9) a = 0;
+    set(el(id), { x: X, y: Y, scale: s, sx: q.sx, sy: q.sy, alpha: a, rot: id === "gear" ? 0 : LT.drift(t, 0.5, x) * 0.08 });
+  });
+  $("gearG").setAttribute("transform", `rotate(${t * 90})`);
+  const tl = P(t, 2.7, 2.6, 0.6), tlSp = $("tradeL").children;
+  tlSp[1].style.opacity = prog(t, 3.0, 3.08);
+  set(el("tradeL"), { x: 540, y: 710, scale: tl.scale, alpha: tl.alpha * (1 - prog(t, 3.4, 3.6)) });
+
+  // SA map: draws on "South", pin lands on "Australia"; F recap mini map on "South Australia"
+  let mapA = env(t, 3.5, 4.85, 0.15, 0.4), mapX = 540, mapY = 540, mapS = 1, mapD = prog(t, 3.56, 4.1);
+  if (t > 23.9) { mapA = env(t, 24.1, 25.75, 0.15, 0.2); mapX = lerp(760, 540, settle(prog(t, 25.15, 25.75)));
+                  mapY = 470; mapS = 0.5 * (1 - settle(prog(t, 25.15, 25.75))); mapD = prog(t, 24.18, 24.6); }
+  set(el("map"), { x: mapX, y: mapY, scale: mapS, alpha: mapA });
+  draw("saPath", ease.inOut(mapD));
+  const pq = P(t, 3.78, 3, 0.45);
+  set(el("pin"), { x: PIN.x, y: PIN.y, w: 44, h: 44, scale: pq.scale, alpha: pq.alpha * (1 - prog(t, 4.3, 4.36)) * (t < 6 ? 1 : 0) });
+  const sl = P(t, 3.56, 2.6, 0.6);
+  set(el("saL"), { x: 540, y: 790, scale: sl.scale, alpha: sl.alpha * (1 - prog(t, 4.3, 4.5)) });
+  $("saL").children[0].style.opacity = prog(t, 3.78, 3.86);
+
+  // =============== B: commission ===============
+  const bOut = 1 - prog(t, 7.05, 7.3);
+  const bx = key(t, [[6.4, 540], [6.9, 360, settle]]);
+  set(el("bld"), { x: bx, y: 490, scale: key(t, [[6.4, 1], [6.9, 0.8, settle]]), alpha: (t > 4.6 ? 1 : 0) * bOut });
+  const ped = P(t, 4.66, 2.6, 0.55);
+  $("ped").setAttribute("transform", `translate(180 92) scale(${ped.scale}) translate(-180 -92)`);
+  $("bBase").setAttribute("transform", `translate(180 275) scale(${ease.outQuint(prog(t, 4.6, 4.9))} 1) translate(-180 -275)`);
+  [["col1", 4.92], ["col2", 5.5], ["col3", 5.86]].forEach(([id, t0]) => {
+    const s = LT.spring(Math.max(0, t - t0), 2.8, 0.55);
+    $(id).setAttribute("transform", `translate(0 254) scale(1 ${t > t0 ? s : 0}) translate(0 -254)`);
+  });
+  const cl = P(t, 4.66, 2.6, 0.6);
+  set(el("comL"), { x: bx, y: 760, scale: cl.scale * key(t, [[6.4, 1], [6.9, 0.8, settle]]), alpha: cl.alpha * bOut });
+  $("comL").children[1].style.opacity = prog(t, 5.5, 5.58);
+  const mg = P(t, 6.58, 2.6, 0.5);
+  set(el("mega"), { x: 790, y: 480, scale: mg.scale, sx: mg.sx, sy: mg.sy, alpha: mg.alpha * bOut, rot: -0.12 });
+  [["w1", 6.6], ["w2", 6.78], ["w3", 6.96]].forEach(([id, t0]) => { $(id).style.opacity = clamp(prog(t, t0, t0 + 0.08)) * (0.55 + 0.45 * Math.abs(Math.sin((t - t0) * 6))); });
+  const mj = P(t, 7.12, 3, 0.45), ch = P(t, 7.52, 3, 0.45), slamOut = 1 - prog(t, 7.84, 7.98);
+  set(el("major"), { x: 540, y: 470, scale: mj.scale, sx: mj.sx, sy: mj.sy, rot: -0.05, alpha: mj.alpha * slamOut });
+  set(el("change"), { x: 540, y: 650, scale: ch.scale * (1 - 0.6 * prog(t, 7.84, 7.98)), sx: ch.sx, sy: ch.sy, rot: 0.03, alpha: ch.alpha * slamOut });
+
+  // =============== C: previously / rule / schools ===============
+  const ck = morph(t, [
+    [8.0, { x: 540, y: 560, w: 56 }], [8.45, { x: 540, y: 520, w: 300 }, settle],
+    [8.84, { x: 540, y: 520, w: 300 }], [9.3, { x: 160, y: 330, w: 130 }, settle],
+  ]);
+  set(el("clock"), { x: ck.x, y: ck.y, scale: ck.w / 300, alpha: (t > 7.99 ? 1 : 0) * (1 - prog(t, 12.2, 12.45)) });
+  const rew = -720 * ease.inOutQuint(prog(t, 8.14, 8.95));
+  $("mnH").setAttribute("transform", `rotate(${rew})`); $("hrH").setAttribute("transform", `rotate(${120 + rew / 12})`);
+  const pv = P(t, 8.14, 2.6, 0.6);
+  set(el("prevL"), { x: 540, y: 780, scale: pv.scale, alpha: pv.alpha * (1 - prog(t, 8.84, 9.05)) });
+
+  const d = docS(t);
+  const docOn = t > 8.95 && t < 17.5;
+  set(el("doc"), { ...d, alpha: docOn ? d.alpha : 0 });
+  const dTop = d.y - d.h / 2, sc = d.w / 250;
+  const big = prog(t, 12.45, 13.0);                // rule doc -> agreement doc
+  const hd = P(t, 9.66, 3, 0.45);
+  set(el("docHead"), { x: d.x, y: dTop + 52 * sc, rot: d.rot, scale: hd.scale * sc * (1 - big * 0.25), alpha: hd.alpha * d.alpha * (docOn ? 1 : 0) });
+  [["dl1", 9.38, 0.78], ["dl2", 9.52, 0.62], ["dl3", 9.62, 0.7]].forEach(([id, t0, f], i) => {
+    const kk = ease.outQuint(prog(t, t0, t0 + 0.3)) * (1 - prog(t, 12.45, 12.7));
+    set(el(id), { x: d.x - (1 - f) * d.w * 0.4, y: dTop + (118 + i * 44) * sc, w: Math.max(1, d.w * f * 0.82 * kk), h: 14 * sc, rot: d.rot, alpha: kk * d.alpha });
+  });
+  const t1 = P(t, 14.84, 2.8, 0.55), t2 = P(t, 15.46, 2.8, 0.55);
+  set(el("docT1"), { x: d.x, y: dTop + 150, rot: d.rot, scale: t1.scale, alpha: t1.alpha * d.alpha * (docOn ? 1 : 0) });
+  set(el("docT2"), { x: d.x, y: dTop + 200, rot: d.rot, scale: t2.scale, alpha: t2.alpha * d.alpha * (docOn ? 1 : 0) });
+  const sealP = P(t, 9.7, 2.8, 0.5);
+  set(el("seal"), { x: SEAL.x, y: SEAL.y, w: 40, h: 40, scale: sealP.scale, alpha: sealP.alpha * (1 - prog(t, 12.4, 12.46)) });
+
+  // school: C (10.2 "schools"), E (17.98 "schools")
+  let shA = 0, shX = 770, shY = 560, shS = 0.8;
+  if (t < 13) { const q = P(t, 10.18, 2.6, 0.5); shA = q.alpha * (1 - prog(t, 12.2, 12.45)); shS = 0.8 * q.scale; }
+  else { const q = P(t, 17.96, 2.6, 0.5), up = settle(prog(t, 19.85, 20.4));
+         shA = q.alpha * (1 - prog(t, 21.85, 22.1)); shX = 540; shY = lerp(580, 330, up); shS = q.scale * lerp(1, 0.55, up); }
+  set(el("school"), { x: shX, y: shY, scale: shS, alpha: shA });
+  // C: arrow rule-doc -> school on "for schools"; D: chips -> doc on "needed"
+  let arA = 0, arX = 600, arY = 580, arD = 0, arS = 0.55;
+  if (t < 12.6) { arA = env(t, 9.94, 12.45, 0.05, 0.25); arD = prog(t, 9.94, 10.3); }
+  else { arA = env(t, 13.94, 16.9, 0.05, 0.3); arX = 395; arY = 560; arD = prog(t, 13.94, 14.26); arS = 0.5; }
+  set(el("arrow"), { x: arX, y: arY, scale: arS, alpha: arA });
+  draw("arrowP", ease.out(arD));
+
+  // =============== D: approved stamp ===============
+  const st = t - 14.38;
+  const stS = st < 0 ? 0 : st < 0.12 ? lerp(2.6, 1, ease.in(st / 0.12)) : 1 + 0.06 * Math.exp(-10 * (st - 0.12)) * Math.sin((st - 0.12) * 30);
+  set(el("stamp"), { x: STAMP.x, y: STAMP.y, rot: -0.22, scale: stS, alpha: (st > 0 ? clamp(st / 0.05) : 0) * (1 - prog(t, 16.02, 16.08)) });
+
+  // =============== E: no longer applies ===============
+  set(el("xmark"), { x: 640, y: 560, scale: 0.9, alpha: (t > 16.4 ? 1 : 0) * (1 - prog(t, 16.86, 17.3)) });
+  draw("x1", ease.outQuint(prog(t, 16.4, 16.62))); draw("x2", ease.outQuint(prog(t, 16.62, 16.84)));
+  const lk = P(t, 17.54, 2.6, 0.5), open = prog(t, 18.52, 18.8);
+  $("shackle").setAttribute("transform", `translate(0 ${-26 * ease.outBack(open)}) rotate(${-28 * open} 90 66)`);
+  set(el("lock"), { x: 540, y: 618 + 90 * ease.in(prog(t, 18.9, 19.5)), scale: 0.72 * lk.scale, rot: 0.7 * ease.in(prog(t, 18.9, 19.5)),
+                    alpha: lk.alpha * (1 - prog(t, 19.2, 19.5)) });
+
+  const cards = [["cardA", "cardAT", "tickA", "tickAP", 300, 20.46], ["cardB", "cardBT", "tickB", "tickBP", 780, 21.1]];
+  cards.forEach(([c, ct, tk, tkp, x, tw]) => {
+    const q = P(t, 19.88, 2.4, 0.6), out = 1 - prog(t, 22.12, 22.45);
+    const cx = lerp(540, x, settle(prog(t, 19.88, 20.5)));
+    set(el(c), { x: cx, y: 600, w: 400, h: 250, scale: q.scale, alpha: q.alpha * out });
+    const tq = P(t, tw, 2.8, 0.5);
+    set(el(ct), { x: cx, y: 650, scale: tq.scale, alpha: tq.alpha * out });
+    const kq = P(t, tw + 0.04, 3, 0.5);
+    const isB = c === "cardB";
+    set(el(tk), { x: isB ? TICKB.x : cx, y: TICKB.y, scale: kq.scale, alpha: kq.alpha * (isB ? 1 - prog(t, 22.06, 22.11) : out) });
+    draw(tkp, ease.out(prog(t, tw + 0.08, tw + 0.3)));
+  });
+  const en = P(t, 21.28, 2.6, 0.6);
+  set(el("enrol"), { x: 540, y: 800, scale: en.scale, alpha: en.alpha * (1 - prog(t, 22.12, 22.45)) });
+
+  // =============== F: recap + lockup ===============
+  const cf = P(t, 22.94, 2.6, 0.5), col = settle(prog(t, 25.15, 25.75));
+  set(el("cap"), t > 22.5 ? { x: lerp(320, 540, col), y: 470, scale: 0.62 * cf.scale * (1 - col), alpha: cf.alpha * (1 - prog(t, 25.6, 25.8)) } : {});
+  const lg = P(t, 25.78, 2.4, 0.6);
+  set(el("logo"), { x: 540, y: 380, scale: lg.scale, alpha: lg.alpha });
+  const vs = $("visit").children;
+  [25.44, 25.78, 26.26].forEach((t0, i) => { const q = P(t, t0, 3, 0.5); vs[i].style.transform = `scale(${q.scale * q.sx},${q.scale * q.sy})`; vs[i].style.opacity = q.alpha; });
+  set(el("visit"), { x: 540, y: 568, alpha: t > 25.4 ? 1 : 0 });
+  const of = P(t, 26.0, 2.4, 0.7);
+  set(el("offices"), { x: 540, y: 740, scale: of.scale, alpha: of.alpha });
+  const ws = P(t, 26.62, 2.6, 0.6);
+  set(el("site"), { x: 540, y: 862, scale: ws.scale, alpha: ws.alpha });
+
+  captions(t);
+}
+
+LT.comp({
+  width: W, height: H, dur: DUR, render,
+  beats: [
+    { t: 1.72, name: "split", handoff: "win" },
+    { t: 3.56, name: "map", handoff: "win" },
+    { t: C1, name: "pin", handoff: "win" },
+    { t: 7.12, name: "major", handoff: "win" },
+    { t: C2, name: "clock", handoff: "win" },
+    { t: 9.96, name: "schools", handoff: "doc" },
+    { t: C3, name: "seal", handoff: "doc" },
+    { t: 14.38, name: "approved", handoff: "doc" },
+    { t: C4, name: "stamp", handoff: "doc" },
+    { t: 19.88, name: "both", handoff: "school" },
+    { t: C5, name: "tick", handoff: "win" },
+    { t: 25.18, name: "visit", handoff: "win" },
+  ],
+  cues: [],
+});
+</script>
+</body></html>

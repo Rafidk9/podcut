@@ -1,0 +1,357 @@
+<title>Tushar 189 Split Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Poppins:wght@600;800;900&display=swap">
+<style>
+/* Layout: a production storyboard sheet. Each row = one phone frame (split mock) beside its shot notes. */
+:root {
+  --sheet: #f3f4f8; --card: #ffffff; --ink: #14123a; --muted: #5b5a78; --rule: #d9dae6;
+  --navy: #100796; --deep: #0a0560; --gold: #FFC500; --cyan: #00B3E3; --green: #31EB7C; --red: #E84B37;
+  --tape: #ECF167; --hilite: #FE96EB;
+  --display: Anton, "Arial Narrow", Impact, sans-serif;
+  --body: Archivo, "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --brand: Poppins, Arial, sans-serif;
+  --hand: Caveat, "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --sheet: #0d0c24; --card: #17163a; --ink: #eceaff; --muted: #a6a4c8; --rule: #2c2a5a; color-scheme: dark } }
+:root[data-theme="dark"] { --sheet: #0d0c24; --card: #17163a; --ink: #eceaff; --muted: #a6a4c8; --rule: #2c2a5a; color-scheme: dark }
+body { background: var(--sheet); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 40px 80px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 14px; margin-bottom: 28px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(40px, 7vw, 76px); line-height: .95; margin: 0; text-wrap: balance; letter-spacing: .01em; }
+h1 em { font-style: normal; background: var(--gold); color: #14123a; padding: 0 .12em; }
+.lede { max-width: 68ch; color: var(--muted); margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fact { font-family: var(--mono); font-size: 12px; border: 1px solid var(--rule); background: var(--card); padding: 5px 10px; border-radius: 4px; }
+.thread { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 20px; margin: 8px 0 34px; display: grid; gap: 8px; }
+.thread h2 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0; letter-spacing: .02em; }
+.thread p { margin: 0; max-width: 80ch; }
+.chain { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-family: var(--mono); font-size: 12px; }
+.chain span { background: var(--sheet); border: 1px solid var(--rule); padding: 3px 8px; border-radius: 20px; }
+.chain i { font-style: normal; color: var(--muted); }
+
+.shot { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 28px; padding: 28px 0; border-top: 1px solid var(--rule); }
+.shot:last-of-type { border-bottom: 1px solid var(--rule); }
+@media (max-width: 680px) { .shot { grid-template-columns: minmax(0,1fr); } .phone { margin: 0 auto; } }
+
+/* ---------- phone frame: 1080x1920 at 250px wide; top panel 940/1920, Tushar 980/1920 ---------- */
+.phone { width: 250px; max-width: 100%; aspect-ratio: 9 / 16; border-radius: 22px; overflow: hidden; position: relative;
+  background: #000; box-shadow: 0 0 0 6px #1b1a33, 0 14px 30px rgba(10,5,96,.25); font-family: var(--brand); }
+.panel { position: absolute; inset: 0 0 auto 0; height: 48.96%; overflow: hidden; background: var(--deep); }
+.panel::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--gold); }
+.grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 21px 21px; }
+.cam { position: absolute; inset: 48.96% 0 0 0; background-size: cover; background-position: 50% 30%; }
+.cap { position: absolute; left: 0; right: 0; top: 46.5%; text-align: center; font-weight: 900; font-size: 15px; color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,.6); letter-spacing: .02em; z-index: 3; }
+.cap b { color: var(--gold); }
+.logo { position: absolute; top: 3%; left: 50%; transform: translateX(-50%); background: #fff; color: var(--navy); font-weight: 900;
+  font-size: 9px; padding: 3px 9px; border-radius: 10px; z-index: 3; letter-spacing: .04em; }
+.namecard { position: absolute; left: 6%; bottom: 7%; background: rgba(10,5,96,.92); border-left: 3px solid var(--gold); color: #fff;
+  padding: 4px 8px; font-size: 8.5px; line-height: 1.25; z-index: 3; border-radius: 3px; }
+.namecard b { display: block; font-size: 10.5px; }
+.namecard small { color: var(--gold); font-weight: 800; }
+
+/* paper pieces */
+.scrap { position: absolute; background: #fbfbf7; color: #000;
+  clip-path: polygon(0% 6%, 7% 1%, 15% 4%, 24% 0%, 33% 3%, 45% 1%, 56% 4%, 66% 0%, 78% 3%, 88% 1%, 100% 5%, 98% 18%, 100% 33%, 97% 50%, 100% 64%, 98% 80%, 100% 95%, 90% 99%, 80% 96%, 69% 100%, 57% 97%, 46% 100%, 34% 96%, 22% 100%, 11% 97%, 0% 100%, 2% 82%, 0% 66%, 3% 50%, 0% 34%, 2% 19%);
+  background-image: linear-gradient(115deg, transparent 40%, rgba(79,79,79,.10) 41%, transparent 47%),
+                    linear-gradient(20deg, transparent 60%, rgba(79,79,79,.08) 61%, transparent 66%); }
+.tape { position: absolute; background: var(--tape); opacity: .9; height: 9%; width: 30%;
+  clip-path: polygon(0 8%, 4% 0, 96% 6%, 100% 0, 98% 100%, 94% 92%, 3% 100%, 0 88%); }
+.anton { font-family: var(--display); font-weight: 400; line-height: .9; }
+.hand { font-family: var(--hand); }
+.photo { position: absolute; background: #fff; padding: 4px 4px 14px; box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.photo .ph { width: 100%; height: 100%; display: grid; place-items: center; text-align: center; font-size: 8px; font-weight: 800;
+  color: #fff; letter-spacing: .05em; background: repeating-linear-gradient(45deg, #2a4f7a, #2a4f7a 6px, #315a8a 6px, #315a8a 12px); }
+.pill { position: absolute; border-radius: 30px; font-weight: 900; display: grid; place-items: center; white-space: nowrap; }
+.stamp { position: absolute; border: 2px solid var(--red); color: var(--red); font-weight: 900; font-size: 10px; padding: 1px 6px;
+  border-radius: 4px; letter-spacing: .06em; background: rgba(255,255,255,.9); }
+
+/* ---------- notes ---------- */
+.notes { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 16px; }
+.tc { font-family: var(--mono); font-size: 13px; background: var(--ink); color: var(--sheet); padding: 2px 8px; border-radius: 3px; }
+.head h3 { font-family: var(--display); font-weight: 400; font-size: 30px; margin: 0; letter-spacing: .02em; line-height: 1; }
+.style { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+blockquote { margin: 0; padding: 10px 14px; border-left: 3px solid var(--gold); background: var(--card); border-radius: 0 6px 6px 0; font-size: 15px; }
+blockquote mark { background: color-mix(in srgb, var(--gold) 45%, transparent); color: inherit; padding: 0 2px; }
+dl { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px 14px; margin: 0; }
+dt { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding-top: 2px; }
+dd { margin: 0; }
+@media (max-width: 480px) { dl { grid-template-columns: minmax(0,1fr); } dt { padding-top: 6px; } }
+.beats { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 4px; }
+.beats li { display: grid; grid-template-columns: 52px minmax(0,1fr); gap: 8px; }
+.beats code { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 1px; }
+
+.open { margin-top: 36px; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 22px; display: grid; gap: 12px; }
+.open h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; letter-spacing: .02em; }
+.open ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 80ch; }
+.foot { margin-top: 22px; color: var(--muted); font-size: 13px; max-width: 80ch; }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">PFEC reel · storyboard for approval · 23 Oct 2026</div>
+  <h1>Tushar Chopra: <em>189 round</em>, occupation by occupation</h1>
+  <p class="lede">A split-screen reel built from Tushar's seven takes (P1–P7). The top half is one continuous motion-graphics take synced to his words. The bottom half is Tushar. Each topic gets its own visual style. One sheet of paper carries through every style change, so the reel flows instead of cutting like slides.</p>
+  <div class="facts">
+    <span class="fact">1080×1920 · 30 fps</span>
+    <span class="fact">72.2 s content + disclaimer card</span>
+    <span class="fact">21 jump cuts from 7 takes</span>
+    <span class="fact">Top 940 px motion · bottom 980 px Tushar</span>
+    <span class="fact">Captions on the seam</span>
+    <span class="fact">MARN 2418420</span>
+  </div>
+</header>
+
+<section class="thread">
+  <h2>The through-line: one sheet of paper</h2>
+  <p>This is the onetake-style idea, built with PFEC's own <b>longtake</b> tool. onetake's licence covers the non-profit wing only, so it can't be used on a commercial reel. Every style change grows out of the previous one. Nothing fades to a new slide.</p>
+  <div class="chain">
+    <span>crumpled ball</span><i>→ unfurls →</i><span>torn scrap “189”</span><i>→ rips in two →</i><span>2 halves</span><i>→ health half →</i><span>polaroid</span><i>→ flips over →</i><span>blueprint sheet</span><i>→ folds →</i><span>glass card</span><i>→ goes opaque →</i><span>notebook page</span><i>→ crumples →</i><span>map pin</span><i>→ pin line underlines →</i><span>CONTACT lockup</span>
+  </div>
+</section>
+
+<!-- 1 HOOK -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 1 mock">
+    <div class="panel"><div class="grid-bg"></div>
+      <div class="scrap" style="left:9%;top:24%;width:82%;height:46%;transform:rotate(-3deg);display:grid;place-items:center;text-align:center">
+        <div><div class="anton" style="font-size:44px">189</div><div class="anton" style="font-size:15px;letter-spacing:.04em">INVITATION ROUND</div>
+        <div class="hand" style="font-size:15px;background:var(--hilite);display:inline-block;padding:0 6px;margin-top:2px">Thursday 15 Oct</div></div>
+      </div>
+      <div class="tape" style="left:5%;top:20%;transform:rotate(-14deg)"></div>
+      <div class="scrap" style="right:6%;top:9%;width:24%;height:20%;transform:rotate(7deg);display:grid;place-items:center;text-align:center;font-weight:900;font-size:8px;line-height:1.1">
+        <div><span style="color:var(--red)">THU</span><br><span class="anton" style="font-size:20px">15</span><br>OCT</div></div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">THE BIG <b>189</b></div>
+    <div class="cam" style="background-image:url({{p1}})"></div>
+    <div class="namecard"><b>Tushar Chopra</b>Registered Migration Agent <small>MARN 2418420</small></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:00 – 0:05</span><h3>Hook</h3><span class="style">Style: torn-paper scrap</span></div>
+    <blockquote>Hey guys. As you know, last Thursday was the big <mark>189 invitation round</mark> on the <mark>15th of October</mark>.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>0.0</code>A crumpled paper ball sits on the navy grid.</li>
+        <li><code>0.3</code>It unfurls into a torn scrap. Yellow washi tape lands on the top-left corner.</li>
+        <li><code>2.9</code>“189” slams onto the scrap with the word. “INVITATION ROUND” is typed in under it.</li>
+        <li><code>4.5</code>A tear-off calendar page, THU 15 OCT, flutters in top-right. A pink highlighter swipes under the date.</li></ul></dd>
+      <dt>Bottom</dt><dd>Tushar, cropped 1.15×. Name card from 0.6 to 4.4 s.</dd>
+      <dt>Option</dt><dd>Text behind subject: a giant gold “189” behind Tushar's shoulders in the bottom half for 2.9–4.4 s. It costs one matting pass of about 2 min.</dd>
+      <dt>SFX</dt><dd>Paper pop at 0.3 · whoosh-impact on “189” at 2.88</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 2 TWO GROUPS -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 2 mock">
+    <div class="panel"><div class="grid-bg"></div>
+      <div style="position:absolute;top:13%;width:100%;text-align:center;color:#fff;font-weight:900;font-size:11px;letter-spacing:.06em">TWO GROUPS INVITED <span style="color:var(--gold)">THE MOST</span></div>
+      <div class="scrap" style="left:5%;top:27%;width:44%;height:52%;transform:rotate(-5deg);display:grid;place-items:center;text-align:center">
+        <div><div style="font-size:30px">⛑</div><div class="anton" style="font-size:16px">CONSTRUCTION</div></div></div>
+      <div class="scrap" style="left:52%;top:30%;width:44%;height:52%;transform:rotate(4deg);display:grid;place-items:center;text-align:center">
+        <div><div style="font-size:28px;color:var(--red);font-weight:900">✚</div><div class="anton" style="font-size:16px">HEALTHCARE</div></div></div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">HEALTHCARE <b>SECTOR</b></div>
+    <div class="cam" style="background-image:url({{p2}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:05 – 0:15</span><h3>Two main groups</h3><span class="style">Style: kinetic type → paper rip</span></div>
+    <blockquote>This was a very big round for <mark>all the different types of occupation</mark>. The two main groups invited the most: the <mark>construction</mark> sector and the <mark>healthcare</mark> sector.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>6.8</code>The scrap shrinks back. Kinetic words fill the panel: VERY BIG ROUND · ALL OCCUPATIONS. Then they crush to one line.</li>
+        <li><code>10.3</code>That line becomes the tear. The scrap rips down the middle into two halves.</li>
+        <li><code>12.5</code>The left half flips to CONSTRUCTION with a hard-hat icon.</li>
+        <li><code>14.0</code>The right half flips to HEALTHCARE with a red cross.</li></ul></dd>
+      <dt>Bottom</dt><dd>A slow 1.0→1.06 push across the take, so the jump cut at 9.7 reads as a deliberate cut.</dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 5.5: a full-frame paper strip rips across both halves and hides the P1→P2 take change.</dd>
+      <dt>SFX</dt><dd>Paper-rip whoosh at 10.3</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 3 HEALTHCARE -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 3 mock">
+    <div class="panel"><div class="grid-bg"></div>
+      <div class="photo" style="left:8%;top:17%;width:38%;height:62%;transform:rotate(-4deg)"><div class="ph">PHOTO<br>REGISTERED<br>NURSE</div></div>
+      <div class="tape" style="left:16%;top:13%;width:22%;transform:rotate(6deg)"></div>
+      <div style="position:absolute;left:52%;top:18%;color:#fff;font-weight:800;font-size:9px;letter-spacing:.06em">REGISTERED NURSE</div>
+      <div style="position:absolute;left:52%;top:27%;color:var(--gold);font-weight:900;font-size:32px;line-height:1">70–80</div>
+      <div style="position:absolute;left:52%;top:47%;color:#fff;font-weight:700;font-size:9px">POINTS</div>
+      <div class="pill" style="left:51%;top:60%;width:43%;height:15%;background:var(--cyan);color:var(--deep);font-size:9px">✈ OFFSHORE · 70</div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">JUST ON <b>70</b></div>
+    <div class="cam" style="background-image:url({{p3}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:15 – 0:27</span><h3>Healthcare: registered nurses</h3><span class="style">Style: photo collage + count-up</span></div>
+    <blockquote>Within healthcare, the most common was, of course, the <mark>registered nurse</mark>. They were invited from <mark>70 to 80 points</mark>, and even <mark>nurses offshore</mark> were given invitations <mark>just on 70 points</mark>.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>15.2</code>The HEALTHCARE half slides to the left. Its paper turns into a polaroid frame and a nurse photo develops inside it, taped on.</li>
+        <li><code>17.6</code>REGISTERED NURSE types in beside the polaroid.</li>
+        <li><code>20.4</code>The points range counts up 70 → 80 on the words.</li>
+        <li><code>23.1</code>A plane draws a dotted arc into the frame and drops an OFFSHORE · 70 pill.</li></ul></dd>
+      <dt>Bottom</dt><dd>A punch-in zoom of 1.08 on “70” at 26.2.</dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 15.2 (P2→P3).</dd>
+      <dt>Image</dt><dd>One nurse photo (CC0 or CC BY only).</dd>
+      <dt>SFX</dt><dd>Count tick at 20.4</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 4 CONSTRUCTION -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 4 mock">
+    <div class="panel" style="background:#0b3a72">
+      <div class="grid-bg" style="background-image:linear-gradient(rgba(255,255,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.14) 1px,transparent 1px);background-size:12px 12px"></div>
+      <div style="position:absolute;top:10%;width:100%;text-align:center;color:#fff;font-weight:900;font-size:10px;letter-spacing:.08em">CONSTRUCTION · <span style="color:var(--gold)">A FEW SURPRISES</span></div>
+      <div style="position:absolute;left:8%;right:8%;top:22%;display:grid;gap:5px">
+        <div style="border:1.5px solid #fff;color:#fff;font-weight:800;font-size:9.5px;padding:5px 7px;display:flex;justify-content:space-between;border-radius:3px;background:rgba(255,255,255,.08)"><span>🪚 CABINET MAKERS</span><span style="color:var(--gold)">75</span></div>
+        <div style="border:1.5px solid rgba(255,255,255,.7);color:#fff;font-weight:800;font-size:9.5px;padding:5px 7px;display:flex;justify-content:space-between;border-radius:3px"><span>🔨 CARPENTERS</span><span style="color:var(--gold)">65</span></div>
+        <div style="border:1.5px solid rgba(255,255,255,.7);color:#fff;font-weight:800;font-size:9.5px;padding:5px 7px;border-radius:3px">▦ WALL &amp; FLOOR TILERS</div>
+        <div style="border:1.5px solid rgba(255,255,255,.7);color:#fff;font-weight:800;font-size:9.5px;padding:5px 7px;border-radius:3px">🔥 WELDERS</div>
+      </div>
+      <div class="stamp" style="right:6%;top:19%;transform:rotate(9deg)">SURPRISE!</div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">EVEN <b>WELDERS</b></div>
+    <div class="cam" style="background-image:url({{p4}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:27 – 0:40</span><h3>Construction</h3><span class="style">Style: blueprint linework</span></div>
+    <blockquote>Within the construction sector there were a few surprises, such as <mark>cabinet makers</mark> invited this round on <mark>75 points</mark>. As usual, <mark>carpenters on 65 points</mark>, <mark>wall and floor tilers</mark>, even <mark>welders</mark> this time. So that was a surprise.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>26.9</code>The polaroid flips over. Its back is blueprint paper, which unrolls to fill the panel with a cyan grid.</li>
+        <li><code>30.7</code>CABINET MAKERS · 75 is drawn in as white linework, with a SURPRISE! stamp.</li>
+        <li><code>35.1</code>CARPENTERS · 65 draws in, then WALL &amp; FLOOR TILERS.</li>
+        <li><code>38.3</code>WELDERS draws in and the stamp jumps down to it.</li></ul></dd>
+      <dt>Bottom</dt><dd>Punch-in on “75”. A small whip-pan jolt on the stamp move.</dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 26.9 (P3→P4).</dd>
+      <dt>Images</dt><dd>Small cut-out circles: cabinet maker, carpenter, tiler, welder (CC0 or CC BY), or line icons if no clean photo turns up.</dd>
+      <dt>SFX</dt><dd>Whoosh at 26.9 · stamp impact on “cabinet makers” at 30.7</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 5 PROFESSIONAL -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 5 mock">
+    <div class="panel" style="background:linear-gradient(160deg,#130a8c,#0a0560 60%,#062a5e)">
+      <div style="position:absolute;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(0,179,227,.55),transparent 70%);left:-20px;top:-10px"></div>
+      <div style="position:absolute;left:8%;right:8%;top:14%;bottom:14%;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(4px)">
+        <div style="color:#fff;font-weight:900;font-size:9.5px;letter-spacing:.06em;margin:9px 0 0 10px">PROFESSIONAL OCCUPATIONS</div>
+        <div style="position:absolute;left:12%;bottom:22%;width:28%;height:46%;background:var(--cyan);border-radius:4px 4px 0 0"></div>
+        <div style="position:absolute;left:12%;bottom:69%;width:28%;text-align:center;color:#fff;font-weight:900;font-size:16px">65</div>
+        <div style="position:absolute;left:58%;bottom:22%;width:28%;height:57%;background:var(--gold);border-radius:4px 4px 0 0"></div>
+        <div style="position:absolute;left:58%;bottom:80%;width:28%;text-align:center;color:#fff;font-weight:900;font-size:16px">80</div>
+        <div style="position:absolute;left:4%;right:4%;bottom:5%;display:flex;justify-content:space-around;color:#fff;font-size:7.5px;font-weight:800;text-align:center"><span>ECONOMISTS</span><span>MEDICAL LAB<br>SCIENTISTS</span></div>
+      </div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">JUST <b>80</b> POINTS</div>
+    <div class="cam" style="background-image:url({{p5}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:40 – 0:52</span><h3>Professional occupations</h3><span class="style">Style: glass card + bar chart</span></div>
+    <blockquote>Other major groups included <mark>professional occupations</mark>, such as <mark>economists</mark>, invited on <mark>65 points</mark>, and also <mark>medical laboratory scientists</mark>, invited on <mark>just 80 points</mark>.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>40.3</code>The blueprint folds in half twice and becomes a frosted glass card over a soft cyan glow.</li>
+        <li><code>44.7</code>The ECONOMISTS bar grows to 65.</li>
+        <li><code>47.9</code>The MEDICAL LAB SCIENTISTS bar grows to 80, and its label counts up with the bar.</li></ul></dd>
+      <dt>Bottom</dt><dd>Steady frame, with a subtle push on “80”. The false start and swearing in this take are cut.</dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 40.3 (P4→P5).</dd>
+      <dt>SFX</dt><dd>Whoosh at 40.3</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 6 TEACHING -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 6 mock">
+    <div class="panel" style="background:#fbfbf7;background-image:repeating-linear-gradient(#fbfbf7 0 17px,#9ec5e8 17px 18px)">
+      <div style="position:absolute;left:14%;top:0;bottom:0;width:1.5px;background:#e88"></div>
+      <div class="hand" style="position:absolute;left:19%;top:9%;font-size:17px;color:var(--navy)">Teaching sector</div>
+      <div style="position:absolute;left:19%;top:28%;font-weight:800;font-size:9.5px;color:#222">SECONDARY SCHOOL TEACHERS</div>
+      <div class="hand" style="position:absolute;right:9%;top:24%;font-size:22px;color:var(--navy)">80</div>
+      <div style="position:absolute;left:19%;top:45%;font-weight:800;font-size:9.5px;color:#222">EARLY CHILDHOOD TEACHERS</div>
+      <div class="hand" style="position:absolute;right:7%;top:39%;font-size:24px;color:var(--red);border:2px solid var(--red);border-radius:50%;padding:0 6px;line-height:1.05">90</div>
+      <div class="hand" style="position:absolute;left:19%;top:63%;font-size:14px;color:var(--red);line-height:1.1">= 1 yr experience<br>&nbsp;&nbsp;+ superior English</div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">SUPERIOR <b>ENGLISH</b></div>
+    <div class="cam" style="background-image:url({{p6}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">0:52 – 1:06</span><h3>Teaching</h3><span class="style">Style: notebook + red pen</span></div>
+    <blockquote>The last group was the teaching sector: <mark>secondary school teachers</mark> invited on <mark>80 points</mark>. And surprisingly, <mark>ECTs</mark> got invited as well, but they were sitting on <mark>90 points</mark>, meaning they had <mark>one year of experience</mark> and <mark>superior English</mark>.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>52.1</code>The glass card goes opaque and turns into a lined notebook page. “Teaching sector” is handwritten in.</li>
+        <li><code>55.1</code>SECONDARY SCHOOL TEACHERS · 80 is written in.</li>
+        <li><code>58.8</code>EARLY CHILDHOOD TEACHERS appears. At 62.4 a red pen circles “90”.</li>
+        <li><code>63.1</code>The pen writes the breakdown: = 1 yr experience + superior English.</li></ul></dd>
+      <dt>Bottom</dt><dd>Punch-in on “90 points”.</dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 52.1 (P5→P6).</dd>
+      <dt>SFX</dt><dd>Success chime on the 90 circle at 62.4</dd>
+    </dl>
+  </div>
+</article>
+
+<!-- 7 CTA -->
+<article class="shot">
+  <div class="phone" aria-label="Frame 7 mock">
+    <div class="panel"><div class="grid-bg"></div>
+      <div style="position:absolute;top:12%;width:100%;text-align:center;color:#fff;font-weight:800;font-size:10px">Compare your occupation?</div>
+      <div style="position:absolute;top:22%;width:100%;text-align:center;color:var(--gold);font-weight:900;font-size:24px;line-height:1">VISIT PFEC</div>
+      <div style="position:absolute;top:36%;width:100%;text-align:center;color:#fff;font-weight:900;font-size:14px">📍 MELBOURNE</div>
+      <div style="position:absolute;left:22%;right:22%;top:48%;height:2px;background:var(--gold)"></div>
+      <div style="position:absolute;top:54%;width:100%;text-align:center;color:rgba(255,255,255,.9);font-weight:600;font-size:7.5px;line-height:1.5">Melbourne · Sydney · Lakemba · Adelaide<br>Perth · Brisbane · Parramatta</div>
+      <div style="position:absolute;top:75%;width:100%;text-align:center;color:var(--cyan);font-weight:800;font-size:8.5px">www.pfecglobal.com.au</div>
+    </div>
+    <div class="logo">PFEC GLOBAL</div>
+    <div class="cap">VISIT <b>PFEC</b> MELBOURNE</div>
+    <div class="cam" style="background-image:url({{p7}})"></div>
+  </div>
+  <div class="notes">
+    <div class="head"><span class="tc">1:06 – 1:12</span><h3>Call to action</h3><span class="style">Style: map pin → lockup</span></div>
+    <blockquote>If you want to see how <mark>your occupation compared</mark> to this round and the previous rounds, please come and <mark>visit PFEC Melbourne</mark>.</blockquote>
+    <dl>
+      <dt>Top panel</dt><dd><ul class="beats">
+        <li><code>66.3</code>The notebook page crumples back into a ball, about three times faster than the opening unfurl.</li>
+        <li><code>67.4</code>The ball drops onto an outline map of Australia and becomes a gold pin on Melbourne.</li>
+        <li><code>70.2</code>The pin's line stretches into the underline of VISIT PFEC · MELBOURNE.</li>
+        <li><code>71.0</code>All 7 offices rise in, Parramatta last, then the website. The lockup holds into the disclaimer card.</li></ul></dd>
+      <dt>Cut in</dt><dd>Torn-paper wipe at 66.3 (P6→P7).</dd>
+      <dt>Image</dt><dd>An Australia outline drawn as vector (no photo needed).</dd>
+      <dt>SFX</dt><dd>Success chime on the pin at 71.3</dd>
+      <dt>Then</dt><dd>The standard disclaimer end card. The consultation card stays off, as on recent reels, because the shared card lacks Parramatta.</dd>
+    </dl>
+  </div>
+</article>
+
+<section class="open">
+  <h2>Decide before I render</h2>
+  <ol>
+    <li><b>“ECTs” on screen.</b> I plan to spell it out as EARLY CHILDHOOD TEACHERS, since viewers may not know the abbreviation. Or keep “ECTs”?</li>
+    <li><b>Text behind subject on the hook</b> (a gold “189” behind Tushar for about 1.5 s). Yes or no?</li>
+    <li><b>Photos.</b> Real photos for the nurse and the four trades, sourced CC0 or CC BY only and credited in caption.txt. Or line icons throughout for a cleaner look?</li>
+    <li><b>Points figures</b> are shown exactly as Tushar says them (RN 70–80, offshore 70, cabinet makers 75, carpenters 65, economists 65, med lab 80, secondary 80, ECT 90). I won't add any figures he doesn't say.</li>
+  </ol>
+</section>
+<p class="foot">Sound: low music bed with 8 cues at most (the true-peak limit). Captions: 2-word gold-highlight band on the seam. Timings are on the cut timeline and will shift by under 0.1 s after the base build. Mocks are simplified sketches of each panel, not final frames.</p>
+</div>

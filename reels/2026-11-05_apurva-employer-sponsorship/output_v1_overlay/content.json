@@ -1,0 +1,261 @@
+{
+  "_comment": "Apurva Golani (Registered Migration Agent, MARN 2518793) -- employer said yes to sponsorship, but you're not visa-ready yet: 3 parts must align.",
+  "gold": [
+    "EMPLOYER",
+    "SPONSORSHIP",
+    "GREAT",
+    "VISA-READY",
+    "THREE",
+    "FIRST",
+    "SECOND",
+    "THIRD",
+    "NOMINATION",
+    "VISA",
+    "ALIGN",
+    "ASSESSED",
+    "PATHWAY",
+    "PFEC"
+  ],
+  "caption_highlight": true,
+  "cap_top": "62%",
+  "list_top": "58%",
+  "name": {
+    "text": "Apurva Golani",
+    "role": "Registered Migration Agent",
+    "start": 0.3,
+    "end": 4.2
+  },
+  "mara": {
+    "mode": "styled",
+    "marn": "2518793"
+  },
+  "info": {
+    "kicker": "",
+    "line1": "",
+    "line2": "",
+    "start": 9999,
+    "end": 9999.1
+  },
+  "zoom": {
+    "amount": 0.06,
+    "segments": [
+      "in",
+      "tight:0.10",
+      "out",
+      "in",
+      "out",
+      "in",
+      "tight:0.10",
+      "in",
+      "out",
+      "tight:0.10",
+      "in",
+      "tight:0.10"
+    ],
+    "hits": [
+      {
+        "clip": 1,
+        "at": [
+          5.62,
+          6.95
+        ],
+        "amount": 0.12
+      }
+    ]
+  },
+  "hero_words": [
+    {
+      "text": "NOT<br>VISA-READY",
+      "anchor_phrase": "not visa-ready yet",
+      "size": 130,
+      "pad_after": 0.05,
+      "hold": 0.0,
+      "top": "19%"
+    }
+  ],
+  "badges": [
+    {
+      "text": "1 · THE EMPLOYER",
+      "icon": "star",
+      "color": "navy",
+      "pos": "top",
+      "effect": "shimmer",
+      "anchor_phrase": "First, the employer needs to meet the relevant sponsorship requirements",
+      "until": 10.72
+    },
+    {
+      "text": "2 · THE NOMINATION",
+      "icon": "star",
+      "color": "cyan",
+      "pos": "top",
+      "effect": "pixelate",
+      "anchor_phrase": "Second, the nomination needs to meet the applicable occupation, salary, and nomination requirements",
+      "until": 17.12
+    },
+    {
+      "text": "3 · THE VISA",
+      "icon": "star",
+      "color": "gold",
+      "pos": "top",
+      "effect": "particles",
+      "anchor_phrase": "Third, you must meet the visa requirements, including relevant skills, English criteria, and experience",
+      "until": 23.36
+    }
+  ],
+  "lists": [
+    {
+      "title": "MUST MEET",
+      "anchor_phrase": "applicable occupation, salary, and nomination requirements",
+      "items": [
+        "Occupation",
+        "Salary",
+        "Nomination requirements"
+      ]
+    },
+    {
+      "title": "VISA REQUIREMENTS",
+      "anchor_phrase": "including relevant skills, English criteria, and experience",
+      "items": [
+        "Skills",
+        "English criteria",
+        "Experience"
+      ]
+    }
+  ],
+  "highlights": [
+    {
+      "text": "GET YOUR PATHWAY ASSESSED",
+      "color": "gold",
+      "pos": "top",
+      "anchor_phrase": "please get your pathway assessed",
+      "until": 29.98
+    }
+  ],
+  "cta": {
+    "text": "SPEAK WITH OUR MIGRATION TEAM",
+    "start": 31.8,
+    "end": 33.95
+  },
+  "documents": [],
+  "voice_denoise": true,
+  "music": {
+    "track": "inspired-kevin-macleod.mp3",
+    "volume": 0.16,
+    "duck_ratio": 8,
+    "duck_threshold": 0.03
+  },
+  "thumbnail": {
+    "style": "news",
+    "at": "auto",
+    "kicker": "EMPLOYER SPONSORSHIP",
+    "headline": "STILL NOT **VISA-READY**",
+    "sticker": "3 PARTS"
+  },
+  "caption_txt": {
+    "title": "Your Employer Said Yes to Sponsorship? You're Not Visa-Ready Yet! ⚠️",
+    "body": [
+      "An employer agreeing to sponsor you is great news, but it doesn't make you visa-ready. There are three important parts to consider: the employer must meet the relevant sponsorship requirements, the nomination must meet the applicable occupation, salary and nomination requirements, and you must meet the visa requirements, including relevant skills, English criteria and experience.",
+      "All three need to align. Our Registered Migration Agent Apurva Golani (MARN 2518793) recommends getting your pathway assessed before you make any employment or migration decisions. Considering employer sponsorship? Speak with PFEC Global's migration team."
+    ],
+    "website": "www.pfecglobal.com.au",
+    "hashtags": "#askPFEC #PFECGlobal #EmployerSponsorship #SponsoredVisa #WorkVisaAustralia #AustraliaVisa #AustraliaMigration #MigrationAgent",
+    "music_credit": "Music: \"Inspired\" — Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0 (CC BY 4.0)"
+  },
+  "end_cards": {
+    "disclaimer": true,
+    "consultation": true
+  },
+  "_music_note": "Voice measures -11.3 LUFS (hot, ~17 dB above Rahul's -28), Inspired -13.0 LUFS. 0.16 puts the bed ~17 dB under her before ducking.",
+  "limiter": {
+    "limit": 0.72
+  },
+  "sfx": {
+    "cues": [
+      {
+        "file": "whoosh-impact.mp3",
+        "at": 3.315,
+        "volume": 0.7
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 6.72,
+        "volume": 0.45
+      },
+      {
+        "file": "pop.mp3",
+        "at": 6.82,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 10.84,
+        "volume": 0.45
+      },
+      {
+        "file": "pop.mp3",
+        "at": 10.94,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 13.98,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 15.08,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 15.88,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 17.24,
+        "volume": 0.45
+      },
+      {
+        "file": "pop.mp3",
+        "at": 17.34,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 20.82,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 21.38,
+        "volume": 0.35
+      },
+      {
+        "file": "tick.mp3",
+        "at": 22.62,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 23.44,
+        "volume": 0.45
+      },
+      {
+        "file": "pop.mp3",
+        "at": 28.08,
+        "volume": 0.35
+      },
+      {
+        "file": "transition-whoosh.mp3",
+        "at": 30.06,
+        "volume": 0.45
+      },
+      {
+        "file": "success-chime.mp3",
+        "at": 31.82,
+        "volume": 0.5
+      }
+    ]
+  }
+}

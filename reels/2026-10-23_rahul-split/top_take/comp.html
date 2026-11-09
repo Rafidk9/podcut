@@ -1,0 +1,358 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>Rahul SA nomination - split top</title>
+<!--
+  Top half (1080x940) of the 2026-10-23 Rahul Dhanda split reel: South
+  Australia's nomination program. One continuous take synced to his speech
+  (output timeline of work/base.mp4, 33.51 s). split.py stacks it over the
+  talking head; the gold rule at the bottom edge is the seam.
+
+  One hero shape never leaves the frame:
+    dot -> SOUTH AUSTRALIA pill (0.3) -> program card (1.6) -> 31 JAN 2027
+    calendar tile (4.2) -> tile slides aside, ROI button grows out of it (9.2)
+    -> gold ring on the date (11.8) -> tile becomes "your ROI" row in a queue
+    and jumps to the top (14.4) -> row turns green INVITED (17.3) -> row
+    becomes the OVERSEAS CLIENTS pill (20.5); ROI chip struck out, flips to
+    EOI, arrow to INVITED (22-28) -> NO SEPARATE ROI stamp (30.2) -> the pill
+    crushes into the line that underlines CONTACT US (30.9).
+
+  Copy is only what Rahul says. Text kept in y 240..880 (logo chip owns the
+  top 212 px of the final frame; captions ride the seam at 940).
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 500; src: url(fonts/Poppins-Medium.ttf); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(fonts/Poppins-SemiBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(fonts/Poppins-Bold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(fonts/Poppins-ExtraBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 900; src: url(fonts/Poppins-Black.ttf); }
+  html, body { margin: 0; padding: 0; }
+  body.preview { background: #1b1b1f; }
+  #stage { position: relative; overflow: hidden; font-family: Poppins, sans-serif; background: #0a0560; }
+  #bg, #world { position: absolute; left: 0; top: 0; }
+  #bg { width: 1500px; height: 1300px; left: -210px; top: -180px;
+        background-image: linear-gradient(rgba(255,255,255,.05) 2px, transparent 2px),
+                          linear-gradient(90deg, rgba(255,255,255,.05) 2px, transparent 2px);
+        background-size: 90px 90px; }
+  #glow { position: absolute; width: 900px; height: 900px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(0,179,227,.22), rgba(0,179,227,0) 65%); }
+  #seam { position: absolute; left: 0; bottom: 0; width: 1080px; height: 8px; background: #FFC500; }
+  .lt { position: absolute; left: 0; top: 0; white-space: nowrap; text-align: center; }
+  #lt-scrub { width: 100%; margin-top: 8px; }
+  #pillTxt { font-weight: 900; font-size: 64px; letter-spacing: 3px; color: #100796; }
+  #title { font-weight: 900; font-size: 92px; line-height: 1.0; color: #100796; }
+  #open { font-weight: 800; font-size: 40px; letter-spacing: 3px; color: #07043a; background: #31EB7C;
+          padding: 10px 34px; border-radius: 40px; }
+  #fy { font-weight: 700; font-size: 40px; color: #100796; }
+  #kick { font-weight: 800; font-size: 46px; letter-spacing: 2px; color: #fff; }
+  #kick b { color: #FFC500; font-weight: 900; }
+  #calHead { background: #E84B37; color: #fff; font-weight: 800; font-size: 46px; letter-spacing: 3px;
+             display: flex; align-items: center; justify-content: center; border-radius: 40px 40px 0 0; }
+  #calNum { font-weight: 900; font-size: 230px; line-height: 1; color: #100796; }
+  #calSub { font-weight: 700; font-size: 34px; letter-spacing: 3px; color: #E84B37; }
+  #ring { overflow: visible; }
+  #roi { font-weight: 900; font-size: 50px; color: #07043a; display: flex; align-items: center;
+         justify-content: center; gap: 18px; overflow: hidden; }
+  .row { font-weight: 800; font-size: 40px; letter-spacing: 2px; color: rgba(255,255,255,.55);
+         background: rgba(255,255,255,.10); border: 2px solid rgba(255,255,255,.18);
+         display: flex; align-items: center; padding-left: 40px; box-sizing: border-box; border-radius: 22px; }
+  #mine { font-weight: 900; font-size: 44px; letter-spacing: 2px; color: #07043a; }
+  #prio { font-weight: 900; font-size: 34px; letter-spacing: 3px; color: #fff; background: #E84B37;
+          padding: 8px 24px; border-radius: 30px; }
+  #foot { font-weight: 600; font-size: 38px; line-height: 1.35; color: rgba(255,255,255,.88); }
+  #pill2Txt { font-weight: 900; font-size: 58px; letter-spacing: 3px; color: #07043a; }
+  #chip { background: #fff; border-radius: 36px; }
+  #chipTxt { font-weight: 900; font-size: 170px; line-height: 1; color: #100796; }
+  #chipSub { font-weight: 700; font-size: 34px; letter-spacing: 2px; color: #100796; }
+  #strike { background: #E84B37; border-radius: 8px; }
+  #nope { font-weight: 900; font-size: 38px; letter-spacing: 3px; color: #fff; background: #E84B37;
+          padding: 10px 28px; border-radius: 30px; }
+  #arrow { overflow: visible; }
+  #inv { font-weight: 900; font-size: 52px; letter-spacing: 2px; color: #07043a; background: #31EB7C;
+         padding: 22px 42px; border-radius: 30px; }
+  #stamp { font-weight: 900; font-size: 64px; letter-spacing: 3px; color: #E84B37; border: 8px solid #E84B37;
+           padding: 6px 30px; border-radius: 18px; background: rgba(10,5,96,.85); }
+  #more { font-weight: 800; font-size: 50px; color: #fff; }
+  #contact { font-weight: 900; font-size: 120px; line-height: 1; color: #FFC500; }
+  #offices { font-weight: 600; font-size: 33px; line-height: 1.5; color: rgba(255,255,255,.9); }
+  #site { font-weight: 800; font-size: 38px; color: #00B3E3; letter-spacing: 1px; }
+</style>
+<script src="longtake.js"></script>
+</head><body>
+<div id="stage">
+  <div id="world">
+    <div id="bg"></div>
+    <div id="glow"></div>
+    <div class="lt" id="shape" data-lt="shape"></div>
+    <div class="lt" id="pillTxt" data-lt="pillTxt">SOUTH AUSTRALIA</div>
+    <div class="lt" id="title" data-lt="title">NOMINATION<br>PROGRAM</div>
+    <div class="lt" id="open" data-lt="open">NOW OPEN</div>
+    <div class="lt" id="fy" data-lt="fy">2026–27 financial year</div>
+    <div class="lt" id="kick" data-lt="kick"></div>
+    <div class="lt" id="calHead" data-lt="calHead">JANUARY 2027</div>
+    <div class="lt" id="calNum" data-lt="calNum">31</div>
+    <div class="lt" id="calSub" data-lt="calSub">VISA EXPIRY</div>
+    <svg class="lt" id="ring" data-lt="ring" width="560" height="560" viewBox="0 0 560 560">
+      <circle cx="280" cy="280" r="250" fill="none" stroke="#FFC500" stroke-width="14"
+              stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" transform="rotate(-100 280 280)"/>
+    </svg>
+    <div class="lt" id="roi" data-lt="roi"><span>SUBMIT YOUR ROI</span><span id="tick">✓</span></div>
+    <div class="lt row" id="r1">ROI</div>
+    <div class="lt row" id="r2">ROI</div>
+    <div class="lt row" id="r3">ROI</div>
+    <div class="lt" id="mine" data-lt="mine">YOUR ROI · 31 JAN 2027</div>
+    <div class="lt" id="prio" data-lt="prio">PRIORITY</div>
+    <div class="lt" id="foot" data-lt="foot">if you meet all other<br>nomination requirements</div>
+    <div class="lt" id="pill2Txt" data-lt="pill2Txt">✈ OVERSEAS CLIENTS</div>
+    <div class="lt" id="chip" data-lt="chip"></div>
+    <div class="lt" id="chipTxt" data-lt="chipTxt">ROI</div>
+    <div class="lt" id="chipSub" data-lt="chipSub">FOR SOUTH AUSTRALIA</div>
+    <div class="lt" id="strike" data-lt="strike"></div>
+    <div class="lt" id="nope" data-lt="nope">NOT NEEDED</div>
+    <svg class="lt" id="arrow" data-lt="arrow" width="300" height="80" viewBox="0 0 300 80">
+      <path d="M10 40 H270 M240 14 L280 40 L240 66" fill="none" stroke="#FFC500" stroke-width="12"
+            stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1"/>
+    </svg>
+    <div class="lt" id="inv" data-lt="inv">INVITED ✓</div>
+    <div class="lt" id="stamp" data-lt="stamp">NO SEPARATE ROI</div>
+    <div class="lt" id="more" data-lt="more">Want to know more?</div>
+    <div class="lt" id="contact" data-lt="contact">CONTACT US</div>
+    <div class="lt" id="offices" data-lt="offices">Melbourne · Sydney · Lakemba · Adelaide<br>Perth · Brisbane · Parramatta</div>
+    <div class="lt" id="site" data-lt="site">www.pfecglobal.com.au</div>
+  </div>
+  <div id="seam"></div>
+</div>
+<script>
+const { key, morph, set, el, pop, springEase, prog, ease, clamp, BRAND: B } = LT;
+const W = 1080, H = 940, DUR = 33.5;
+const $ = id => document.getElementById(id);
+const titleWords = LT.split($("title"), "words");
+const footWords = LT.split($("foot"), "words");
+const officeWords = LT.split($("offices"), "words");
+const settle = springEase(1.8, 0.72);
+const snappy = springEase(2.6, 0.62);
+const vis = (t, a, b, fade = 0.25) => t < a || t > b + fade ? 0 : Math.min(prog(t, a, a + fade), 1 - prog(t, b, b + fade));
+
+// Beat times = word onsets on the reel's output timeline (assembled.transcript.json).
+const T = {
+  dot: 0.05, pill: 0.24, card: 1.62, open: 1.78, fy: 3.5,
+  only: 4.2, exp: 5.5, d31: 7.26, jan: 7.86,
+  you: 9.16, roi: 10.5, press: 11.18,
+  reason: 11.76, ring: 13.5,
+  queue: 14.36, jump: 15.46, invited: 17.36, foot: 18.36,
+  overseas: 20.52, chip: 22.4, strike: 23.06, nope: 23.4,
+  eoi: 25.3, via: 26.86, inv: 27.6,
+  sep: 28.38, stamp: 30.24,
+  more: 30.96, contact: 31.45,   // lockup lands early so the 7 offices read before the disclaimer card
+};
+// where things sit (panel px): the content band is y 240..880
+const CY = 560;
+const TILE = { x: 540, y: 600, w: 400, h: 440 };
+const ASIDE = { x: 290, y: 610, s: 0.78 };
+const ROWS = [410, 520, 630, 740];   // queue slots
+
+function render(t) {
+  // ---- camera: locked-ish frame with pushes on the big turns, still in the rests
+  const cam = LT.camera(t, [
+    { t: 0, x: 540, y: 470, zoom: 1.12 },
+    { t: T.card, x: 540, y: 470, zoom: 1.12 },
+    { t: T.card + 0.8, x: 540, y: 470, zoom: 1.0, ease: settle },
+    { t: T.d31 - 0.2, x: 540, y: 480, zoom: 1.0 },
+    { t: T.d31 + 0.6, x: 540, y: 500, zoom: 1.08, ease: settle },
+    { t: T.you, x: 540, y: 500, zoom: 1.08 },
+    { t: T.you + 0.7, x: 540, y: 470, zoom: 1.0, ease: settle },
+    { t: T.ring - 0.3, x: 540, y: 470, zoom: 1.0 },
+    { t: T.ring + 0.5, x: 470, y: 500, zoom: 1.06, ease: settle },
+    { t: T.queue, x: 470, y: 500, zoom: 1.06 },
+    { t: T.queue + 0.7, x: 540, y: 470, zoom: 1.0, ease: settle },
+    { t: T.overseas, x: 540, y: 470, zoom: 1.0 },
+    { t: T.overseas + 0.5, x: 540, y: 470, zoom: 1.04, rot: 0, ease: "inOutExpo" },
+    { t: T.via, x: 540, y: 470, zoom: 1.04 },
+    { t: T.via + 0.6, x: 540, y: 470, zoom: 1.0, ease: settle },
+    { t: T.more, x: 540, y: 470, zoom: 1.0 },
+    { t: T.more + 0.8, x: 540, y: 480, zoom: 1.05, ease: settle },
+  ], { hand: 5, handSeed: 7,
+       holdStill: [[2.6, 4.1], [8.4, 9.1], [19.0, 20.4], [31.8, 33.5]],
+       hits: [{ t: T.d31 + 0.04, amp: 14, dur: 0.35 }, { t: T.stamp + 0.04, amp: 22, dur: 0.4 },
+              { t: T.jump + 0.3, amp: 8, dur: 0.3 }] });
+  LT.applyCamera($("world"), cam, W, H);
+  set($("glow"), { x: 540 + LT.drift(t, 0.12, 3) * 160, y: 470 + LT.drift(t, 0.1, 5) * 120 });
+
+  // ---- the hero shape
+  const p = pop(t, T.dot, { freq: 2.6, damp: 0.5 });
+  const asideX = ASIDE.x, asideY = ASIDE.y;
+  const s = morph(t, [
+    [0, { x: 540, y: CY, w: 110, h: 110, r: 55, fill: B.gold }],
+    [T.pill, { w: 110, h: 110, r: 55 }],
+    [T.pill + 0.6, { w: 780, h: 130, r: 65 }, settle],
+    [T.card, { x: 540, y: CY, w: 780, h: 130, r: 65, fill: B.gold }],
+    [T.card + 0.75, { x: 540, y: 575, w: 900, h: 600, r: 44, fill: B.white }, settle],
+    [T.only, { x: 540, y: 575, w: 900, h: 600, r: 44 }],
+    [T.only + 0.7, { x: TILE.x, y: TILE.y, w: TILE.w, h: TILE.h, r: 40 }, settle],
+    [T.you, { x: TILE.x, y: TILE.y, w: TILE.w, h: TILE.h }],
+    [T.you + 0.6, { x: asideX, y: asideY, w: TILE.w * ASIDE.s, h: TILE.h * ASIDE.s, r: 32 }, settle],
+    [T.queue, { x: asideX, y: asideY, w: TILE.w * ASIDE.s, h: TILE.h * ASIDE.s, r: 32, fill: B.white }],
+    [T.queue + 0.6, { x: 540, y: ROWS[3], w: 840, h: 92, r: 22, fill: B.gold }, settle],
+    [T.jump, { x: 540, y: ROWS[3] }],
+    [T.jump + 0.7, { x: 540, y: ROWS[0] }, snappy],
+    [T.invited, { x: 540, y: ROWS[0], w: 840, h: 92, fill: B.gold }],
+    [T.invited + 0.5, { x: 540, y: 430, w: 860, h: 130, r: 30, fill: B.green }, settle],
+    [T.overseas, { x: 540, y: 430, w: 860, h: 130, r: 30, fill: B.green }],
+    [T.overseas + 0.6, { x: 540, y: 300, w: 760, h: 110, r: 55, fill: B.cyan }, settle],
+    [T.more, { x: 540, y: 300, w: 760, h: 110, r: 55, fill: B.cyan }],
+    [T.more + 0.45, { x: 540, y: 470, w: 760, h: 14, r: 7, fill: B.gold }, "inOutQuint"],
+    [T.contact - 0.3, { y: 470, w: 760 }],
+    [T.contact + 0.2, { y: 640, w: 640, h: 12, r: 6 }, settle],
+  ]);
+  set(el("shape"), { ...s, scale: t < T.pill ? p.scale : 1, sx: t < T.pill ? p.sx : 1, sy: t < T.pill ? p.sy : 1,
+                     alpha: t < T.dot ? 0 : 1 });
+
+  // ---- SOUTH AUSTRALIA: typed into the pill, rides up to head the card
+  $("pillTxt").textContent = LT.typed(t, "SOUTH AUSTRALIA", T.pill + 0.25, 30) || "​";
+  set(el("pillTxt"), {
+    x: 540, y: key(t, [[T.card, CY], [T.card + 0.75, 345, settle]]),
+    scale: key(t, [[T.card, 1], [T.card + 0.75, 0.72, settle]]),
+    color: LT.mixHex(B.navy, B.red, prog(t, T.card, T.card + 0.5)),
+    alpha: t < T.pill + 0.25 ? 0 : 1 - prog(t, T.only, T.only + 0.3),
+  });
+
+  // ---- program card copy
+  const cardOut = 1 - prog(t, T.only, T.only + 0.3);
+  set(el("title"), { x: 540, y: 485, alpha: t < T.card + 0.3 ? 0 : cardOut, scale: 1 - 0.15 * (1 - cardOut) });
+  LT.rise(t, titleWords, T.card + 0.35, { stagger: 0.08, dist: 60 });
+  const o = pop(t, T.open + 0.25, { freq: 2.6, damp: 0.5 });
+  set(el("open"), { x: 540, y: 655, scale: o.scale, sx: o.sx, sy: o.sy, alpha: o.alpha * cardOut,
+                    rot: -0.05 });
+  set(el("fy"), { x: 540, y: 770, alpha: (t < T.fy ? 0 : 1) * cardOut, clip: LT.reveal(t, T.fy, 0.5, "right") });
+
+  // ---- kicker line above the tile: changes with each idea
+  let kt = "", kA = 0;
+  if (t >= T.only && t < T.queue) {
+    kt = t < T.you ? "ONLY IF YOUR VISA <b>EXPIRES ON</b>"
+       : t < T.reason ? "ONE OF THEM? <b>SUBMIT YOUR ROI</b>"
+       : "THIS DATE HAS A <b>REASON</b>";
+    const k0 = t < T.you ? T.only + 0.3 : t < T.reason ? T.you : T.reason;
+    const kEnd = t < T.you ? T.you : t < T.reason ? T.reason : T.queue;
+    kA = Math.min(prog(t, k0, k0 + 0.2), 1 - prog(t, kEnd - 0.15, kEnd));
+  } else if (t >= T.queue && t < T.overseas) {
+    kt = t < T.invited ? "THEY MIGHT <b>PRIORITISE</b> YOUR CASE" : "AND YOU CAN BE <b>INVITED</b>";
+    const k0 = t < T.invited ? T.queue + 0.2 : T.invited;
+    const kEnd = t < T.invited ? T.invited : T.overseas;
+    kA = Math.min(prog(t, k0, k0 + 0.2), 1 - prog(t, kEnd - 0.15, kEnd));
+  }
+  if ($("kick").dataset.k !== kt) { $("kick").innerHTML = kt || "​"; $("kick").dataset.k = kt; }
+  set(el("kick"), { x: 540, y: t < T.queue ? 300 : 270, alpha: kA, scale: 0.94 + 0.06 * kA });
+
+  // ---- calendar tile (rides with the shape while it is a tile)
+  const tileOn = t >= T.only + 0.5 && t < T.queue + 0.3;
+  const tA = tileOn ? Math.min(prog(t, T.only + 0.5, T.only + 0.8), 1 - prog(t, T.queue, T.queue + 0.3)) : 0;
+  const sc = s.w / TILE.w;
+  const top = s.y - s.h / 2;
+  set(el("calHead"), { x: s.x, y: top + 55 * sc, w: TILE.w, h: 110, scale: sc, alpha: tA,
+                       clip: LT.reveal(t, T.only + 0.5, 0.5, "down") });
+  $("calHead").textContent = t < T.jan ? "" : LT.typed(t, "JANUARY 2027", T.jan, 26) || "​";
+  const n = pop(t, T.d31, { freq: 2.8, damp: 0.45 });
+  set(el("calNum"), { x: s.x, y: s.y + 25 * sc, scale: n.scale * sc, sx: n.sx, sy: n.sy, alpha: n.alpha * tA });
+  set(el("calSub"), { x: s.x, y: s.y + 175 * sc, scale: sc, alpha: (t < T.exp ? 0 : 1) * tA,
+                      clip: LT.reveal(t, T.exp, 0.4, "right") });
+
+  // ---- gold ring around the date
+  const ringK = ease.outQuint(prog(t, T.ring - 0.15, T.ring + 0.55));
+  $("ring").firstElementChild.setAttribute("stroke-dashoffset", 1 - ringK);
+  set(el("ring"), { x: s.x, y: s.y, scale: sc * 0.92, alpha: t < T.ring - 0.15 ? 0 : tA, rot: LT.drift(t, 0.4, 2) * 0.05 });
+
+  // ---- ROI button grows out of the tile's right edge
+  const rIn = settle(prog(t, T.you + 0.4, T.you + 1.1));
+  const press = t > T.press ? 1 - 0.08 * Math.exp(-9 * (t - T.press)) * Math.sin((t - T.press) * 26) : 1;
+  const done = prog(t, T.press, T.press + 0.15);
+  const roiOut = prog(t, T.reason + 0.1, T.reason + 0.45);
+  set(el("roi"), { x: 470 + 270 * rIn - 100 * roiOut, y: 610, w: 520 * rIn, h: 120, r: 60,
+                   fill: LT.mixHex(B.gold, B.green, done), scale: press * (1 - 0.6 * roiOut),
+                   alpha: t < T.you + 0.4 ? 0 : 1 - roiOut });
+  $("tick").style.display = done > 0 ? "inline" : "none";
+
+  // ---- the queue: your tile becomes the gold row; it jumps the line
+  const qA = Math.min(prog(t, T.queue + 0.2, T.queue + 0.6), 1 - prog(t, T.invited, T.invited + 0.4));
+  const jump = snappy(prog(t, T.jump, T.jump + 0.7));
+  ["r1", "r2", "r3"].forEach((id, i) => {
+    const y = LT.lerp(ROWS[i], ROWS[i + 1], jump);
+    set($(id), { x: 540 + 40 * (1 - ease.outQuint(prog(t, T.queue + 0.2 + i * 0.08, T.queue + 0.7 + i * 0.08))),
+                 y, w: 840, h: 92, alpha: qA * 0.9 });
+  });
+  const mineA = Math.min(prog(t, T.queue + 0.45, T.queue + 0.7), 1 - prog(t, T.invited, T.invited + 0.15));
+  set(el("mine"), { x: s.x, y: s.y, alpha: mineA });
+  const pr = pop(t, T.jump + 0.55, { freq: 2.6, damp: 0.5 });
+  set(el("prio"), { x: 850, y: s.y - 50, scale: pr.scale, sx: pr.sx, sy: pr.sy, rot: 0.06,
+                    alpha: pr.alpha * (1 - prog(t, T.invited, T.invited + 0.2)) });
+
+  // ---- INVITED (on the green shape) + footnote
+  const invA = Math.min(prog(t, T.invited + 0.2, T.invited + 0.4), 1 - prog(t, T.overseas, T.overseas + 0.2));
+  const iv = pop(t, T.invited + 0.2, { freq: 2.4, damp: 0.55 });
+  $("pill2Txt").textContent = t < T.overseas + 0.2 ? "INVITED ✓" : "✈ OVERSEAS CLIENTS";
+  const p2A = t < T.overseas + 0.2 ? invA : prog(t, T.overseas + 0.3, T.overseas + 0.55) * (1 - prog(t, T.more, T.more + 0.2));
+  set(el("pill2Txt"), { x: s.x, y: s.y, scale: t < T.overseas ? iv.scale * 1.05 : 0.95, alpha: p2A });
+  set(el("foot"), { x: 540, y: 610, alpha: t < T.foot ? 0 : 1 - prog(t, T.overseas, T.overseas + 0.25) });
+  LT.rise(t, footWords, T.foot, { stagger: 0.05, dist: 30 });
+
+  // ---- ROI chip: appears, gets struck out, flips into EOI, slides aside for the arrow
+  const c = pop(t, T.chip, { freq: 2.4, damp: 0.55 });
+  const flip = prog(t, T.eoi - 0.15, T.eoi + 0.15);
+  const flipX = Math.abs(Math.cos(flip * Math.PI));
+  const isEoi = flip >= 0.5;
+  const aside = settle(prog(t, T.via - 0.3, T.via + 0.4));
+  const chipOut = prog(t, T.more - 0.1, T.more + 0.3);
+  const cx = 540 - 270 * aside, cy = 620, cs = (1 - 0.3 * aside) * (1 - chipOut);
+  const chipA = t < T.chip ? 0 : 1 - chipOut;
+  set(el("chip"), { x: cx, y: cy, w: 520, h: 300, scale: c.scale * cs, sx: c.sx * flipX, sy: c.sy,
+                    fill: isEoi ? B.gold : B.white, alpha: chipA });
+  $("chipTxt").textContent = isEoi ? "EOI" : "ROI";
+  $("chipSub").textContent = isEoi ? "SUBMIT YOUR EOI" : "FOR SOUTH AUSTRALIA";
+  set(el("chipTxt"), { x: cx, y: cy - 25 * cs, scale: c.scale * cs, sx: flipX, alpha: chipA });
+  set(el("chipSub"), { x: cx, y: cy + 95 * cs, scale: c.scale * cs, sx: flipX, alpha: chipA });
+  const st = ease.outExpo(prog(t, T.strike, T.strike + 0.35));
+  set(el("strike"), { x: cx - 230 * (1 - st) * cs, y: cy - 25, w: 460 * st, h: 22, rot: -0.12,
+                      alpha: t < T.strike || isEoi ? 0 : 1 });
+  const np = pop(t, T.nope, { freq: 2.8, damp: 0.5 });
+  set(el("nope"), { x: cx + 150, y: cy - 160, scale: np.scale, sx: np.sx, sy: np.sy, rot: 0.08,
+                    alpha: isEoi ? 0 : np.alpha });
+
+  // ---- arrow EOI -> INVITED
+  const arK = ease.out(prog(t, T.via, T.via + 0.5));
+  $("arrow").firstElementChild.setAttribute("stroke-dashoffset", 1 - arK);
+  set(el("arrow"), { x: 545, y: cy, alpha: (t < T.via ? 0 : 1) * (1 - chipOut) });
+  const inv = pop(t, T.inv, { freq: 2.6, damp: 0.5 });
+  set(el("inv"), { x: 830, y: cy, scale: inv.scale * (1 - chipOut), sx: inv.sx, sy: inv.sy, alpha: inv.alpha * (1 - chipOut) });
+
+  // ---- NO SEPARATE ROI stamp slams over the pair
+  const sp = t - T.stamp;
+  const stS = sp <= 0 ? 0 : 1 + 1.4 * Math.exp(-14 * sp);
+  set(el("stamp"), { x: 540, y: 820, scale: stS, rot: -0.07, alpha: (sp <= 0 ? 0 : clamp(sp / 0.05)) * (1 - chipOut) });
+
+  // ---- close: the pill crushes into the line under CONTACT US
+  set(el("more"), { x: 540, y: 410, alpha: t < T.more + 0.3 ? 0 : 1, clip: LT.reveal(t, T.more + 0.3, 0.5, "up") });
+  const ct = pop(t, T.contact - 0.3, { freq: 2.2, damp: 0.6 });
+  set(el("contact"), { x: 540, y: 545, scale: ct.scale, sx: ct.sx, sy: ct.sy, alpha: ct.alpha });
+  set(el("offices"), { x: 540, y: 730, alpha: t < T.contact ? 0 : 1 });
+  LT.rise(t, officeWords, T.contact, { stagger: 0.03, dist: 24 });
+  set(el("site"), { x: 540, y: 845, alpha: t < T.contact + 0.3 ? 0 : 1, clip: LT.reveal(t, T.contact + 0.3, 0.4, "right") });
+}
+
+LT.comp({
+  width: W, height: H, dur: DUR, render,
+  beats: [
+    { t: T.card, name: "card", handoff: "shape" },
+    { t: T.only, name: "tile", handoff: "shape" },
+    { t: T.you, name: "roi", handoff: "shape" },
+    { t: T.reason, name: "ring", handoff: "shape" },
+    { t: T.queue, name: "queue", handoff: "shape" },
+    { t: T.invited, name: "invited", handoff: "shape" },
+    { t: T.overseas, name: "overseas", handoff: "shape" },
+    { t: T.chip, name: "chip", handoff: "shape" },
+    { t: T.eoi, name: "eoi", handoff: "chip" },
+    { t: T.stamp, name: "stamp", handoff: "chip" },
+    { t: T.more, name: "contact", handoff: "shape" },
+  ],
+  // SFX live in the reel's content.json (one mix, one true-peak budget).
+  cues: [],
+});
+</script>
+</body></html>

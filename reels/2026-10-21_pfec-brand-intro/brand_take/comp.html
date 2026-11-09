@@ -1,0 +1,258 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>PFEC Global brand intro - longtake</title>
+<!--
+  PFEC Global brand introduction, one continuous take (28.5 s, 9:16, 120 bpm grid).
+
+    hook + gold underline (0.2) -> underline becomes the first of three logo bars (3.0)
+    -> bars stand up as pillars, "WHAT WE DO" (4.5) -> pillar 1 opens into EDUCATION (6.0)
+    -> whip along the rail to MIGRATION (10.0) -> COMMUNITY (13.5) -> pull back on all three (17.5)
+    -> cards fold into the rail, the rail swings upright into the 7-office route (19.5)
+    -> the route collapses into the logo's underline: lockup + CTA (23.5)
+
+  Copy is from the PFEC brand guidelines only (services, programs, purpose) -- no stats,
+  no outcome claims. The disclaimer card is appended after this take (see ../build_reel.py).
+-->
+<style>
+  @font-face { font-family: Poppins; font-weight: 400; src: url(fonts/Poppins-Regular.ttf); }
+  @font-face { font-family: Poppins; font-weight: 500; src: url(fonts/Poppins-Medium.ttf); }
+  @font-face { font-family: Poppins; font-weight: 600; src: url(fonts/Poppins-SemiBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 700; src: url(fonts/Poppins-Bold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 800; src: url(fonts/Poppins-ExtraBold.ttf); }
+  @font-face { font-family: Poppins; font-weight: 900; src: url(fonts/Poppins-Black.ttf); }
+  html, body { margin: 0; padding: 0; }
+  body.preview { background: #1b1b1f; }
+  #stage { position: relative; overflow: hidden; font-family: Poppins, sans-serif; color: #fff; }
+  #bg, #world { position: absolute; left: 0; top: 0; }
+  #bg { width: 100%; height: 100%; }
+  .lt { position: absolute; left: 0; top: 0; white-space: nowrap; text-align: center; }
+  #lt-scrub { width: 100%; margin-top: 8px; }
+  .hook { font-weight: 900; font-size: 116px; line-height: 1; letter-spacing: -1px; }
+  .gold { color: #FFC500; }
+  #hookSub { font-weight: 600; font-size: 50px; color: rgba(255,255,255,.88); }
+  .kicker { font-weight: 800; font-size: 56px; letter-spacing: 8px; }
+  .ctitle { font-weight: 900; font-size: 104px; color: #100796; letter-spacing: -1px; }
+  .csub { font-weight: 700; font-size: 34px; letter-spacing: 5px; color: #100796; opacity: .7; }
+  .items { text-align: left; width: 720px; }
+  .row { display: flex; align-items: center; gap: 26px; font-weight: 700; font-size: 46px; line-height: 1.15;
+         color: #100796; margin: 0 0 46px; white-space: normal; }
+  .row b { flex: none; width: 82px; height: 82px; border-radius: 22px; background: #100796; color: #fff;
+           font-size: 34px; display: flex; align-items: center; justify-content: center; }
+  .stop { display: flex; align-items: center; gap: 34px; font-weight: 700; font-size: 58px; text-align: left; }
+  .stop i { width: 44px; height: 44px; border-radius: 50%; background: #FFC500; flex: none;
+            box-shadow: 0 0 0 10px rgba(255,197,0,.22); }
+  #logo { width: 640px; }
+  #tagline { font-weight: 800; font-size: 66px; }
+  #cta { font-weight: 700; font-size: 46px; background: #E84B37; padding: 26px 56px; border-radius: 70px; }
+  #web { font-weight: 600; font-size: 42px; color: rgba(255,255,255,.9); letter-spacing: 1px; }
+</style>
+<script src="longtake.js"></script>
+</head><body>
+<div id="stage">
+  <div id="bg"></div>
+  <div id="world">
+    <div class="lt" id="rail" data-lt="rail"></div>
+    <div class="lt" id="bar1" data-lt="bar1"></div>
+    <div class="lt" id="bar2" data-lt="bar2"></div>
+    <div class="lt" id="bar3" data-lt="bar3"></div>
+
+    <div class="lt hook" id="hook1" data-lt="hook1">Your future</div>
+    <div class="lt hook" id="hook2" data-lt="hook2">in <span class="gold">Australia</span></div>
+    <div class="lt" id="hookSub" data-lt="hookSub">starts with the right guidance.</div>
+
+    <div class="lt kicker" id="kicker" data-lt="kicker">WHAT WE DO</div>
+
+    <div class="lt ctitle" id="c1t" data-lt="c1t">Education</div>
+    <div class="lt csub" id="c1s" data-lt="c1s">STUDY IN AUSTRALIA</div>
+    <div class="lt items" id="c1i" data-lt="c1i" data-lt-text>
+      <div class="row"><b>01</b>Course &amp; university selection</div>
+      <div class="row"><b>02</b>Enrolment support</div>
+      <div class="row"><b>03</b>Career planning</div>
+    </div>
+
+    <div class="lt ctitle" id="c2t" data-lt="c2t">Migration</div>
+    <div class="lt csub" id="c2s" data-lt="c2s">VISA &amp; PR PATHWAYS</div>
+    <div class="lt items" id="c2i" data-lt="c2i" data-lt-text>
+      <div class="row"><b>01</b>Visa &amp; PR pathway advice</div>
+      <div class="row"><b>02</b>From Registered Migration Agents</div>
+      <div class="row"><b>03</b>Honest, ethical guidance</div>
+    </div>
+
+    <div class="lt ctitle" id="c3t" data-lt="c3t">Community</div>
+    <div class="lt csub" id="c3s" data-lt="c3s">YOU'RE NOT ALONE HERE</div>
+    <div class="lt items" id="c3i" data-lt="c3i" data-lt-text>
+      <div class="row"><b>01</b>Welcome Day for new arrivals</div>
+      <div class="row"><b>02</b>Sports Tournament</div>
+      <div class="row"><b>03</b>Education &amp; Migration Expo</div>
+    </div>
+
+    <div class="lt kicker" id="ohead" data-lt="ohead">7 OFFICES <span class="gold">ACROSS AUSTRALIA</span></div>
+    <div id="stops"></div>
+
+    <img class="lt" id="logo" data-lt="logo" src="logo/pfec-logo-white.svg" alt="PFEC Global">
+    <div class="lt" id="tagline" data-lt="tagline">Achieved <span class="gold">together.</span></div>
+    <div class="lt" id="cta" data-lt="cta">Book a FREE consultation</div>
+    <div class="lt" id="web" data-lt="web">www.pfecglobal.com.au</div>
+  </div>
+</div>
+<script>
+const { key, morph, set, el, pop, prog, springEase, ease, BRAND: B } = LT;
+const W = 1080, H = 1920, DUR = 28.5;
+const $ = id => document.getElementById(id);
+const settle = springEase(1.7, 0.74);   // the carry spring
+const snappy = springEase(2.6, 0.62);
+
+// Offices: house rule -- all 7, Parramatta last.
+const CITIES = ["Melbourne", "Sydney", "Lakemba", "Adelaide", "Perth", "Brisbane", "Parramatta"];
+const stops = CITIES.map((c, i) => {
+  const d = document.createElement("div");
+  d.className = "lt stop"; d.dataset.lt = "stop" + i; d.dataset.ltText = "";
+  d.innerHTML = `<i></i>${c}`; $("stops").appendChild(d); return d;
+});
+const hook1W = LT.split($("hook1"), "words");
+const sub = LT.split($("hookSub"), "words");
+const rows = id => [...$(id).children];
+const R1 = rows("c1i"), R2 = rows("c2i"), R3 = rows("c3i");
+
+// Beats on the 120 bpm half-second grid; lengths 3 / 1.5 / 1.5 / 4 / 3.5 / 4 / 2 / 4 / 5 s.
+const T = { hook: -0.3, bars: 3.0, pillars: 4.5, edu: 6.0, mig: 10.0, com: 13.5, pull: 17.5, offices: 19.5, lockup: 23.5 };
+const CARD = { y: 990, w: 860, h: 1060, r: 48 };
+const CX = [540, 1540, 2540];          // card centres along the rail (world px)
+const RAIL_Y = 1550;
+
+function cardSlot(i, t) {
+  // bar i: (hidden) -> slanted logo bar -> pillar -> card at CX[i] -> folded into the rail
+  const fills = [B.gold, B.cyan, B.white];
+  const slantX = [380, 540, 700][i], pillarX = [290, 540, 790][i];
+  const born = T.bars + i * 0.16;
+  const st = [
+    [born, { x: i ? 380 : 540, y: i ? 960 : 1052, w: i ? 130 : 640, h: i ? 640 : 14, r: i ? 22 : 7, rot: i ? 0.38 : 0, fill: fills[i] }],
+    [born + 0.7, { x: slantX, y: 960, w: 130, h: 640, r: 22, rot: 0.38 }, settle],
+    [T.pillars + i * 0.08, { x: slantX, y: 960, w: 130, h: 640, r: 22, rot: 0.38 }],
+    [T.pillars + 0.7 + i * 0.08, { x: pillarX, y: 990, w: 210, h: 880, r: 30, rot: 0 }, settle],
+    [T.edu + i * 0.05, { x: pillarX, y: 990, w: 210, h: 880, r: 30 }],
+    [T.edu + 0.8 + i * 0.05, { x: CX[i], y: CARD.y, w: CARD.w, h: CARD.h, r: CARD.r }, settle],
+    [T.offices - 0.2, { x: CX[i], y: CARD.y, w: CARD.w, h: CARD.h }],
+    [T.offices + 0.4, { x: CX[i], y: RAIL_Y, w: CARD.w, h: 8, r: 4 }, "inOutQuint"],
+  ];
+  if (i === 0) st.unshift([0, { x: 540, y: 1052, w: 0, h: 14, r: 7, rot: 0, fill: B.gold }],
+                          [1.3, { w: 0 }], [1.85, { w: 640 }, "outQuint"]);
+  const s = morph(t, st);
+  const visible = i === 0 ? t >= 1.3 : t >= born;
+  const a = (i ? LT.clamp((t - born) / 0.12) : 1) * (1 - prog(t, T.offices + 0.25, T.offices + 0.45));
+  set(el("bar" + (i + 1)), { ...s, alpha: visible ? a : 0 });
+}
+
+function cardCopy(n, t, t0, rowsEls) {
+  // title / sub / rows rise in once the card has landed in frame, leave as it folds
+  const out = 1 - prog(t, T.offices - 0.35, T.offices - 0.1);
+  const x = CX[n - 1];
+  set(el(`c${n}t`), { x, y: 610, alpha: (t < t0 ? 0 : LT.ease.outQuint(prog(t, t0, t0 + 0.4))) * out });
+  set(el(`c${n}s`), { x, y: 700, alpha: (t < t0 + 0.15 ? 0 : LT.ease.outQuint(prog(t, t0 + 0.15, t0 + 0.55))) * out });
+  set(el(`c${n}i`), { x, y: 1100, alpha: t < t0 + 0.25 ? 0 : out });
+  LT.rise(t, rowsEls, t0 + 0.3, { stagger: 0.12, dist: 50 });
+}
+
+function render(t) {
+  $("bg").style.background = B.navy;
+
+  // ---- camera: locked hook, gentle push on cards, whips along the rail, pull back, return
+  const cam = LT.camera(t, [
+    { t: 0, x: 540, y: 960, zoom: 1 },
+    { t: T.edu + 0.4, x: 540, y: 960, zoom: 1 },
+    { t: T.edu + 1.4, x: 540, y: 980, zoom: 1.04, ease: settle },
+    { t: T.mig - 0.25, x: 540, y: 980, zoom: 1.04 },
+    { t: T.mig + 0.3, x: 1540, y: 980, zoom: 1.04, ease: "inOutExpo" },
+    { t: T.com - 0.25, x: 1540, y: 980, zoom: 1.04 },
+    { t: T.com + 0.3, x: 2540, y: 980, zoom: 1.04, ease: "inOutExpo" },
+    { t: T.pull - 0.2, x: 2540, y: 980, zoom: 1.04 },
+    { t: T.pull + 0.8, x: 1540, y: 1050, zoom: 0.34, ease: settle },
+    { t: T.offices - 0.1, x: 1540, y: 1050, zoom: 0.34 },
+    { t: T.offices + 0.8, x: 540, y: 960, zoom: 1, ease: "inOutQuint" },
+    { t: T.lockup, x: 540, y: 960, zoom: 1 },
+    { t: T.lockup + 1.2, x: 540, y: 1010, zoom: 1.05, ease: settle },
+  ], { hand: 6, handSeed: 2,
+       holdStill: [[1.9, 2.8], [7.8, 9.6], [11.6, 13.1], [15.2, 17.1], [21.8, 23.2], [26.2, 28.5]],
+       hits: [{ t: T.edu + 0.85, amp: 10, dur: 0.35 }, { t: T.lockup + 0.75, amp: 12, dur: 0.4 }] });
+  LT.applyCamera($("world"), cam, W, H);
+
+  // ---- hook
+  const hookOut = prog(t, T.bars - 0.1, T.bars + 0.35);
+  const hy = key(t, [[T.bars - 0.1, 0], [T.bars + 0.4, -120, "in"]]);
+  set(el("hook1"), { x: 540, y: 830 + hy, alpha: t < T.hook ? 0 : 1 - hookOut });
+  LT.rise(t, hook1W, T.hook, { stagger: 0.09, dist: 80 });
+  const h2 = LT.ease.outQuint(prog(t, T.hook + 0.3, T.hook + 0.85));
+  set(el("hook2"), { x: 540, y: 960 + hy + (1 - h2) * 80, alpha: h2 * (1 - hookOut) });
+  set(el("hookSub"), { x: 540, y: 1150 + hy, alpha: t < 1.9 ? 0 : 1 - hookOut });
+  LT.rise(t, sub, 1.9, { stagger: 0.06, dist: 40 });
+
+  // ---- three bars: underline -> logo bars -> pillars -> cards
+  for (let i = 0; i < 3; i++) cardSlot(i, t);
+  const kIn = LT.ease.outQuint(prog(t, T.pillars + 0.5, T.pillars + 1.0));
+  set(el("kicker"), { x: 540, y: 430 + (1 - kIn) * 40, alpha: kIn * (1 - prog(t, T.edu, T.edu + 0.3)) });
+
+  // ---- the rail: drawn out under the pillars, carries the whips, swings upright, becomes the underline
+  const r = morph(t, [
+    [T.pillars + 0.5, { x: 540, y: RAIL_Y, w: 0, h: 8, r: 4, rot: 0, fill: B.gold }],
+    [T.pillars + 1.3, { w: 1000 }, "outQuint"],
+    [T.edu + 0.3, { x: 540, w: 1000 }],
+    [T.edu + 1.1, { x: 1540, w: 3200 }, "inOutQuint"],
+    [T.offices + 0.3, { x: 1540, y: RAIL_Y, w: 3200, h: 8, rot: 0 }],
+    [T.offices + 1.0, { x: 345, y: 990, w: 1140, h: 8, rot: Math.PI / 2 }, settle],
+    [T.lockup, { x: 345, y: 990, w: 1140, h: 8, rot: Math.PI / 2 }],
+    [T.lockup + 0.75, { x: 540, y: 1000, w: 640, h: 12, r: 6, rot: 0 }, settle],
+  ]);
+  set(el("rail"), { ...r, alpha: t < T.pillars + 0.5 ? 0 : 1 });
+
+  cardCopy(1, t, T.edu + 0.75, R1);
+  cardCopy(2, t, T.mig + 0.35, R2);
+  cardCopy(3, t, T.com + 0.35, R3);
+
+  // ---- 7-office route on the upright rail
+  const oOut = 1 - prog(t, T.lockup - 0.1, T.lockup + 0.3);
+  const oh = LT.ease.outQuint(prog(t, T.offices + 0.3, T.offices + 0.8));
+  set(el("ohead"), { x: 540, y: 300 + (1 - oh) * 40, alpha: oh * oOut });
+  stops.forEach((s, i) => {
+    const t0 = T.offices + 0.65 + i * 0.17, q = pop(t, t0, { freq: 2.6, damp: 0.6 });
+    const y = 490 + i * 150;
+    // label grows out from its dot on the rail; on the lockup every stop slides into the line
+    const sx = key(t, [[T.lockup - 0.1, 0], [T.lockup + 0.4, -180, "in"]]);
+    s.style.transformOrigin = "0 50%";
+    set(s, { x: 323 + s.offsetWidth / 2 + sx, y, scale: q.scale, alpha: q.alpha * oOut });
+  });
+
+  // ---- lockup: logo lifts out of the line, tagline, CTA, site
+  set(el("logo"), { x: 540, y: key(t, [[T.lockup + 0.2, 1000], [T.lockup + 0.85, 860, settle]]),
+                    alpha: t < T.lockup + 0.2 ? 0 : 1, clip: LT.reveal(t, T.lockup + 0.2, 0.65, "up") });
+  const tg = LT.ease.outQuint(prog(t, T.lockup + 0.9, T.lockup + 1.4));
+  set(el("tagline"), { x: 540, y: 1125 + (1 - tg) * 40, alpha: tg });
+  const c = pop(t, T.lockup + 1.7, { freq: 2.4, damp: 0.55 });
+  set(el("cta"), { x: 540, y: 1290, scale: c.scale, sx: c.sx, sy: c.sy, alpha: c.alpha });
+  const w = LT.ease.outQuint(prog(t, T.lockup + 2.1, T.lockup + 2.6));
+  set(el("web"), { x: 540, y: 1430, alpha: w });
+}
+
+LT.comp({
+  width: W, height: H, dur: DUR, render,
+  beats: [
+    { t: T.bars, name: "bars", handoff: "bar1" },
+    { t: T.pillars, name: "pillars", handoff: "bar1" },
+    { t: T.edu, name: "education", handoff: "bar1" },
+    { t: T.mig, name: "migration", handoff: "rail" },
+    { t: T.com, name: "community", handoff: "rail" },
+    { t: T.pull, name: "pull back", handoff: "rail" },
+    { t: T.offices, name: "offices", handoff: "rail" },
+    { t: T.lockup, name: "lockup", handoff: "rail" },
+  ],
+  cues: [
+    { t: T.bars - 0.05, file: "transition-whoosh.mp3", vol: 0.28 },
+    { t: T.edu - 0.05, file: "transition-whoosh.mp3", vol: 0.28 },
+    { t: T.mig - 0.25, file: "transition-whoosh.mp3", vol: 0.32 },
+    { t: T.com - 0.25, file: "transition-whoosh.mp3", vol: 0.32 },
+    { t: T.pull - 0.1, file: "transition-whoosh.mp3", vol: 0.25 },
+    { t: T.offices + 0.65, file: "pop.mp3", vol: 0.35 },
+    { t: T.lockup + 1.7, file: "success-chime.mp3", vol: 0.45 },
+  ],
+});
+</script>
+</body></html>

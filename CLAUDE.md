@@ -83,9 +83,25 @@ future reels (in memory, and/or folded back into this doc). Don't silently
 decide on your own what's worth remembering — this is a review-and-confirm
 step every time, not a one-off or a silent auto-save.
 
+As part of the same ritual, add the reel to `docs/lessons/edit-catalog.md`
+(its edit type, signature code, and an 8-frame contact sheet). That catalog is
+how a later brief like "do it like the split one" gets resolved: `input/` and
+`work/` are deleted after delivery, so the style must be rebuildable from the
+tracked config + per-reel code alone. Never keep a style's only source in `work/`.
+Put hand-written scripts at the reel root or in `scripts/`.
+
+## Remaking a past style
+
+When the user refers to a previous edit ("like the explainer", "the fast one",
+"the Tasmania reel", "choose your fighter"), look it up in
+`docs/lessons/edit-catalog.md` first, then open that reel's `content.json`
+`_comment`, `broll_plan.json` `_comment` and per-reel code. No input or work
+files are needed.
+
 ## Reel folders are local-only — never on GitHub
 
-`reels/<date>_<slug>/` is gitignored (client footage/PII). If a reel is
+`reels/<date>_<slug>/` media is gitignored (client footage/PII). Only the
+editorial config and per-reel code/comps are tracked (see `.gitignore`). If a reel is
 ever built inside a git worktree, copy its folder into the main checkout's
 `reels/` **before** removing that worktree — otherwise the finished video
 and all working files are gone for good. (This nearly happened once.)

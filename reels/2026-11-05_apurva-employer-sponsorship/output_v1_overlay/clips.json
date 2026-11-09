@@ -1,0 +1,18 @@
+{
+  "_comment": "Apurva Golani (RMA, MARN 2518793) -- employer sponsorship: 'still not visa-ready' explainer (5 Nov 2026). 8 phone takes, each at a different spot in the same building. HLG HDR portrait, default tone-map path, no flip ('Colliers' sign reads correctly). File order is NOT script order: 105744 (hook) comes before 105715.",
+  "_cut_note": "Dropped slates/false starts: 'Uh, go. Yeah' (105715), 'One, like a rat to-' (105744), 'One, go.' (110519). Pauses >0.3s cut inside measured word gaps. 2 keep spans per take where a pause was cut.",
+  "clips": [
+    { "name": "20261105_105744", "ext": ".mp4", "keep": [2.12, 4.16] },
+    { "name": "20261105_105744", "ext": ".mp4", "keep": [4.46, 7.02] },
+    { "name": "20261105_105715", "ext": ".mp4", "keep": [1.90, 4.02] },
+    { "name": "20261105_105913", "ext": ".mp4", "keep": [3.10, 7.22] },
+    { "name": "20261105_110047", "ext": ".mp4", "keep": [0.98, 7.38] },
+    { "name": "20261105_110328", "ext": ".mp4", "keep": [1.68, 5.72] },
+    { "name": "20261105_110328", "ext": ".mp4", "keep": [6.10, 8.26] },
+    { "name": "20261105_110410", "ext": ".mp4", "keep": [1.82, 3.20] },
+    { "name": "20261105_110519", "ext": ".mp4", "keep": [2.36, 5.52] },
+    { "name": "20261105_110519", "ext": ".mp4", "keep": [5.80, 7.88] },
+    { "name": "20261105_110618", "ext": ".mp4", "keep": [1.78, 3.44] },
+    { "name": "20261105_110618", "ext": ".mp4", "keep": [3.72, 6.08] }
+  ]
+}
